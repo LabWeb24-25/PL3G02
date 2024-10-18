@@ -1,0 +1,3 @@
+Biblioteca (nome, localização, email, telefone, horário).
+Livros(Título, autor, género, preço, ISBN, exemplares,empréstimo)
+Utilizadores (id, nome, apelido, email, username, password, morada, contacto)

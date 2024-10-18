@@ -1,0 +1,47 @@
+REQUISITOS FUNCIONAIS
+O sistema deverá ser acessível por qualquer utilizador, mesmo sem login.
+O sistema deverá permitir efetuar registo.
+O sistema deverá enviar um email de confirmação ao leitor após o registo.
+O sistema deverá mostrar informações sobre horário biblioteca.
+O sistema deverá permitir que o leitor valide o registo através de um link no email.
+O sistema deverá impedir que leitores façam login antes da validação do registo via email.
+O sistema deverá permitir apagar um utilizador caso não confirme a sua conta.
+O sistema deverá permitir autenticação com username ou email e password.
+O sistema deverá ter um sistema de pesquisa de livros.
+O sistema deverá permitir a visualização de uma lista de livros disponíveis na biblioteca.
+O sistema deverá exibir detalhes sobre cada livro.
+O sistema deverá permitir que os leitores requisitem um livro.
+O sistema deverá atribuir um prazo para devolução.
+
+O sistema deverá mostrar uma lista de livros disponíveis com detalhes como título, autor, género, preço, ISBN e número de exemplares.
+O sistema deverá emitir uma notificação sobre a data de devolução.
+
+O sistema deverá permitir que os bibliotecários adicionem, removam ou editem livros no sistema.
+O sistema deverá permitir que os bibliotecários acedam às informações das requisições dos livros (livro, pessoa que requisitou, data limite de requisição).
+
+O sistema deverá notificar os bibliotecários sobre leitores com entregas em atraso ao efetuarem login.
+O sistema deverá emitir um alerta ao utilizador quando atrasar entrega do livro.
+O sistema deverá permitir que os administradores realizem ações de CRUD nas contas dos utilizadores
+O sistema deverá permitir que os administradores ativem ou bloqueiem contas de utilizadores.
+O sistema deverá permitir que os administradores indiquem o motivo do bloqueio de um utilizador.
+O sistema deverá notificar um utilizador bloqueado sobre o motivo do seu bloqueio quando tentar fazer login.
+O sistema deverá permitir que os administradores visualizem um histórico de quem aprovou os bibliotecários.
+O sistema deverá permitir que os administradores aprovem o registo de novos bibliotecários.
+O sistema deverá permitir que utilizadores autenticados façam logout do sistema.
+
+REQUISITOS NÃO FUNCIONAIS
+
+O sistema deverá garantir a proteção de dados sensíveis, como senhas e informações pessoais dos utilizadores.
+
+O sistema deverá implementar mecanismos para recuperação rápida em caso de falhas.
+O sistema deverá cumprir com o Regulamento Geral de Proteção de Dados (RGPD) e outras regulamentações de privacidade de dados aplicáveis.
+O sistema deverá ter um tempo de resposta médio de menos de 2 segundos para as ações dos utilizadores.
+Deve ser fornecido suporte técnico 24/7 para resolver problemas críticos do sistema
+
+O sistema deverá garantir que o portal seja acessível a utilizadores com diferentes capacidades, cumprindo normas de acessibilidade web.
+O sistema deverá ser facilmente atualizável para introduzir novos recursos e correções de segurança.
+As sessões devem expirar após um período de inatividade ou por ação do utilizador (logout).
+
+O sistema deverá fornecer documentação detalhada, incluindo código, API e manuais de utilizador.
+
+O sistema deverá integrar-se com serviços de email para envio de confirmações de registo e outras comunicações automáticas.
