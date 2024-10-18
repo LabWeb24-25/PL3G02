@@ -7,14 +7,14 @@ Go
 Use Projeto_Lab 
 Go
 
-
+-- ENTIDADES  -----------------------------
 CREATE TABLE Perfil(
 		ID_perfil	INT		IDENTITY(1,1)	NOT NULL,
 		End_Morada	VARCHAR(100)	NOT NULL,
 		End_CodPostal	CHAR(8)		NOT NULL,
 		End_Localidade	VARCHAR(50)	NOT NULL,
 		Nome_Perfil		VARCHAR(50)	NOT NULL,
-		Data_Nascimento	DATE	NOT NULL,
+		DataNascimento_Perfil	DATE	NOT NULL,
 		Apelido			VARCHAR(50)	NOT NULL,
 		Img_Perfil		VARCHAR(250)	NOT NULL,
 		PRIMARY KEY (ID_perfil),
@@ -51,13 +51,19 @@ CREATE TABLE Livros(
 CREATE TABLE Autor(
 		ID_Autor	INT		IDENTITY(1,1) NOT NULL,
 		Nome_Autor	VARCHAR(120)		NOT NULL,
-		Nacionalidade	VARCHAR(50)		NOT NULL,
+		--Nacionalidade	VARCHAR(50)		NOT NULL,
 		Data_Nascimento	DATE		NOT NULL,
-		Pseudonimo		VARCHAR(50)	NOT NULL,
-		Data_Falecimento DATE		NOT NULL,
+		Pseudonimo		VARCHAR(50),
+		Data_Falecimento DATE,
 		Foto_Autor		VARCHAR(250)	NOT NULL,
+		Bibliografia	TEXT		NOT NULL,	--Guarda até 65535 caracteres
 		PRIMARY KEY (ID_Autor)
 )
+
+
+
+
+
 
 
 --PARA PERFIL AUTOR REQUISITA BLOQUEAR
