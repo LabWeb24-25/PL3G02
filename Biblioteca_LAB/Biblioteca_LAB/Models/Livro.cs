@@ -9,17 +9,21 @@ namespace Biblioteca_LAB.Models
         public int ISBN { get; set; }
 
         [Required(ErrorMessage = "Required Field")]
-        [StringLength(100, ErrorMessage = "The {0} do not exceed {1} characteres.")]
-        public string? Titulo { get; set; }
-        [Required(ErrorMessage = "Required Field")]
         [DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
-        public DateTime Data_Edicao { get; set; }
+        public DateOnly Data_Edicao { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [StringLength(50, ErrorMessage = "The {0} cannot exceed {1} characters.")]
+        public string? Idioma { get; set; }
+
         [Required(ErrorMessage = "Required Field")]
         public int num_exemplares { get; set; }
 
+        // Optional field for the image of the book cover
         public string? Capa_IMG { get; set; }
+
         [Required(ErrorMessage = "Required Field")]
-        [StringLength(65535, ErrorMessage = "The {0} do not exceed {1} characteres.")]
+        [StringLength(65535, ErrorMessage = "The {0} cannot exceed {1} characters.")]
         public string? Sinopse { get; set; }
     }
 }

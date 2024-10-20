@@ -5,12 +5,17 @@ namespace Biblioteca_LAB.Models
     public class Editora
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Required Field")]
-        [StringLength(120, ErrorMessage = "The {0} do not exceed {1} characteres.")]
+        [StringLength(120, ErrorMessage = "The {0} cannot exceed {1} characters.")]
         public string? Nome { get; set; }
-        [StringLength(5000, ErrorMessage = "The Info do not exceed {1} characteres.")]
+
+        // Info_Editora opciomal
+        [StringLength(5000, ErrorMessage = "The Info cannot exceed {1} characters.")]
         public string? Info { get; set; }
+
+        // Img_Editora opcional
         public string? IMG { get; set; }
     }
 }
