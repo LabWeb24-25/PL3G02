@@ -60,6 +60,12 @@ CREATE TABLE Autor(
 		PRIMARY KEY (ID_Autor)
 )
 
+CREATE TABLE Pais(
+		ID_Pais	INT		IDENTITY(1,1)	NOT NULL,
+		Nome_Pais	VARCHAR(50)	NOT NULL,
+		PRIMARY KEY (ID_Pais),
+)
+
 
 
 
