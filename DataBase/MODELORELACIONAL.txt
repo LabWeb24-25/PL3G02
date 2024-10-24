@@ -1,11 +1,37 @@
+ENTIDADES:
+Biblioteca(Id_Biblioteca, End_Morada, End_CodigoPostal (FK), Nome, Email, Telefone, Horario)
+
+CodigoPostal (End_CodigoPostal, End_Localidade)
+
 Livro (ISBN (PK), Data_Edicao, Idioma, num_exemplares, Capa_IMG, Sinopse, Titulo_Livros)
 
-Perfil (ID_perfil (PK), End_Morada, End_CodPostal, End_Localidade, Nome_Perfil, DataNascimento_Perfil, Apelido, Img_Perfil)
+Perfil (ID_perfil (PK), End_Morada, End_CodPostal (FK), Nome_Perfil, DataNascimento_Perfil, Apelido, Img_Perfil)
 
 Editora (ID_Editora (PK), Nome_Editora, Info_Editora, Img_Editora)
 
 Generos (ID_Generos (PK), Nome_Generos)
 
-Autor (ID_Autor (PK), Nome_Autor, DataNascimento_Autor, Pseudonimo, DataFalecimento_Autor, Foto_Autor, Bibliografia)
+Autor (ID_Autor (PK), Nome_Autor, DataNascimento_Autor, Pseudonimo, DataFalecimento_Autor, Foto_Autor, Bibliografia, Id_Pais)
 
-Pais(ID_Pais (PK), Nome_Pais)
+Pais (ID_Pais (PK), Nome_Pais)
+
+RELACIONAMENTOS:
+
+Publica (ISBN (PK, FK), Id_Editora (FK))
+
+Escreveu (ISBN (PK, FK), Id_autor (FK))
+
+Livro_Generos (ISBN (PK, FK), Id_Generos (PK, FK))
+
+Requisita (Id_Leitor (PK, FK), Id_BibliotecarioRecetor (PK, FK), Id_BibliotecarioRemetente (FK), Data_Requisicao (PK), Data_PreEntrega, Data_Entrega)
+
+Inserir_Livro (Id_Bibliotecario (FK), ISBN (PK, FK))
+
+
+
+FALTA:
+-ASP.NET_USER
+-BLOQUEAR
+-PERFIL_USER
+-ROLES
+-POSSUI_ROLES
