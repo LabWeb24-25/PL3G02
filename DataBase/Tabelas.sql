@@ -137,13 +137,12 @@ CREATE TABLE Requisita (
 		ID_Leitor	INT	NOT NULL,
 		ID_BibliotecarioRecetor	INT	NOT NULL,
 		ID_BibliotecarioRemetente	INT,
+		ISBN		BIGINT	NOT NULL,
 		Data_Requisicao	DATETIME	NOT NULL,
 		Data_PrevEntrega	DATE	NOT NULL,
 		Data_Entrega	DATETIME	NOT NULL,
 		PRIMARY KEY (ID_Leitor, ID_BibliotecarioRecetor, Data_Requisicao),
-		FOREIGN KEY (ID_Leitor) REFERENCES	
-		FOREIGN KEY (ID_BibliotecarioRecetor) REFERENCES
-		FOREIGN KEY (ID_BibliotecarioRemetente)	REFERENCES
+		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
 )
 
 
@@ -153,10 +152,15 @@ CREATE TABLE Inserir_Livro (
 		ISBN		BIGINT	NOT NULL,
 		PRIMARY KEY (ISBN),
 		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
-		FOREIGN KEY (ID_Bibliotecario) REFERENCES 
-
 )
 
+
+--
+CREATE TABLE Bloquear (
+		ID_Admin	INT		NOT NULL,
+		ID_User		INT		NOT NULL,
+		PRIMARY KEY (ID_User),
+)
 --PARA PERFIL AUTOR REQUISITA BLOQUEAR
 
 --CREATE TRIGGER verificar_data_edicao
