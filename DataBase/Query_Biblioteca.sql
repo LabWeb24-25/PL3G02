@@ -1,13 +1,4 @@
-USE MASTER
-GO
-
-CREATE DATABASE Projeto_Lab
-Go
-
-Use Projeto_Lab 
-Go
-
--- ENTIDADES  -----------------------------
+ï»¿-- ENTIDADES  -----------------------------
 --CodigoPostal (End_CodigoPostal, End_Localidade)
 CREATE TABLE CodigoPostal(
 		End_CodPostal	CHAR(8)	NOT NULL,
@@ -69,7 +60,7 @@ CREATE TABLE Livros(
 		Idioma		VARCHAR(50)		NOT NULL,
 		Num_Exemplares	INT		NOT NULL,
 		Capa_IMG		VARCHAR(250)	NOT NULL,
-		Sinopse			TEXT		NOT NULL,  --Guarda até 65535 caracteres
+		Sinopse			TEXT		NOT NULL,  --Guarda atÃ© 65535 caracteres
 		PRIMARY KEY (ISBN),
 		CHECK(Num_Exemplares>=0),
 		CHECK(ISBN>0)
@@ -91,7 +82,7 @@ CREATE TABLE Autor(
 		Pseudonimo		VARCHAR(50),
 		Data_Falecimento DATE,
 		Foto_Autor		VARCHAR(250)	NOT NULL,
-		Bibliografia	TEXT		NOT NULL,	--Guarda até 65535 caracteres
+		Bibliografia	TEXT		NOT NULL,	--Guarda atÃ© 65535 caracteres
 		Id_Lingua		INT			NOT NULL,
 		PRIMARY KEY (ID_Autor),
 		CHECK (Data_Falecimento>Data_Nascimento),
@@ -164,19 +155,11 @@ CREATE TABLE Inserir_Livro (
 )
 
 
---
+--Bloquear (ID_Admin, ID_User (PK), Motivo_Bloquear, Data_Bloqueio)
 CREATE TABLE Bloquear (
 		ID_Admin	INT		NOT NULL,
 		ID_User		INT		NOT NULL,
+		Motivo_Bloquear	TEXT	NOT NULL,
+		Data_Bloqueio	DATE	NOT NULL,
 		PRIMARY KEY (ID_User),
 )
---PARA PERFIL AUTOR REQUISITA BLOQUEAR
-
---CREATE TRIGGER verificar_data_edicao
---BEFORE INSERT ON Livros
---FOR EACH ROW
---BEGIN
---    IF NEW.DataEdicao >= CURDATE() THEN
---        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Data de edição não pode ser no futuro.';
---    END IF;
---END;
