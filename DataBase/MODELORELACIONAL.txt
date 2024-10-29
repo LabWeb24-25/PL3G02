@@ -23,15 +23,11 @@ Escreveu (ISBN (PK, FK), Id_autor (FK))
 
 Livro_Generos (ISBN (PK, FK), Id_Generos (PK, FK))
 
-Requisita (Id_Leitor (PK, FK), Id_BibliotecarioRecetor (PK, FK), Id_BibliotecarioRemetente (FK), Data_Requisicao (PK), Data_PreEntrega, Data_Entrega)
+Requisita (Id_Leitor (PK), Id_BibliotecarioRecetor, Id_BibliotecarioRemetente (PK), Data_Requisicao (PK), Data_PreEntrega, Data_Entrega)
 
-Inserir_Livro (Id_Bibliotecario (FK), ISBN (PK, FK))
+Inserir_Livro (Id_Bibliotecario, ISBN (PK, FK))
+
+Bloquear (ID_Admin, ID_User (PK), Motivo_Bloquear, Data_Bloqueio)
 
 
 
-FALTA:
--ASP.NET_USER
--BLOQUEAR
--PERFIL_USER
--ROLES
--POSSUI_ROLES
