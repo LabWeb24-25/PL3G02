@@ -17,6 +17,8 @@ Pais (ID_Pais (PK), Nome_Pais)
 
 RELACIONAMENTOS:
 
+Favorito (ID_Leitor (PK), ISBN (PK, FK))
+
 Publica (ISBN (PK, FK), Id_Editora (FK))
 
 Escreveu (ISBN (PK, FK), Id_autor (FK))
