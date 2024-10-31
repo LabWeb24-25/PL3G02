@@ -1,4 +1,12 @@
-﻿-- ENTIDADES  -----------------------------
+﻿USE MASTER
+GO
+
+CREATE TABLE Biblioteca
+GO
+
+USE Biblioteca 
+GO
+-- ENTIDADES  -----------------------------
 --CodigoPostal (End_CodigoPostal, End_Localidade)
 CREATE TABLE CodigoPostal(
 		End_CodPostal	CHAR(8)	NOT NULL,
@@ -15,7 +23,7 @@ CREATE TABLE Biblioteca(
 		Nome_Biblioteca	VARCHAR(100)	NOT NULL,
 		Email			VARCHAR(125)	NOT NULL,
 		Telefone		VARCHAR(9)		NOT NULL,
-		Horario		VARCHAR(200)			NOT NULL,
+		Horario				TEXT			NOT NULL,
 		PRIMARY KEY (Id_Biblioteca),
 		CHECK (End_CodPostal LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]'),
 		FOREIGN KEY (End_CodPostal) References CodigoPostal(End_CodPostal)
@@ -32,6 +40,7 @@ CREATE TABLE Perfil(
 		Img_Perfil		VARCHAR(300)	NOT NULL,
 		PRIMARY KEY (ID_perfil),
 		CHECK (End_CodPostal LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]'),
+		CHECK (DATEDIFF(YEAR, DataNascimento_Perfil, GETDATE()) >= 16),
 		FOREIGN KEY (End_CodPostal) References CodigoPostal(End_CodPostal)
 )
 
@@ -48,7 +57,7 @@ CREATE TABLE Editora(
 CREATE TABLE Generos(
 		ID_Generos	INT		IDENTITY(1,1)	NOT NULL,
 		Nome_Generos	VARCHAR(20)			NOT NULL,
-		PRIMARY KEY (ID_Generos)
+		PRIMARY KEY (ID_Generos),
 )
 
 
@@ -85,6 +94,7 @@ CREATE TABLE Autor(
 		Bibliografia	TEXT		NOT NULL,	--Guarda até 65535 caracteres
 		Id_Lingua		INT			NOT NULL,
 		PRIMARY KEY (ID_Autor),
+		CHECK (DATEDIFF(YEAR, Data_Nascimento, GETDATE()) >= 16),
 		CHECK (Data_Falecimento>Data_Nascimento),
 		FOREIGN KEY (Id_Lingua) REFERENCES Pais (ID_Pais)
 )
