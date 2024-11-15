@@ -17,7 +17,7 @@ public partial class Publica
     public int IdEditora { get; set; }
 
     [ForeignKey("IdEditora")]
-    [InverseProperty("Publicas")]
+    [InverseProperty("Publica")]
     public virtual Editora IdEditoraNavigation { get; set; } = null!;
 
     [ForeignKey("IdLivro")]

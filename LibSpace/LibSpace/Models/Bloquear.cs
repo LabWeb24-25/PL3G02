@@ -21,4 +21,12 @@ public partial class Bloquear
 
     [Column("Data_Bloqueio")]
     public DateOnly DataBloqueio { get; set; }
+
+    [ForeignKey("IdAdmin")]
+    [InverseProperty("Bloquear")]
+    public virtual Perfil IdAdminNavigation { get; set; } = null!;
+
+    [ForeignKey("IdUser")]
+    [InverseProperty("Bloquear")]
+    public virtual Perfil IdUserNavigation { get; set; } = null!;
 }

@@ -21,7 +21,7 @@ public partial class CodigoPostal
     public string EndLocalidade { get; set; } = null!;
 
     [InverseProperty("EndCodPostalNavigation")]
-    public virtual ICollection<Biblioteca> Bibliotecas { get; set; } = new List<Biblioteca>();
+    public virtual ICollection<Biblioteca> Biblioteca { get; set; } = new List<Biblioteca>();
 
     [InverseProperty("EndCodPostalNavigation")]
     public virtual ICollection<Perfil> Perfils { get; set; } = new List<Perfil>();

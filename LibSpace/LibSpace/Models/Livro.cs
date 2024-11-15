@@ -52,7 +52,7 @@ public partial class Livro
     public virtual Publica? Publica { get; set; }
 
     [InverseProperty("IdLivroNavigation")]
-    public virtual ICollection<Requisitum> Requisita { get; set; } = new List<Requisitum>();
+    public virtual ICollection<Requisita> Requisita { get; set; } = new List<Requisita>();
 
     [ForeignKey("IdLivro")]
     [InverseProperty("IdLivros")]

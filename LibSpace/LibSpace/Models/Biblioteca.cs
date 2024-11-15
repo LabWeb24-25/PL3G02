@@ -40,6 +40,6 @@ public partial class Biblioteca
     public string Horario { get; set; } = null!;
 
     [ForeignKey("EndCodPostal")]
-    [InverseProperty("Bibliotecas")]
+    [InverseProperty("Biblioteca")]
     public virtual CodigoPostal EndCodPostalNavigation { get; set; } = null!;
 }

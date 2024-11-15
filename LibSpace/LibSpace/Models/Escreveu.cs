@@ -17,7 +17,7 @@ public partial class Escreveu
     public int IdAutor { get; set; }
 
     [ForeignKey("IdAutor")]
-    [InverseProperty("Escreveus")]
+    [InverseProperty("Escreveu")]
     public virtual Autor IdAutorNavigation { get; set; } = null!;
 
     [ForeignKey("IdLivro")]
