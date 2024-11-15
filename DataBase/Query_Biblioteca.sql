@@ -1,10 +1,10 @@
 ﻿USE MASTER
 GO
 
-CREATE TABLE Biblioteca
+CREATE DATABASE Biblioteca
 GO
 
-USE Biblioteca 
+USE Biblioteca
 GO
 -- ENTIDADES  -----------------------------
 --CodigoPostal (End_CodigoPostal, End_Localidade)
@@ -38,6 +38,7 @@ CREATE TABLE Perfil(
 		DataNascimento_Perfil	DATE	NOT NULL,
 		Apelido			VARCHAR(50)	NOT NULL,
 		Img_Perfil		VARCHAR(300)	NOT NULL,
+		Username		VARCHAR(40)		NOT NULL,
 		PRIMARY KEY (ID_perfil),
 		CHECK (End_CodPostal LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]'),
 		CHECK (DATEDIFF(YEAR, DataNascimento_Perfil, GETDATE()) >= 16),
@@ -63,16 +64,16 @@ CREATE TABLE Generos(
 
 --Livro (ISBN (PK), Data_Edicao, Idioma, num_exemplares, Capa_IMG, Sinopse, Titulo_Livros)
 CREATE TABLE Livros(
-		ISBN	BIGINT	NOT NULL,
+		ID_Livro	INT		IDENTITY(1,1) NOT NULL,
+		ISBN	VARCHAR(20)	NOT NULL,
 		DataEdicao	DATE	NOT NULL,
 		Titulo_Livros	VARCHAR(100)	NOT NULL,
 		Idioma		VARCHAR(50)		NOT NULL,
 		Num_Exemplares	INT		NOT NULL,
 		Capa_IMG		VARCHAR(250)	NOT NULL,
 		Sinopse			TEXT		NOT NULL,  --Guarda até 65535 caracteres
-		PRIMARY KEY (ISBN),
+		PRIMARY KEY (ID_Livro),
 		CHECK(Num_Exemplares>=0),
-		CHECK(ISBN>0)
 )
 
 
@@ -105,39 +106,39 @@ CREATE TABLE Autor(
 
 --Favorito (ID_Leitor (PK), ISBN (PK, FK))
 CREATE TABLE Favorito(
-		ISBN	BIGINT	NOT NULL,
+		ID_Livro	INT	NOT NULL,
 		ID_Leitor	INT	NOT NULL,
-		PRIMARY KEY (ISBN, ID_Leitor),
-		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
+		PRIMARY KEY (ID_Livro, ID_Leitor),
+		FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro),
 
 )
 
 --Publica (ISBN (PK, FK), Id_Editora (FK))
 CREATE TABLE Publica(
-		ISBN	BIGINT	NOT NULL,
+		ID_Livro	INT		NOT NULL,
 		ID_Editora	INT		NOT NULL,
-		PRIMARY KEY (ISBN),
-		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
+		PRIMARY KEY (ID_Livro),
+		FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro),
 		FOREIGN KEY (ID_Editora) REFERENCES Editora(ID_Editora)
 )
 
 
 --Escreveu (ISBN (PK, FK), Id_autor (FK))
 CREATE TABLE Escreveu(
-		ISBN	BIGINT	NOT NULL,
+		ID_Livro	INT	NOT NULL,
 		ID_autor	INT	NOT NULL,
-		PRIMARY KEY (ISBN),
+		PRIMARY KEY (ID_Livro),
 		FOREIGN KEY (ID_autor) REFERENCES Autor(ID_Autor),
-		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
+		FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro),
 )
 
 
 --Livro_Generos (ISBN (PK, FK), Id_Generos (PK, FK))
 CREATE TABLE Livro_Generos (
-		ISBN	BIGINT	NOT NULL,
+		ID_Livro	INT	NOT NULL,
 		ID_Generos	INT	NOT NULL,
-		PRIMARY KEY (ISBN, Id_Generos),
-		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
+		PRIMARY KEY (ID_Livro, Id_Generos),
+		FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro),
 		FOREIGN KEY (ID_Generos) REFERENCES Generos(ID_Generos),
 )
 
@@ -147,21 +148,21 @@ CREATE TABLE Requisita (
 		ID_Leitor	INT	NOT NULL,
 		ID_BibliotecarioRecetor	INT	NOT NULL,
 		ID_BibliotecarioRemetente	INT,
-		ISBN		BIGINT	NOT NULL,
+		ID_Livro		INT	NOT NULL,
 		Data_Requisicao	DATETIME	NOT NULL,
 		Data_PrevEntrega	DATE	NOT NULL,
 		Data_Entrega	DATETIME	NOT NULL,
-		PRIMARY KEY (ID_Leitor, ID_BibliotecarioRecetor, Data_Requisicao),
-		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
+		PRIMARY KEY (ID_Leitor, ID_Livro, Data_Requisicao),
+		FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro),
 )
 
 
 --Inserir_Livro (Id_Bibliotecario (FK), ISBN (PK, FK))
 CREATE TABLE Inserir_Livro (
 		ID_Bibliotecario	INT	NOT NULL,
-		ISBN		BIGINT	NOT NULL,
-		PRIMARY KEY (ISBN),
-		FOREIGN KEY (ISBN) REFERENCES Livros(ISBN),
+		ID_Livro		INT	NOT NULL,
+		PRIMARY KEY (ID_Livro),
+		FOREIGN KEY (ID_Livro) REFERENCES Livros(ID_Livro),
 )
 
 

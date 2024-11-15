@@ -1,8 +1,8 @@
-using Biblioteca_LAB.Models;
+using LibSpace.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Biblioteca_LAB.Controllers
+namespace LibSpace.Controllers
 {
     public class HomeController : Controller
     {

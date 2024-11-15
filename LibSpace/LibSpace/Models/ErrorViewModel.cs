@@ -1,4 +1,4 @@
-namespace Biblioteca_LAB.Models
+namespace LibSpace.Models
 {
     public class ErrorViewModel
     {
