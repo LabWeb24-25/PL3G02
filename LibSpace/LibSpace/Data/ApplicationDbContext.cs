@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using LibSpace.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibSpace.Data
@@ -9,5 +10,11 @@ namespace LibSpace.Data
             : base(options)
         {
         }
-    }
+
+        public DbSet<Autor> Autors { get; set; }
+		public DbSet<Biblioteca> Bibliotecas { get; set; }
+		public DbSet<Bloquear> Bloqueados { get; set; }
+
+
+	}
 }
