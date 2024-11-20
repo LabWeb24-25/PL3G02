@@ -27,5 +27,5 @@ public partial class Editora
     public string ImgEditora { get; set; } = null!;
 
     [InverseProperty("IdEditoraNavigation")]
-    public virtual ICollection<Publica> Publica { get; set; } = new List<Publica>();
+    public virtual ICollection<Publica> Publicas { get; set; } = new List<Publica>();
 }

@@ -21,8 +21,4 @@ public partial class Favorito
     [ForeignKey("IdLivro")]
     [InverseProperty("Favoritos")]
     public virtual Livro IdLivroNavigation { get; set; } = null!;
-
-    [ForeignKey("IdLeitor")]
-    [InverseProperty("Favoritos")]
-    public virtual Livro IdLeitorNavigation { get; set; } = null!;
 }

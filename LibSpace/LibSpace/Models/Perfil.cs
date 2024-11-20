@@ -45,6 +45,6 @@ public partial class Perfil
     public string Username { get; set; } = null!;
 
     [ForeignKey("EndCodPostal")]
-    [InverseProperty("Perfil")]
+    [InverseProperty("Perfils")]
     public virtual CodigoPostal EndCodPostalNavigation { get; set; } = null!;
 }

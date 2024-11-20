@@ -17,7 +17,11 @@ public partial class Escreveu
     public int IdAutor { get; set; }
 
     [ForeignKey("IdAutor")]
+<<<<<<< HEAD
     [InverseProperty("Autor")]
+=======
+    [InverseProperty("Escreveus")]
+>>>>>>> parent of 18577d2 (Up Models)
     public virtual Autor IdAutorNavigation { get; set; } = null!;
 
     [ForeignKey("IdLivro")]

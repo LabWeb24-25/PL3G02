@@ -44,5 +44,5 @@ public partial class Autor
 
     [ForeignKey("IdLingua")]
     [InverseProperty("Autors")]
-    public virtual Pais IdLinguaNavigation { get; set; } = null!;
+    public virtual Pai IdLinguaNavigation { get; set; } = null!;
 }

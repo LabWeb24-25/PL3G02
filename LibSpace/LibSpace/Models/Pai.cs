@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibSpace.Models;
 
-public partial class Pais
+public partial class Pai
 {
     [Key]
     [Column("ID_Pais")]

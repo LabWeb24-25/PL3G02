@@ -19,8 +19,4 @@ public partial class InserirLivro
     [ForeignKey("IdLivro")]
     [InverseProperty("InserirLivro")]
     public virtual Livro IdLivroNavigation { get; set; } = null!;
-
-    [ForeignKey("ID_Bibliotecario")]
-    [InverseProperty("InserirLivro")]
-    public virtual Livro ID_BibliotecarioNavigation { get; set; } = null!;
 }
