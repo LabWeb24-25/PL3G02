@@ -39,6 +39,9 @@ public partial class Livro
     [Column(TypeName = "text")]
     public string Sinopse { get; set; } = null!;
 
+    [Column("Clicks")]
+    public int Clicks { get; set; }
+
     [InverseProperty("IdLivroNavigation")]
     public virtual Escreveu? Escreveu { get; set; }
 
@@ -52,7 +55,7 @@ public partial class Livro
     public virtual Publica? Publica { get; set; }
 
     [InverseProperty("IdLivroNavigation")]
-    public virtual ICollection<Requisitum> Requisita { get; set; } = new List<Requisitum>();
+    public virtual ICollection<Requisita> Requisita { get; set; } = new List<Requisita>();
 
     [ForeignKey("IdLivro")]
     [InverseProperty("IdLivros")]
