@@ -17,10 +17,10 @@ public partial class Escreveu
     public int IdAutor { get; set; }
 
     [ForeignKey("IdAutor")]
-    [InverseProperty("Escreveu")]
+    [InverseProperty("Autor")]
     public virtual Autor IdAutorNavigation { get; set; } = null!;
 
     [ForeignKey("IdLivro")]
-    [InverseProperty("Escreveu")]
+    [InverseProperty("Livro")]
     public virtual Livro IdLivroNavigation { get; set; } = null!;
 }
