@@ -8,7 +8,7 @@ namespace LibSpace.Models;
 
 [PrimaryKey("IdLivro", "IdLeitor")]
 [Table("Favorito")]
-public partial class Favorito
+public class Favorito
 {
     [Key]
     [Column("ID_Livro")]

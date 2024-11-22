@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LibSpace.Models;
 
 [Table("Bloquear")]
-public partial class Bloquear
+public class Bloquear
 {
     [Column("ID_Admin")]
     public int IdAdmin { get; set; }

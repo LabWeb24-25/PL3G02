@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LibSpace.Models;
 
 [Table("Inserir_Livro")]
-public partial class InserirLivro
+public class InserirLivro
 {
     [Column("ID_Bibliotecario")]
     public int IdBibliotecario { get; set; }

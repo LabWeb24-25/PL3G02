@@ -14,6 +14,7 @@ namespace LibSpace.Data
         public DbSet<Autor> Autors { get; set; }
 		public DbSet<Biblioteca> Bibliotecas { get; set; }
 		public DbSet<Bloquear> Bloqueados { get; set; }
+        public DbSet<LibSpace.Models.Livro> Livro { get; set; } = default!;
 
 
 	}

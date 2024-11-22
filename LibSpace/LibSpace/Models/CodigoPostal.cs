@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LibSpace.Models;
 
 [Table("CodigoPostal")]
-public partial class CodigoPostal
+public class CodigoPostal
 {
     [Key]
     [Column("End_CodPostal")]

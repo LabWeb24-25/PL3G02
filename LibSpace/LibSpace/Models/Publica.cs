@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LibSpace.Models;
 
 [Table("Publica")]
-public partial class Publica
+public class Publica
 {
     [Key]
     [Column("ID_Livro")]

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LibSpace.Models;
 
 [PrimaryKey("IdLeitor", "IdLivro", "DataRequisicao")]
-public partial class Requisita
+public class Requisita
 {
     [Key]
     [Column("ID_Leitor")]
