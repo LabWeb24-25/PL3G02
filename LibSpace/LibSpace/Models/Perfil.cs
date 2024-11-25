@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("Perfil")]
-public class Perfil
+public partial class Perfil
 {
     [Key]
     [Column("ID_perfil")]

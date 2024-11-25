@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("Biblioteca")]
-public class Biblioteca
+public partial class Biblioteca
 {
     [Key]
     [Column("Id_Biblioteca")]

@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [PrimaryKey("IdLivro", "IdLeitor")]
 [Table("Favorito")]
-public class Favorito
+public partial class Favorito
 {
     [Key]
     [Column("ID_Livro")]

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("Bloquear")]
-public class Bloquear
+public partial class Bloquear
 {
     [Column("ID_Admin")]
     public int IdAdmin { get; set; }

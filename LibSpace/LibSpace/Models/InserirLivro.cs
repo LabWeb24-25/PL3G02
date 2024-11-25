@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("Inserir_Livro")]
-public class InserirLivro
+public partial class InserirLivro
 {
     [Column("ID_Bibliotecario")]
     public int IdBibliotecario { get; set; }

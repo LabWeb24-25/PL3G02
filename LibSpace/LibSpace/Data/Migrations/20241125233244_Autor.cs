@@ -5,7 +5,7 @@
 namespace LibSpace.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Publica : Migration
+    public partial class Autor : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

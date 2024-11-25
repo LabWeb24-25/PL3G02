@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
-public class Pais
+public partial class Pais
 {
     [Key]
     [Column("ID_Pais")]
@@ -19,4 +19,7 @@ public class Pais
 
     [InverseProperty("IdLinguaNavigation")]
     public virtual ICollection<Autor> Autors { get; set; } = new List<Autor>();
+
+    [InverseProperty("IdLinguaNavigation")]
+    public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();
 }

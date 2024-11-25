@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("Editora")]
-public class Editora
+public partial class Editora
 {
     [Key]
     [Column("ID_Editora")]
@@ -27,5 +27,5 @@ public class Editora
     public string ImgEditora { get; set; } = null!;
 
     [InverseProperty("IdEditoraNavigation")]
-    public virtual ICollection<Publica> Publicas { get; set; } = new List<Publica>();
+    public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();
 }

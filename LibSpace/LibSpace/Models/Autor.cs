@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("Autor")]
-public class Autor
+public partial class Autor
 {
     [Key]
     [Column("ID_Autor")]
@@ -39,10 +39,10 @@ public class Autor
     [Column("Id_Lingua")]
     public int IdLingua { get; set; }
 
-    [InverseProperty("IdAutorNavigation")]
-    public virtual ICollection<Escreveu> Escreveus { get; set; } = new List<Escreveu>();
-
     [ForeignKey("IdLingua")]
     [InverseProperty("Autors")]
     public virtual Pais IdLinguaNavigation { get; set; } = null!;
+
+    [InverseProperty("IdAutorNavigation")]
+    public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();
 }

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [Table("CodigoPostal")]
-public class CodigoPostal
+public partial class CodigoPostal
 {
     [Key]
     [Column("End_CodPostal")]

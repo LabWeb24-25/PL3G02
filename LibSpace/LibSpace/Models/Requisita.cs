@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
 [PrimaryKey("IdLeitor", "IdLivro", "DataRequisicao")]
-public class Requisita
+public partial class Requisita
 {
     [Key]
     [Column("ID_Leitor")]
@@ -36,5 +36,4 @@ public class Requisita
     [ForeignKey("IdLivro")]
     [InverseProperty("Requisita")]
     public virtual Livro IdLivroNavigation { get; set; } = null!;
-
 }

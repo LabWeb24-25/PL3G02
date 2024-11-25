@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibSpace.Models;
+namespace DBCreate.Models;
 
-public class Genero
+public partial class Genero
 {
     [Key]
     [Column("ID_Generos")]
@@ -17,7 +17,6 @@ public class Genero
     [Unicode(false)]
     public string NomeGeneros { get; set; } = null!;
 
-    [ForeignKey("IdGeneros")]
-    [InverseProperty("IdGeneros")]
-    public virtual ICollection<Livro> IdLivros { get; set; } = new List<Livro>();
+    [InverseProperty("IdGenerosNavigation")]
+    public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();
 }
