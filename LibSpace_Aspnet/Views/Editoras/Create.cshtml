@@ -4,39 +4,34 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Editora</h4>
-<hr />
-<div class="row">
+<div class="forms_design">
+    <h4 class="textform_color">Adicionar Editora</h4>
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" class="forms_center">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+          @*   <div class="form-group">
+                <label asp-for="ImgEditora" class="control-label"></label>
+                <input asp-for="ImgEditora" class="form-control" />
+                <span asp-validation-for="ImgEditora" class="text-danger"></span>
+            </div> *@
             <div class="form-group">
-                <label asp-for="NomeEditora" class="control-label"></label>
+                <label asp-for="NomeEditora" class="control-label">Nome</label>
                 <input asp-for="NomeEditora" class="form-control" />
                 <span asp-validation-for="NomeEditora" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="InfoEditora" class="control-label"></label>
-                <input asp-for="InfoEditora" class="form-control" />
+                <label asp-for="InfoEditora" class="control-label">Sobre a Editora</label>
+                <textarea asp-for="InfoEditora" class="textbox"></textarea>
                 <span asp-validation-for="InfoEditora" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImgEditora" class="control-label"></label>
-                <input asp-for="ImgEditora" class="form-control" />
-                <span asp-validation-for="ImgEditora" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn_submit">Cancelar</a>
+                <input type="submit" value="Criar Editora" class="btn_submit" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

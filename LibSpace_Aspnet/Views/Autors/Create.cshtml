@@ -4,58 +4,54 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Autor</h4>
-<hr />
-<div class="row">
+<div class="forms_design">
+    <h4 class="textform_color">Adicionar Autor</h4>
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" class="forms_center">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <hr />
             <div class="form-group">
-                <label asp-for="NomeAutor" class="control-label"></label>
+                <label asp-for="NomeAutor" class="control-label textform_color">Nome</label>
                 <input asp-for="NomeAutor" class="form-control" />
                 <span asp-validation-for="NomeAutor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataNascimento" class="control-label"></label>
-                <input asp-for="DataNascimento" class="form-control" />
-                <span asp-validation-for="DataNascimento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Pseudonimo" class="control-label"></label>
+                <label asp-for="Pseudonimo" class="control-label textform_color">Pseudonimo (Opcional)</label>
                 <input asp-for="Pseudonimo" class="form-control" />
                 <span asp-validation-for="Pseudonimo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataFalecimento" class="control-label"></label>
-                <input asp-for="DataFalecimento" class="form-control" />
+                <label asp-for="DataNascimento" class="control-label textform_color">Data de Nascimento</label>
+                <input asp-for="DataNascimento" type="date" class="form-control" />
+                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DataFalecimento" class="control-label textform_color">Data de Falecimento (Opcional)</label>
+                <input asp-for="DataFalecimento" type="date" class="form-control" />
                 <span asp-validation-for="DataFalecimento" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="FotoAutor" class="control-label"></label>
-                <input asp-for="FotoAutor" class="form-control" />
-                <span asp-validation-for="FotoAutor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Bibliografia" class="control-label"></label>
-                <input asp-for="Bibliografia" class="form-control" />
+                <label asp-for="Bibliografia" class="control-label textform_color">Bibliografia</label>
+                <textarea asp-for="Bibliografia" class="textbox"></textarea>
                 <span asp-validation-for="Bibliografia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdLingua" class="control-label"></label>
-                <select asp-for="IdLingua" class ="form-control" asp-items="ViewBag.IdLingua"></select>
+                <label asp-for="IdLingua" class="control-label textform_color">País de Nascimento</label>
+                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
             </div>
+            <br />
+            <hr />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn_submit">Cancelar</a>
+                <input type="submit" value="Criar Autor" class="btn_submit" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
