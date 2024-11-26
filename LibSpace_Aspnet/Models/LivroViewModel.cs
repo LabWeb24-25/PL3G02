@@ -14,22 +14,30 @@ namespace LibSpace.Models
         [StringLength(100, ErrorMessage = "O Título não pode exceder {1} caracteres.")]
         public string TituloLivros { get; set; } = string.Empty;
 
+        // Substituir a propriedade string Autor por IdAutor para refletir o dropdown
         [Required(ErrorMessage = "O campo Autor é obrigatório.")]
-        [StringLength(100, ErrorMessage = "O Autor não pode exceder {1} caracteres.")]
-        public string Autor { get; set; } = string.Empty;
+        [Display(Name = "Autor")]
+        public int IdAutor { get; set; }
 
+        // Substituir a propriedade string Editora por IdEditora para refletir o dropdown
         [Required(ErrorMessage = "O campo Editora é obrigatório.")]
-        [StringLength(100, ErrorMessage = "A Editora não pode exceder {1} caracteres.")]
-        public string Editora { get; set; } = string.Empty;
+        [Display(Name = "Editora")]
+        public int IdEditora { get; set; }
+
+        // Substituir a propriedade string Idioma por IdLingua para refletir o dropdown
+        [Required(ErrorMessage = "O campo Idioma é obrigatório.")]
+        [Display(Name = "País de Origem")]
+        public int IdLingua { get; set; }
+
+        // Adicionar a propriedade IdGeneros para refletir o dropdown de Gêneros
+        [Required(ErrorMessage = "O campo Gênero é obrigatório.")]
+        [Display(Name = "Gênero")]
+        public int IdGeneros { get; set; }
 
         [Required(ErrorMessage = "O campo Data de Edição é obrigatório.")]
         [DataType(DataType.Date)]
-        [Display(Name = "Data de Edição")]
+        [Display(Name = "Data de Publicação")]
         public DateTime DataEdicao { get; set; }
-
-        [Required(ErrorMessage = "O campo Idioma é obrigatório.")]
-        [StringLength(50, ErrorMessage = "O Idioma não pode exceder {1} caracteres.")]
-        public string Idioma { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O campo Número de Exemplares é obrigatório.")]
         [Range(0, int.MaxValue, ErrorMessage = "O Número de Exemplares deve ser um valor não negativo.")]

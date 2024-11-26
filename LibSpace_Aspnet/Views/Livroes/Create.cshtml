@@ -1,12 +1,15 @@
 ﻿@model LibSpace.Models.LivroViewModel
+
 @{
     ViewData["Title"] = "Create";
 }
+
 <div class="container form-container">
     <h4 class="form-title">Adicionar Livro</h4>
     <form asp-action="Create" class="form-content" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+        <!-- Campo para adicionar a capa do livro -->
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="CapaImg" class="form-label">Adicionar Capa</label>
@@ -15,6 +18,7 @@
             </div>
         </div>
 
+        <!-- Campos ISBN e Título -->
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="Isbn" class="form-label">ISBN</label>
@@ -28,24 +32,32 @@
             </div>
         </div>
 
+        <!-- Campos Autor com dropdown e link para criar novo autor -->
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="Autor" class="form-label">Autor</label>
-                <input asp-for="Autor" class="form-control" />
-                <span asp-validation-for="Autor" class="text-danger"></span>
+                <label asp-for="IdAutor" class="form-label textform_color">Autor</label>
+                <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
+                <span asp-validation-for="IdAutor" class="text-danger"></span>
+                <label class="control-label textform_color">Caso não exista:</label>
+                <a asp-action="Create" asp-controller="Autors" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Autor</a>
             </div>
+
+            <!-- Campo Editora com dropdown e link para criar nova editora -->
             <div class="form-group col-md-6">
-                <label asp-for="Editora" class="form-label">Editora</label>
-                <input asp-for="Editora" class="form-control" />
-                <span asp-validation-for="Editora" class="text-danger"></span>
+                <label asp-for="IdEditora" class="form-label textform_color">Editora</label>
+                <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
+                <span asp-validation-for="IdEditora" class="text-danger"></span>
+                <label class="control-label textform_color">Caso não exista:</label>
+                <a asp-action="Create" asp-controller="Editoras" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Editora</a>
             </div>
         </div>
 
+        <!-- Campos Idioma e Número de Exemplares -->
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="Idioma" class="form-label">Idioma</label>
-                <input asp-for="Idioma" class="form-control" />
-                <span asp-validation-for="Idioma" class="text-danger"></span>
+                <label asp-for="IdLingua" class="form-label textform_color">País de Origem</label>
+                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
+                <span asp-validation-for="IdLingua" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
                 <label asp-for="NumExemplares" class="form-label">Número de Exemplares</label>
@@ -54,6 +66,7 @@
             </div>
         </div>
 
+        <!-- Campo Data de Edição -->
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="DataEdicao" class="form-label">Data de Publicação</label>
@@ -62,11 +75,21 @@
             </div>
         </div>
 
+        <!-- Campo Sinopse -->
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="Sinopse" class="form-label">Sinopse</label>
                 <textarea asp-for="Sinopse" class="form-control textarea"></textarea>
                 <span asp-validation-for="Sinopse" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Campo Gênero -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="IdGeneros" class="form-label textform_color">Gênero</label>
+                <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
+                <span asp-validation-for="IdGeneros" class="text-danger"></span>
             </div>
         </div>
 
@@ -76,6 +99,7 @@
         </div>
     </form>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
