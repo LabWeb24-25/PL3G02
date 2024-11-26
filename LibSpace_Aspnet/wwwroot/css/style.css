@@ -1,0 +1,92 @@
+﻿/* General form container styling */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form title */
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form content */
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Form row */
+.form-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Form group */
+.form-group {
+    flex: 1;
+}
+
+/* Labels */
+.form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input fields */
+.form-control {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Textarea */
+.textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* File input */
+.form-control-file {
+    display: inline-block;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #006400;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #000;
+}

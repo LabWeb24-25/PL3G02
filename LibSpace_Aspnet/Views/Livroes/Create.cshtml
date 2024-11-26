@@ -1,74 +1,83 @@
-﻿@model LibSpace_Aspnet.Models.Livro
-
+﻿@model LibSpace.Models.LivroViewModel
 @{
     ViewData["Title"] = "Create";
 }
+<div class="container form-container">
+    <h4 class="form-title">Adicionar Livro</h4>
+    <form asp-action="Create" class="form-content" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h1>Create</h1>
-
-<h4>Livro</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="Isbn" class="control-label"></label>
+                <label asp-for="CapaImg" class="form-label">Adicionar Capa</label>
+                <input type="file" asp-for="CapaImg" class="form-control-file" />
+                <span asp-validation-for="CapaImg" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Isbn" class="form-label">ISBN</label>
                 <input asp-for="Isbn" class="form-control" />
                 <span asp-validation-for="Isbn" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataEdicao" class="control-label"></label>
-                <input asp-for="DataEdicao" class="form-control" />
-                <span asp-validation-for="DataEdicao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TituloLivros" class="control-label"></label>
+            <div class="form-group col-md-6">
+                <label asp-for="TituloLivros" class="form-label">Título</label>
                 <input asp-for="TituloLivros" class="form-control" />
                 <span asp-validation-for="TituloLivros" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="NumExemplares" class="control-label"></label>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Autor" class="form-label">Autor</label>
+                <input asp-for="Autor" class="form-control" />
+                <span asp-validation-for="Autor" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Editora" class="form-label">Editora</label>
+                <input asp-for="Editora" class="form-control" />
+                <span asp-validation-for="Editora" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Idioma" class="form-label">Idioma</label>
+                <input asp-for="Idioma" class="form-control" />
+                <span asp-validation-for="Idioma" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="NumExemplares" class="form-label">Número de Exemplares</label>
                 <input asp-for="NumExemplares" class="form-control" />
                 <span asp-validation-for="NumExemplares" class="text-danger"></span>
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="CapaImg" class="control-label"></label>
-                <input asp-for="CapaImg" class="form-control" />
-                <span asp-validation-for="CapaImg" class="text-danger"></span>
+                <label asp-for="DataEdicao" class="form-label">Data de Publicação</label>
+                <input asp-for="DataEdicao" type="date" class="form-control" />
+                <span asp-validation-for="DataEdicao" class="text-danger"></span>
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdEditora" class="control-label"></label>
-                <select asp-for="IdEditora" class ="form-control" asp-items="ViewBag.IdEditora"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdLingua" class="control-label"></label>
-                <select asp-for="IdLingua" class ="form-control" asp-items="ViewBag.IdLingua"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Sinopse" class="control-label"></label>
-                <input asp-for="Sinopse" class="form-control" />
+                <label asp-for="Sinopse" class="form-label">Sinopse</label>
+                <textarea asp-for="Sinopse" class="form-control textarea"></textarea>
                 <span asp-validation-for="Sinopse" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IdAutor" class="control-label"></label>
-                <select asp-for="IdAutor" class ="form-control" asp-items="ViewBag.IdAutor"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdGeneros" class="control-label"></label>
-                <select asp-for="IdGeneros" class ="form-control" asp-items="ViewBag.IdGeneros"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            <input type="submit" value="Adicionar Livro" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
