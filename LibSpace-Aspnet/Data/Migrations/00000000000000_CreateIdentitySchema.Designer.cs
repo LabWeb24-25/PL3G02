@@ -9,7 +9,7 @@ using System;
 
 namespace LibSpace_Aspnet.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(DefaultConnection))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
