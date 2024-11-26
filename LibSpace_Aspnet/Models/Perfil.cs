@@ -43,10 +43,6 @@ public partial class Perfil
     [StringLength(450)]
     public string AspNetUserId { get; set; } = null!;
 
-    [ForeignKey("AspNetUserId")]
-    [InverseProperty("Perfils")]
-    public virtual AspNetUser AspNetUser { get; set; } = null!;
-
     [ForeignKey("EndCodPostal")]
     [InverseProperty("Perfils")]
     public virtual CodigoPostal EndCodPostalNavigation { get; set; } = null!;

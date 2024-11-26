@@ -4,8 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-LibSpace_Aspnet-e926134a-0047-404f-8c49-a969be8b4fe2</UserSecretsId>
-    <RootNamespace>LibSpace_Aspnet</RootNamespace>
+    <UserSecretsId>aspnet-LibSpace_Aspnet-9e0f81f8-95ec-40de-bbdf-f61fec4989cf</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +13,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
 </Project>
