@@ -32,7 +32,8 @@ CREATE TABLE Perfil(
 		PRIMARY KEY (ID_perfil),
 		CHECK (End_CodPostal LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]'),
 		CHECK (DATEDIFF(YEAR, DataNascimento_Perfil, GETDATE()) >= 16),
-		FOREIGN KEY (End_CodPostal) References CodigoPostal(End_CodPostal)
+		FOREIGN KEY (End_CodPostal) References CodigoPostal(End_CodPostal),
+		FOREIGN KEY (AspNetUserId) REFERENCES AspNetUsers(Id) -- Chave estrangeira para AspNetUsers
 )
 
 --Editora (ID_Editora (PK), Nome_Editora, Info_Editora, Img_Editora)

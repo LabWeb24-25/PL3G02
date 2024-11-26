@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSpace-Aspnet", "LibSpace-Aspnet.csproj", "{33C83584-0328-4537-8841-93D4D1AC0F2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSpace-Aspnet", "LibSpace-Aspnet.csproj", "{83072171-3D55-47CE-9473-1D7DEE386FDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{33C83584-0328-4537-8841-93D4D1AC0F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33C83584-0328-4537-8841-93D4D1AC0F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33C83584-0328-4537-8841-93D4D1AC0F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33C83584-0328-4537-8841-93D4D1AC0F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83072171-3D55-47CE-9473-1D7DEE386FDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83072171-3D55-47CE-9473-1D7DEE386FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83072171-3D55-47CE-9473-1D7DEE386FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83072171-3D55-47CE-9473-1D7DEE386FDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F8BEB7E2-018A-46B8-9B93-7EEC2578C928}
+		SolutionGuid = {E8F275E4-23E8-4333-A744-A9E99CA40ED9}
 	EndGlobalSection
 EndGlobal

@@ -2,7 +2,7 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:LibSpace_AspnetContext"
+      "connectionId": "ConnectionStrings:DefaultConnection"
     }
   }
 }
