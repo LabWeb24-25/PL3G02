@@ -1,0 +1,126 @@
+﻿/* Estilo geral do formulário */
+.form-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Título do formulário */
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #006400;
+}
+
+/* Conteúdo do formulário */
+.form-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, auto);
+    grid-gap: 20px;
+}
+
+/* Campos de entrada */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #006400;
+}
+
+.form-control {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-control-file {
+    font-size: 16px;
+}
+
+/* Organização dos campos */
+.nome-pseudonimo {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+}
+
+.data-nascimento-falecimento {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+}
+
+.bibliografia {
+    grid-column: 1 / -1;
+}
+
+.idioma {
+    grid-column: 1 / -1;
+}
+
+/* Círculo com fotografia */
+.adicionar-foto {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.adicionar-foto-circle {
+    width: 80px;
+    height: 80px;
+    background-color: #f1f1f1;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .adicionar-foto-circle i {
+        color: #006400;
+        font-size: 24px;
+    }
+
+/* Ações do formulário */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #006400;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #000;
+}
+
+/* Mensagens de erro de validação */
+.text-danger {
+    color: #ff0000;
+}

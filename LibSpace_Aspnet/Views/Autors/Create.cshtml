@@ -1,58 +1,82 @@
-﻿@model LibSpace_Aspnet.Models.Autor
+﻿@model LibSpace_Aspnet.Models.AutorViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<div class="forms_design">
-    <h4 class="textform_color">Adicionar Autor</h4>
-    <div class="col-md-4">
-        <form asp-action="Create" class="forms_center">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <hr />
+<div class="container form-container">
+    <h4 class="form-title">Adicionar Autor</h4>
+    <form asp-action="Create" enctype="multipart/form-data" class="form-content">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- Seção Nome e Pseudônimo -->
+        <div class="nome-pseudonimo">
             <div class="form-group">
-                <label asp-for="NomeAutor" class="control-label textform_color">Nome</label>
+                <label asp-for="NomeAutor" class="form-label">Nome do Autor</label>
                 <input asp-for="NomeAutor" class="form-control" />
                 <span asp-validation-for="NomeAutor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Pseudonimo" class="control-label textform_color">Pseudonimo (Opcional)</label>
+                <label asp-for="Pseudonimo" class="form-label">Pseudônimo</label>
                 <input asp-for="Pseudonimo" class="form-control" />
                 <span asp-validation-for="Pseudonimo" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Seção Data de Nascimento e Falecimento -->
+        <div class="data-nascimento-falecimento">
             <div class="form-group">
-                <label asp-for="DataNascimento" class="control-label textform_color">Data de Nascimento</label>
+                <label asp-for="DataNascimento" class="form-label">Data de Nascimento</label>
                 <input asp-for="DataNascimento" type="date" class="form-control" />
                 <span asp-validation-for="DataNascimento" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="DataFalecimento" class="control-label textform_color">Data de Falecimento (Opcional)</label>
+                <label asp-for="DataFalecimento" class="form-label">Data de Falecimento</label>
                 <input asp-for="DataFalecimento" type="date" class="form-control" />
                 <span asp-validation-for="DataFalecimento" class="text-danger"></span>
             </div>
+        </div>
 
+        <!-- Seção Bibliografia -->
+        <div class="form-group bibliografia">
+            <label asp-for="Bibliografia" class="form-label">Bibliografia</label>
+            <textarea asp-for="Bibliografia" class="form-control textarea"></textarea>
+            <span asp-validation-for="Bibliografia" class="text-danger"></span>
+        </div>
+
+        <!-- Seção Idioma -->
+        <div class="form-group idioma">
+            <label asp-for="IdLingua" class="form-label">País de Origem</label>
+            <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
+            <span asp-validation-for="IdLingua" class="text-danger"></span>
+        </div>
+
+        <!-- Seção Upload de Foto do Autor com Pré-visualização -->
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="Bibliografia" class="control-label textform_color">Bibliografia</label>
-                <textarea asp-for="Bibliografia" class="textbox"></textarea>
-                <span asp-validation-for="Bibliografia" class="text-danger"></span>
+                <label asp-for="FotoAutor" class="form-label">Adicionar Foto do Autor</label>
+                <input type="file" asp-for="FotoAutor" class="form-control-file" id="fotoAutorInput" onchange="previewImage(event, 'fotoImagePreview')" />
+                <span asp-validation-for="FotoAutor" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IdLingua" class="control-label textform_color">País de Nascimento</label>
-                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
+            <div class="form-group position-relative">
+                <img id="fotoImagePreview" src="#" alt="Pré-visualização da Imagem" style="display:none; max-width: 200px; max-height: 200px; margin-top: 10px;" />
+                <!-- Botão de Remoção da Imagem -->
+                <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px; display: none;" id="removeImageButton" onclick="removeImage('fotoAutorInput', 'fotoImagePreview', 'removeImageButton')">
+                    X
+                </button>
             </div>
-            <br />
-            <hr />
-            <div class="form-group">
-                <a asp-action="Index" class="btn_submit">Cancelar</a>
-                <input type="submit" value="Criar Autor" class="btn_submit" />
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" value="Adicionar Autor" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
 </div>
 
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/create_design_autor.css" />
 }

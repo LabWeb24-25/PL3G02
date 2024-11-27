@@ -17,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Autor_IMG\" />
-    <Folder Include="wwwroot\Editora_IMG\" />
+    <Folder Include="wwwroot\Cover\" />
+    <Folder Include="wwwroot\Foto_Autor\" />
+	<Folder Include="wwwroot\Editora_IMG\" />
   </ItemGroup>
 
 </Project>
