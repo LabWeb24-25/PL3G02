@@ -53,7 +53,7 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Autors/Create
         public IActionResult Create()
         {
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais");
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
         }
 

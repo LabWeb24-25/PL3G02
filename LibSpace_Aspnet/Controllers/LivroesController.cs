@@ -54,10 +54,10 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Livroes/Create
         public IActionResult Create()
         {
-            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "IdAutor");
-            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "IdEditora");
-            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "IdGeneros");
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais");
+            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor");
+            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora");
+            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros");
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
         }
 

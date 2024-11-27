@@ -9,16 +9,22 @@
     background-color: #fff; /* Cor de fundo para contraste */
 }
 
-
 .DivIMG {
-    max-width: 100%; /* Garante que a imagem não ultrapasse o tamanho da div */
+    width: 200px; /* Define uma largura fixa para a div da imagem */
     height: auto;
-    max-height: 300px; /* Ajuste a altura máxima conforme necessário */
-    object-fit: cover; /* Mantém o aspecto da imagem */
+    max-height: 200px; /* Ajuste a altura máxima da imagem */
+    overflow: hidden; /* Garante que o conteúdo não ultrapasse os limites da div */
+}
+    
+.DivIMG .imgdetails {
+        width: 100%; /* Faz a imagem preencher toda a largura da div */
+        height: auto; /* Mantém a proporção */
+        object-fit: cover; /* Mantém o aspecto da imagem dentro dos limites */
 }
 
 .DivInformation {
     flex: 1; /* Faz a caixa de informações ocupar o espaço restante */
+    padding-left: 20px; /* Adiciona espaço entre a imagem e o texto */
 }
 
 .btn_red {
