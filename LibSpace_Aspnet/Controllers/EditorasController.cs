@@ -13,10 +13,12 @@ namespace LibSpace_Aspnet.Controllers
     public class EditorasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EditorasController(ApplicationDbContext context)
+        public EditorasController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Editoras
@@ -54,11 +56,31 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEditora,NomeEditora,InfoEditora,ImgEditora")] Editora editora)
+        public async Task<IActionResult> Create([Bind("NomeEditora,InfoEditora,ImgEditora")] EditoraViewModel editora)
         {
+            var Extensoes = new[] { ".jpg", ".jpeg", ".png" };
+
+            var extension = Path.GetExtension(editora.ImgEditora.FileName).ToLower();
+
+            if (!Extensoes.Contains(extension))
+            {
+                ModelState.AddModelError("ImgEditora", "Introduza uma imagem válida");
+            }
             if (ModelState.IsValid)
             {
-                _context.Add(editora);
+                var _Editora = new Editora();
+                _Editora.NomeEditora= editora.NomeEditora;
+                _Editora.InfoEditora= editora.InfoEditora;
+                _Editora.ImgEditora = Path.GetFileName(editora.ImgEditora.FileName);
+
+
+                string coverFileName=Path.GetFileName(editora.ImgEditora.FileName);
+                string coverFullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", coverFileName);
+                using (var stream = new FileStream(coverFullPath, FileMode.Create))
+                {
+                    await editora.ImgEditora.CopyToAsync(stream);
+                }
+                _context.Add(_Editora);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

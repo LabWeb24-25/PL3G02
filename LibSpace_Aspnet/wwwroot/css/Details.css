@@ -1,0 +1,43 @@
+﻿.DivGeneralDetails {
+    display: flex;
+    align-items: center; /* Alinha as divs verticalmente ao centro */
+    gap: 20px; /* Espaço entre a imagem e o texto */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    background-color: #fff; /* Cor de fundo para contraste */
+}
+
+
+.DivIMG {
+    max-width: 100%; /* Garante que a imagem não ultrapasse o tamanho da div */
+    height: auto;
+    max-height: 300px; /* Ajuste a altura máxima conforme necessário */
+    object-fit: cover; /* Mantém o aspecto da imagem */
+}
+
+.DivInformation {
+    flex: 1; /* Faz a caixa de informações ocupar o espaço restante */
+}
+
+.btn_red {
+    flex-grow: 1; /* Faz com que os botões se expandam igualmente */
+    background-color: #d32f2f; /* Cor de fundo vermelha */
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    padding: 15px 20px; /* Botões maiores */
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+    .btn_red:hover {
+        background-color: #c62828; /* Cor mais escura no hover */
+        color: #ffffff;
+    }
