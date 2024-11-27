@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
+using Microsoft.AspNetCore.Hosting;
 
 namespace LibSpace_Aspnet.Controllers
 {
     public class AutorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AutorsController(ApplicationDbContext context)
+
+        public AutorsController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _webHostEnvironment = environment;
+
         }
 
         // GET: Autors
@@ -57,17 +62,59 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAutor,NomeAutor,DataNascimento,Pseudonimo,DataFalecimento,FotoAutor,Bibliografia,IdLingua")] Autor autor)
+        public async Task<IActionResult> Create(AutorViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                string? uniqueFileName = null;
+
+
+                // Validate the image format
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+
+                    return View(viewModel);
+                }
+
+                // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
+                uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
+                var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                {
+                    await viewModel.FotoAutor.CopyToAsync(fileStream);
+                }
+                
+
+                // Create Autor object and populate fields
+                var autor = new Autor
+                {
+                    NomeAutor = viewModel.NomeAutor,
+                    DataNascimento = DateOnly.FromDateTime(viewModel.DataNascimento),
+                    Pseudonimo = viewModel.Pseudonimo,
+                    // Handle nullable DateTime for DataFalecimento
+                    DataFalecimento = viewModel.DataFalecimento.HasValue
+                    ? DateOnly.FromDateTime(viewModel.DataFalecimento.Value)
+                    : null,
+                    Bibliografia = viewModel.Bibliografia,
+                    IdLingua = viewModel.IdLingua,
+                    FotoAutor = uniqueFileName // Save the file name in the database
+                };
+
                 _context.Add(autor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais", autor.IdLingua);
-            return View(autor);
+
+
+            return View(viewModel);
         }
+
+
 
         // GET: Autors/Edit/5
         public async Task<IActionResult> Edit(int? id)
