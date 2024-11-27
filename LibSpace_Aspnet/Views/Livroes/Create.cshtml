@@ -13,8 +13,15 @@
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="CapaImg" class="form-label">Adicionar Capa</label>
-                <input type="file" asp-for="CapaImg" class="form-control-file" />
+                <input type="file" asp-for="CapaImg" class="form-control-file" id="capaImgInput" onchange="previewImage(event, 'imagePreview')" />
                 <span asp-validation-for="CapaImg" class="text-danger"></span>
+            </div>
+            <div class="form-group position-relative">
+                <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 200px; max-height: 200px; margin-top: 10px;" />
+                <!-- Add the remove button -->
+                <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px; display: none;" id="removeImageButton" onclick="removeImage('capaImgInput', 'imagePreview', 'removeImageButton')">
+                    X
+                </button>
             </div>
         </div>
 
@@ -101,7 +108,7 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/create_design.css" />
 }
