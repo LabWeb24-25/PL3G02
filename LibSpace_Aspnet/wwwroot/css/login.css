@@ -1,0 +1,159 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    background: #4a5568;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-image: url('/images/background.png');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+}
+
+.login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 150px;
+    height: auto;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+    .form-control:focus {
+        border-color: #4fd1c5;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+    }
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.remember-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+}
+
+.forgot-link {
+    color: #4fd1c5;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4fd1c5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .login-button:hover {
+        background-color: #3db1a7;
+    }
+
+.register-prompt {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.register-link {
+    color: #4fd1c5;
+    text-decoration: none;
+}
+
+    .register-link:hover {
+        text-decoration: underline;
+    }
+
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .login-container::before,
+    .login-container::after {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-card {
+        padding: 20px;
+    }
+
+    .form-control {
+        padding: 10px 35px;
+        font-size: 14px;
+    }
+}

@@ -6,7 +6,10 @@
     <title>@ViewData["Title"] - LibSpace_Aspnet</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
     <link rel="stylesheet" href="~/LibSpace_Aspnet.styles.css" asp-append-version="true" />
+    <!-- Adicione a seção de estilos aqui -->
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
