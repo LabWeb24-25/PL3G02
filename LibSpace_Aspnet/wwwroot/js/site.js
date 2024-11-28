@@ -5,7 +5,7 @@
 function previewImage(event, previewId) {
     const file = event.target.files[0];
     const preview = document.getElementById(previewId);
-    const removeButton = document.getElementById('removeImageButton'); // Retrieve the remove button
+    const removeButton = document.getElementById('removeImageButton'); // Corrected ID
 
     if (file) {
         const reader = new FileReader();
