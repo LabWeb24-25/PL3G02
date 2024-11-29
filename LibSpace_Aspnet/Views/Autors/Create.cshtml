@@ -12,7 +12,7 @@
         <!-- Seção Nome e Pseudônimo -->
         <div class="nome-pseudonimo">
             <div class="form-group">
-                <label asp-for="NomeAutor" class="form-label">Nome do Autor</label>
+                <label asp-for="NomeAutor" class="form-label">Nome do Autor <span class="text-danger">*</span></label>
                 <input asp-for="NomeAutor" class="form-control" />
                 <span asp-validation-for="NomeAutor" class="text-danger"></span>
             </div>
@@ -26,7 +26,7 @@
         <!-- Seção Data de Nascimento e Falecimento -->
         <div class="data-nascimento-falecimento">
             <div class="form-group">
-                <label asp-for="DataNascimento" class="form-label">Data de Nascimento</label>
+                <label asp-for="DataNascimento" class="form-label">Data de Nascimento <span class="text-danger">*</span></label>
                 <input asp-for="DataNascimento" type="date" class="form-control" />
                 <span asp-validation-for="DataNascimento" class="text-danger"></span>
             </div>
@@ -40,14 +40,14 @@
 
         <!-- Seção Bibliografia -->
         <div class="form-group bibliografia">
-            <label asp-for="Bibliografia" class="form-label">Bibliografia</label>
+            <label asp-for="Bibliografia" class="form-label">Bibliografia <span class="text-danger">*</span></label>
             <textarea asp-for="Bibliografia" class="form-control textarea"></textarea>
             <span asp-validation-for="Bibliografia" class="text-danger"></span>
         </div>
 
         <!-- Seção Idioma -->
         <div class="form-group idioma">
-            <label asp-for="IdLingua" class="form-label">País de Origem</label>
+            <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
             <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
             <span asp-validation-for="IdLingua" class="text-danger"></span>
         </div>

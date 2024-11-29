@@ -28,12 +28,12 @@
         <!-- Campos ISBN e Título -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="Isbn" class="form-label">ISBN</label>
+                <label asp-for="Isbn" class="form-label">ISBN <span class="text-danger">*</span></label>
                 <input asp-for="Isbn" class="form-control" />
                 <span asp-validation-for="Isbn" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TituloLivros" class="form-label">Título</label>
+                <label asp-for="TituloLivros" class="form-label">Título <span class="text-danger">*</span></label>
                 <input asp-for="TituloLivros" class="form-control" />
                 <span asp-validation-for="TituloLivros" class="text-danger"></span>
             </div>
@@ -42,7 +42,7 @@
         <!-- Campos Autor com dropdown e link para criar novo autor -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdAutor" class="form-label">Autor</label>
+                <label asp-for="IdAutor" class="form-label">Autor <span class="text-danger">*</span></label>
                 <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
                 <span asp-validation-for="IdAutor" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
@@ -51,7 +51,7 @@
 
             <!-- Campo Editora com dropdown e link para criar nova editora -->
             <div class="form-group">
-                <label asp-for="IdEditora" class="form-label">Editora</label>
+                <label asp-for="IdEditora" class="form-label">Editora <span class="text-danger">*</span></label>
                 <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
                 <span asp-validation-for="IdEditora" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
@@ -62,12 +62,12 @@
         <!-- Campos Idioma e Número de Exemplares -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdLingua" class="form-label">País de Origem</label>
+                <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
                 <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
                 <span asp-validation-for="IdLingua" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NumExemplares" class="form-label">Número de Exemplares</label>
+                <label asp-for="NumExemplares" class="form-label">Número de Exemplares <span class="text-danger">*</span></label>
                 <input asp-for="NumExemplares" class="form-control" />
                 <span asp-validation-for="NumExemplares" class="text-danger"></span>
             </div>
@@ -76,7 +76,7 @@
         <!-- Campo Data de Edição -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="DataEdicao" class="form-label">Data de Publicação</label>
+                <label asp-for="DataEdicao" class="form-label">Data de Publicação <span class="text-danger">*</span></label>
                 <input asp-for="DataEdicao" type="date" class="form-control" />
                 <span asp-validation-for="DataEdicao" class="text-danger"></span>
             </div>
@@ -85,7 +85,7 @@
         <!-- Campo Sinopse -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="Sinopse" class="form-label">Sinopse</label>
+                <label asp-for="Sinopse" class="form-label">Sinopse <span class="text-danger">*</span></label>
                 <textarea asp-for="Sinopse" class="form-control textarea"></textarea>
                 <span asp-validation-for="Sinopse" class="text-danger"></span>
             </div>
@@ -94,7 +94,7 @@
         <!-- Campo Gênero -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdGeneros" class="form-label">Gênero</label>
+                <label asp-for="IdGeneros" class="form-label">Gênero <span class="text-danger">*</span></label>
                 <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
                 <span asp-validation-for="IdGeneros" class="text-danger"></span>
             </div>
