@@ -27,12 +27,12 @@
 
         <!-- Campos ISBN e Título -->
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group">
                 <label asp-for="Isbn" class="form-label">ISBN</label>
                 <input asp-for="Isbn" class="form-control" />
                 <span asp-validation-for="Isbn" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group">
                 <label asp-for="TituloLivros" class="form-label">Título</label>
                 <input asp-for="TituloLivros" class="form-control" />
                 <span asp-validation-for="TituloLivros" class="text-danger"></span>
@@ -41,32 +41,32 @@
 
         <!-- Campos Autor com dropdown e link para criar novo autor -->
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label asp-for="IdAutor" class="form-label textform_color">Autor</label>
+            <div class="form-group">
+                <label asp-for="IdAutor" class="form-label">Autor</label>
                 <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
                 <span asp-validation-for="IdAutor" class="text-danger"></span>
-                <label class="control-label textform_color">Caso não exista:</label>
+                <label class="control-label">Caso não exista:</label>
                 <a asp-action="Create" asp-controller="Autors" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Autor</a>
             </div>
 
             <!-- Campo Editora com dropdown e link para criar nova editora -->
-            <div class="form-group col-md-6">
-                <label asp-for="IdEditora" class="form-label textform_color">Editora</label>
+            <div class="form-group">
+                <label asp-for="IdEditora" class="form-label">Editora</label>
                 <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
                 <span asp-validation-for="IdEditora" class="text-danger"></span>
-                <label class="control-label textform_color">Caso não exista:</label>
+                <label class="control-label">Caso não exista:</label>
                 <a asp-action="Create" asp-controller="Editoras" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Editora</a>
             </div>
         </div>
 
         <!-- Campos Idioma e Número de Exemplares -->
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label asp-for="IdLingua" class="form-label textform_color">País de Origem</label>
+            <div class="form-group">
+                <label asp-for="IdLingua" class="form-label">País de Origem</label>
                 <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
                 <span asp-validation-for="IdLingua" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group">
                 <label asp-for="NumExemplares" class="form-label">Número de Exemplares</label>
                 <input asp-for="NumExemplares" class="form-control" />
                 <span asp-validation-for="NumExemplares" class="text-danger"></span>
@@ -94,7 +94,7 @@
         <!-- Campo Gênero -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdGeneros" class="form-label textform_color">Gênero</label>
+                <label asp-for="IdGeneros" class="form-label">Gênero</label>
                 <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
                 <span asp-validation-for="IdGeneros" class="text-danger"></span>
             </div>
@@ -107,8 +107,14 @@
     </form>
 </div>
 
+@section Styles {
+    <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS for styling (ensure this path is correct) -->
+    <link rel="stylesheet" href="~/css/create_design_livro.css" />
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="~/css/create_design.css" />
 }
