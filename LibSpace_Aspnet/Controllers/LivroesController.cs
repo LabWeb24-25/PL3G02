@@ -51,13 +51,15 @@ namespace LibSpace_Aspnet.Controllers
             return View(livro);
         }
 
+
         // GET: Livroes/Create
-        public IActionResult Create()
+        public IActionResult Create(int? idEditora)
         {
             ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor");
-            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora");
+            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", idEditora); // Preenche com a editora selecionada
             ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros");
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
+
             return View();
         }
 
@@ -111,6 +113,7 @@ namespace LibSpace_Aspnet.Controllers
                 _context.Add(livro);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
 
             // Repopulate dropdowns for the view in case of an error

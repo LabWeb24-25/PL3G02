@@ -107,7 +107,8 @@ namespace LibSpace_Aspnet.Controllers
 
                 _context.Add(autor);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var previousUrl = Request.Headers["Referer"].ToString();
+                return Redirect(previousUrl);
             }
 
 

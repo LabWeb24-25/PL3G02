@@ -55,7 +55,7 @@
                 <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
                 <span asp-validation-for="IdEditora" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Create" asp-controller="Editoras" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Editora</a>
+                <a asp-action="Livro_Create" asp-controller="Editoras" class="btn_rend">Criar Editora</a>
             </div>
         </div>
 
@@ -97,6 +97,9 @@
                 <label asp-for="IdGeneros" class="form-label">Gênero</label>
                 <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
                 <span asp-validation-for="IdGeneros" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Editoras" class="btn_rend">Criar Editora</a>
+
             </div>
         </div>
 
