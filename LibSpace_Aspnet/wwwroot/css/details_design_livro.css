@@ -14,22 +14,23 @@
 }
 
 .image-container {
+    width: 200px; /* Limita a largura do contêiner da imagem */
     display: flex;
     flex-direction: column; /* Organiza os itens em coluna */
     align-items: center; /* Centraliza o conteúdo */
     gap: 10px; /* Espaço entre a imagem e a descrição */
-    max-height: 200px;
 }
 
 .image-wrapper {
     width: 100%;
-    max-width: 300px; /* Limita a largura da imagem */
+    max-width: 200px; /* Limita a largura da imagem */
     text-align: center;
 }
 
 .image-details {
     width: 100%;
     height: auto;
+    max-width: 200px; /* Limita a largura da imagem */
     object-fit: contain; /* Ajusta a imagem para caber no contêiner sem distorção */
     border-radius: 8px;
 }
@@ -109,4 +110,30 @@
     .btn_red:hover {
         background-color: #c62828; /* Cor mais escura no hover */
         color: #ffffff;
+    }
+
+/* Styles for the container holding the buttons */
+.action-links {
+    display: flex;
+    flex-wrap: wrap; /* Allows buttons to wrap to the next line if needed */
+    gap: 10px; /* Space between buttons */
+    justify-content: flex-start; /* Align buttons to the left */
+    margin-top: 20px; /* Add space above the button group */
+}
+
+/* Styles for the buttons */
+.btn_submit {
+    flex: 1 1 auto; /* Allows buttons to grow and shrink */
+    padding: 10px 15px;
+    background-color: #004d40; /* Customize button background color */
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .btn_submit:hover {
+        background-color: #003d33; /* Darker shade on hover */
     }
