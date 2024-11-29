@@ -1,0 +1,4 @@
+- Bernardo Almeira --> 78403
+- David Fidalgo --> 79881
+- Tiago Valente --> 78800
+- Vasco Macedo --> 78798
