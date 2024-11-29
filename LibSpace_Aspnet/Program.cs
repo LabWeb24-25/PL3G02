@@ -1,5 +1,6 @@
 using LibSpace_Aspnet.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 // Adicionar servi�os de controladores com views e p�ginas
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
 
 var app = builder.Build();
 

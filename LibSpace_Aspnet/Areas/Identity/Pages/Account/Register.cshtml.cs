@@ -20,6 +20,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+
+
 
 namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 {
@@ -162,11 +165,19 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var codigoPostal = new CodigoPostal
+                    // Verificar se o código postal já existe
+                    var codigoPostal = await _dbContext.CodigoPostals.FirstOrDefaultAsync(cp => cp.EndCodPostal == Input.CodigoPostal);
+
+                    if (codigoPostal == null)
                     {
-                        EndCodPostal = Input.CodigoPostal,
-                        EndLocalidade = Input.Cidade
-                    };
+                        // Se não existir, criar um novo
+                        codigoPostal = new CodigoPostal
+                        {
+                            EndCodPostal = Input.CodigoPostal,
+                            EndLocalidade = Input.Cidade
+                        };
+                        _dbContext.CodigoPostals.Add(codigoPostal);
+                    }
 
                     var perfil = new Perfil
                     {
@@ -178,7 +189,6 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         AspNetUserId = user.Id
                     };
 
-                    _dbContext.CodigoPostals.Add(codigoPostal);
                     _dbContext.Perfils.Add(perfil);
                     await _dbContext.SaveChangesAsync();
 
@@ -190,8 +200,8 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirme o seu email",
+                        $"Por favor, confirme a sua conta clicando <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> aqui </a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
