@@ -54,25 +54,35 @@
                 </a>
             </div>
         </form>
-
         @if ((Model.ExternalLogins?.Count ?? 0) > 0)
         {
             <div class="external-logins">
-                <hr />
-                <h3>Usar outro serviço para entrar</h3>
+                <div class="separator">
+                    <span class="or-text">Ou</span>
+                </div>
+
+
+
                 <form id="external-account" asp-page="./ExternalLogin"
                       asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     @foreach (var provider in Model.ExternalLogins!)
                     {
                         <button type="submit" class="login-button external-button"
                                 name="provider" value="@provider.Name">
-                            <i class="fab fa-@provider.DisplayName.ToLower()"></i>
-                            @provider.DisplayName
+                            @if (provider.Name == "Google")
+                            {
+                                @: <i class="fab fa-google"></i> Entrar com Google
+                            }
+                            else
+                            {
+                                @: <i class="fab fa-@provider.DisplayName.ToLower()"></i> @provider.DisplayName
+                            }
                         </button>
                     }
                 </form>
             </div>
         }
+
     </div>
 </div>
 

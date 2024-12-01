@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar a string de conex�o
+// Configurar a string de conexão
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext")
     ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
 
@@ -13,32 +13,38 @@ var connectionString = builder.Configuration.GetConnectionString("ApplicationDbC
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Configurar o Identity com op��es personalizadas
+// Configurar o Identity com opções personalizadas
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireDigit = true;
-    options.Password.RequireNonAlphanumeric = false; // Ajuste conforme a pol�tica de senha
+    options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = true;
 
-    // lockout settings
+    // Configurações de bloqueio
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 
-    // user settings
-    
+    // Configurações de utilizador
     options.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Adicionar servi�os de controladores com views e p�ginas
+// Configurar a autenticação externa (Google)
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });
+
+// Adicionar serviços de controladores com views e páginas
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
-
 
 var app = builder.Build();
 
@@ -59,10 +65,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Adicionar autenticação e autorização ao pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configurar as rotas padr�o
+// Configurar as rotas padrão
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

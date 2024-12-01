@@ -8,6 +8,33 @@
     background-position: center;
     min-height: 100vh;
 }
+.separator {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+    text-align: center; /* Centraliza o texto horizontalmente */
+    margin: 20px 0; /* Adiciona margem superior e inferior */
+}
+
+    .separator .or-text {
+        background-color: white; /* Cor de fundo do texto */
+        padding: 0 10px; /* Adiciona espaçamento ao redor do texto */
+        z-index: 1; /* Garante que o texto fique acima da linha */
+        position: center;
+    }
+
+
+    .separator::before,
+    .separator::after {
+        content: '';
+        flex-grow: 1; /* Faz as linhas ocuparem o espaço disponível */
+        height: 1px; /* Altura da linha */
+        background-color: #ccc; /* Cor da linha */
+        position: relative;
+        top: -0.2em;
+    }
+
+
+
 
 .login-container {
     min-height: 100vh;
