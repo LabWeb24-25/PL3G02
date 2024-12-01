@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 {
@@ -19,13 +20,15 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly ApplicationDbContext _dbContext;
 
         public ExternalLoginModel(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext dbContext)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -33,6 +36,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _dbContext = dbContext;
         }
 
         [BindProperty]
@@ -83,45 +87,45 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
             if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
             {
                 string email = info.Principal.FindFirstValue(ClaimTypes.Email);
-
-                // Verifique se o usuário já existe
                 var user = await _userManager.FindByEmailAsync(email);
-                if (user != null)
+                
+                if (user == null)
                 {
-                    // Se o usuário existir, faz o login direto
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                    return LocalRedirect(returnUrl);
-                }
-                else
-                {
-                    // Se o usuário não existir, cria o usuário na base de dados
-                    var newUser = new IdentityUser
+                    user = new IdentityUser
                     {
                         UserName = email,
-                        Email = email
+                        Email = email,
+                        EmailConfirmed = true  // Since it's Google login, we can trust the email
                     };
 
-                    var result = await _userManager.CreateAsync(newUser);
+                    var result = await _userManager.CreateAsync(user);
                     if (result.Succeeded)
                     {
-                        // Adiciona o login externo ao novo usuário
-                        result = await _userManager.AddLoginAsync(newUser, info);
+                        result = await _userManager.AddLoginAsync(user, info);
                         if (result.Succeeded)
                         {
-                            // Confirma o e-mail automaticamente
-                            await _userManager.ConfirmEmailAsync(newUser, await _userManager.GenerateEmailConfirmationTokenAsync(newUser));
-
-                            // Redireciona para a página de registro para preencher os outros dados
+                            // Don't sign in yet - redirect to complete registration
                             return RedirectToPage("/Account/RegisterGoogle", new { email = email });
                         }
                     }
-
-                    // Caso haja erro ao criar o usuário, adicione mensagens de erro
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
+                }
+                else
+                {
+                    // Existing user - check if they have a profile
+                    var profile = await _dbContext.Perfils.FirstOrDefaultAsync(p => p.AspNetUserId == user.Id);
+                    if (profile == null)
+                    {
+                        // No profile - redirect to complete registration
+                        return RedirectToPage("/Account/RegisterGoogle", new { email = email });
+                    }
+                    
+                    // Has profile - sign in
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl ?? "~/");
                 }
             }
 

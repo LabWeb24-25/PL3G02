@@ -186,7 +186,8 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         NomePerfil = Input.Nome,
                         DataNascimentoPerfil = DateOnly.FromDateTime(Input.Birthday),
                         Apelido = Input.Apelido,
-                        AspNetUserId = user.Id
+                        AspNetUserId = user.Id,
+                        ImgPerfil = null
                     };
 
                     _dbContext.Perfils.Add(perfil);

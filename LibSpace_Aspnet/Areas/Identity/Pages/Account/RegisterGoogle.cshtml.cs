@@ -63,14 +63,14 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
             public string Cidade { get; set; }
 
             [Required]
-            [Display(Name = "Código Postal")]
-            [RegularExpression(@"^\d{4}-\d{3}$", ErrorMessage = "O Código Postal deve seguir o formato '1234-567'")]
+            [Display(Name = "CÃ³digo Postal")]
+            [RegularExpression(@"^\d{4}-\d{3}$", ErrorMessage = "O CÃ³digo Postal deve seguir o formato '1234-567'")]
             public string CodigoPostal { get; set; }
 
-            [Required(ErrorMessage = "O número de telemóvel é obrigatório.")]
-            [Phone(ErrorMessage = "Por favor, insira um número de telemóvel válido.")]
-            [Display(Name = "Número de Telemóvel")]
-            [RegularExpression(@"^\d{9}$", ErrorMessage = "O número de telemóvel deve conter exatamente 9 díitos numéricos.")]
+            [Required(ErrorMessage = "O nÃºmero de telemÃ³vel Ã© obrigatÃ³rio.")]
+            [Phone(ErrorMessage = "Por favor, insira um nÃºmero de telemÃ³vel vÃ¡lido.")]
+            [Display(Name = "NÃºmero de TelemÃ³vel")]
+            [RegularExpression(@"^\d{9}$", ErrorMessage = "O nÃºmero de telemÃ³vel deve conter exatamente 9 dÃ­gitos numÃ©ricos.")]
             public string PhoneNumber { get; set; }
 
             [DataType(DataType.Date)]
@@ -79,104 +79,115 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 
             [EmailAddress]
             [Display(Name = "Email")]
-            public string Email { get; set; } // Este campo será preenchido automaticamente
+            public string Email { get; set; } // Este campo serÃ¡ preenchido automaticamente
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = null, string email = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            // Pega o e-mail do provedor externo
-            var externalLogin = await _signInManager.GetExternalLoginInfoAsync();
-            if (externalLogin != null)
+            // Initialize Input if it's null
+            Input ??= new InputModel();
+
+            // Set email from parameter or from external login
+            if (!string.IsNullOrEmpty(email))
             {
-                Input = new InputModel
+                Input.Email = email;
+            }
+            else
+            {
+                var externalLogin = await _signInManager.GetExternalLoginInfoAsync();
+                if (externalLogin != null)
                 {
-                    Email = externalLogin.Principal.FindFirstValue(ClaimTypes.Email) // Preenche com o e-mail do login externo
-                };
+                    Input.Email = externalLogin.Principal.FindFirstValue(ClaimTypes.Email);
+                }
             }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("/Home/Index");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
+            returnUrl ??= Url.Content("~/");
+            
             if (ModelState.IsValid)
             {
-                // Obtemos o login externo
-                var externalLogin = await _signInManager.GetExternalLoginInfoAsync();
-
-                // Tenta encontrar um usuário existente com o e-mail fornecido
-                var user = await _userManager.FindByEmailAsync(Input.Email);
-
-                // Se o usuário não existir, cria um novo usuário
-                if (user == null)
+                try 
                 {
-                    user = new IdentityUser
+                    // Get the user by email since we already created it in ExternalLogin
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user == null)
                     {
-                        UserName = Input.Email,
-                        Email = Input.Email
-                    };
-
-                    // Cria o novo usuário no banco de dados
-                    var result = await _userManager.CreateAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        // Se falhar a criação, exibe erros
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
+                        _logger.LogError($"User not found for email {Input.Email}");
+                        ModelState.AddModelError(string.Empty, "User not found.");
                         return Page();
                     }
-                }
 
-                // Se o login externo não foi associado ao usuário, associamos agora
-                var resultAddLogin = await _userManager.AddLoginAsync(user, externalLogin);
-                if (!resultAddLogin.Succeeded)
-                {
-                    // Se não conseguir associar o login externo, exibe erros
-                    foreach (var error in resultAddLogin.Errors)
+                    // Update phone number
+                    await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+
+                    // Create or get CodigoPostal
+                    var codigoPostal = await _dbContext.CodigoPostals
+                        .FirstOrDefaultAsync(cp => cp.EndCodPostal == Input.CodigoPostal);
+                        
+                    if (codigoPostal == null)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        codigoPostal = new CodigoPostal
+                        {
+                            EndCodPostal = Input.CodigoPostal,
+                            EndLocalidade = Input.Cidade
+                        };
+                        _dbContext.CodigoPostals.Add(codigoPostal);
+                        await _dbContext.SaveChangesAsync();
                     }
+
+                    // Check if profile already exists
+                    var existingPerfil = await _dbContext.Perfils
+                        .FirstOrDefaultAsync(p => p.AspNetUserId == user.Id);
+
+                    if (existingPerfil != null)
+                    {
+                        _logger.LogWarning($"Profile already exists for user {user.Id}");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect("~/");
+                    }
+
+                    // Create Perfil
+                    var perfil = new Perfil
+                    {
+                        EndMorada = Input.Morada,
+                        EndCodPostal = Input.CodigoPostal,
+                        NomePerfil = Input.Nome,
+                        DataNascimentoPerfil = DateOnly.FromDateTime(Input.Birthday),
+                        Apelido = Input.Apelido,
+                        AspNetUserId = user.Id,
+                        ImgPerfil = null
+                    };
+
+                    _dbContext.Perfils.Add(perfil);
+                    await _dbContext.SaveChangesAsync();
+
+                    // Sign in the user
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation($"User {user.Email} profile created and signed in successfully");
+                    
+                    // Redirect to home page
+                    return LocalRedirect("~/");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error creating profile: {ex}");
+                    ModelState.AddModelError(string.Empty, "An error occurred while creating your profile.");
                     return Page();
                 }
+            }
 
-                // Agora adicionamos os dados adicionais ao perfil do usuário
-                var codigoPostal = await _dbContext.CodigoPostals.FirstOrDefaultAsync(cp => cp.EndCodPostal == Input.CodigoPostal);
-                if (codigoPostal == null)
+            // Log model state errors
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
                 {
-                    codigoPostal = new CodigoPostal
-                    {
-                        EndCodPostal = Input.CodigoPostal,
-                        EndLocalidade = Input.Cidade
-                    };
-                    _dbContext.CodigoPostals.Add(codigoPostal);
-                    await _dbContext.SaveChangesAsync();
+                    _logger.LogError($"Model validation error: {error.ErrorMessage}");
                 }
-
-                var perfil = new Perfil
-                {
-                    EndMorada = $"{Input.Morada}, {Input.Cidade}",
-                    EndCodPostal = Input.CodigoPostal,
-                    NomePerfil = Input.Nome,
-                    DataNascimentoPerfil = DateOnly.FromDateTime(Input.Birthday),
-                    Apelido = Input.Apelido,
-                    AspNetUserId = user.Id
-                };
-
-                _dbContext.Perfils.Add(perfil);
-                await _dbContext.SaveChangesAsync();
-
-                // Realiza o login do usuário após a criação ou associação
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                _logger.LogInformation("Usuário registrado e logado com sucesso.");
-
-                // Redireciona para a página inicial ou a URL fornecida
-                return LocalRedirect(returnUrl);
             }
 
             return Page();
@@ -187,7 +198,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("A UI padrão exige um repositório de usuários com suporte a e-mail.");
+                throw new NotSupportedException("A UI padrÃ£o exige um repositÃ³rio de usuÃ¡rios com suporte a e-mail.");
             }
             return (IUserEmailStore<IdentityUser>)_userStore;
         }
