@@ -44,6 +44,28 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Pais/Create
+        public IActionResult Livro_Create()
+        {
+            return View();
+        }
+
+        // POST: Pais/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Livro_Create([Bind("IdPais,NomePais")] Pai pai)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(pai);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Create", "Livroes", new { idPais = pai.IdPais });
+            }
+            return View(pai);
+        }
+
+        // GET: Pais/Create
         public IActionResult Create()
         {
             return View();
