@@ -47,6 +47,8 @@ public partial class Livro
     [Column("ID_Generos")]
     public int IdGeneros { get; set; }
 
+    public int Clicks { get; set; }
+
     [InverseProperty("IdLivroNavigation")]
     public virtual ICollection<Favorito> Favoritos { get; set; } = new List<Favorito>();
 

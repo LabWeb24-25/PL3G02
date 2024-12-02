@@ -4,6 +4,7 @@ using LibSpace_Aspnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibSpace_Aspnet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241202092857_UpdatedDB")]
+    partial class UpdatedDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,19 +76,6 @@ namespace LibSpace_Aspnet.Data.Migrations
                         .HasFilter("([NormalizedName] IS NOT NULL)");
 
                     b.ToTable("AspNetRoles");
-                });
-
-            modelBuilder.Entity("LibSpace_Aspnet.Models.AspNetRoleAspNetUser", b =>
-                {
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("RoleId", "UserId");
-
-                    b.ToTable("AspNetRoleAspNetUsers");
                 });
 
             modelBuilder.Entity("LibSpace_Aspnet.Models.AspNetRoleClaim", b =>
@@ -502,9 +492,6 @@ namespace LibSpace_Aspnet.Data.Migrations
                         .HasColumnType("varchar(250)")
                         .HasColumnName("Capa_IMG");
 
-                    b.Property<int>("Clicks")
-                        .HasColumnType("int");
-
                     b.Property<DateOnly>("DataEdicao")
                         .HasColumnType("date");
 
@@ -641,32 +628,6 @@ namespace LibSpace_Aspnet.Data.Migrations
                     b.HasIndex("EndCodPostal");
 
                     b.ToTable("Perfil");
-                });
-
-            modelBuilder.Entity("LibSpace_Aspnet.Models.PreRequisitum", b =>
-                {
-                    b.Property<int>("Idreserva")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("IDReserva");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Idreserva"));
-
-                    b.Property<int>("EstadoLevantamento")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Idleitor")
-                        .HasColumnType("int")
-                        .HasColumnName("IDLeitor");
-
-                    b.Property<int>("Idlivro")
-                        .HasColumnType("int")
-                        .HasColumnName("IDLivro");
-
-                    b.HasKey("Idreserva")
-                        .HasName("PK__PreRequi__D9F2FA67713ECE76");
-
-                    b.ToTable("PreRequisita");
                 });
 
             modelBuilder.Entity("LibSpace_Aspnet.Models.Requisitum", b =>

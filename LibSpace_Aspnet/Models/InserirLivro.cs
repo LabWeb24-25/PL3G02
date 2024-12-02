@@ -9,12 +9,12 @@ namespace LibSpace_Aspnet.Models;
 [Table("Inserir_Livro")]
 public partial class InserirLivro
 {
-    [Column("ID_Bibliotecario")]
-    public int IdBibliotecario { get; set; }
-
     [Key]
     [Column("ID_Livro")]
     public int IdLivro { get; set; }
+
+    [Column("ID_Bibliotecario")]
+    public int IdBibliotecario { get; set; }
 
     [ForeignKey("IdLivro")]
     [InverseProperty("InserirLivro")]

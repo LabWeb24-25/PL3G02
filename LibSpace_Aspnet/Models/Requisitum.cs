@@ -13,12 +13,6 @@ public partial class Requisitum
     [Column("ID_Leitor")]
     public int IdLeitor { get; set; }
 
-    [Column("ID_BibliotecarioRecetor")]
-    public int IdBibliotecarioRecetor { get; set; }
-
-    [Column("ID_BibliotecarioRemetente")]
-    public int? IdBibliotecarioRemetente { get; set; }
-
     [Key]
     [Column("ID_Livro")]
     public int IdLivro { get; set; }
@@ -26,6 +20,12 @@ public partial class Requisitum
     [Key]
     [Column("Data_Requisicao", TypeName = "datetime")]
     public DateTime DataRequisicao { get; set; }
+
+    [Column("ID_BibliotecarioRecetor")]
+    public int IdBibliotecarioRecetor { get; set; }
+
+    [Column("ID_BibliotecarioRemetente")]
+    public int? IdBibliotecarioRemetente { get; set; }
 
     [Column("Data_PrevEntrega")]
     public DateOnly DataPrevEntrega { get; set; }
