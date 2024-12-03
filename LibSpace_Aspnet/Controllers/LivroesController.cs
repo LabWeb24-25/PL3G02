@@ -100,6 +100,9 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
             livro.Clicks += 1;
+            _context.Livros.Update(livro); // Marca o objeto como modificado.
+            await _context.SaveChangesAsync(); // Salva as mudanças no banco de dados.
+
             return View(livro);
         }
 

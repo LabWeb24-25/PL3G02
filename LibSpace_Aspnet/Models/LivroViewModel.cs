@@ -44,7 +44,6 @@ namespace LibSpace.Models
         [Display(Name = "Número de Exemplares em Stock")]
         public int NumExemplares { get; set; }
 
-        [Required(ErrorMessage = "Selecione uma imagem para a capa.")]
         [DataType(DataType.Upload)]
         [Display(Name = "Capa do Livro")]
         public IFormFile? CapaImg { get; set; }
