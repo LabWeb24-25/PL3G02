@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using LibSpace_Aspnet.Data;
 
 namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 {
