@@ -122,3 +122,67 @@ body {
         box-shadow: 0 0 5px rgba(3, 76, 57, 0.5); /* Sombra ao focar */
         outline: none; /* Remove o contorno padrão do navegador */
     }
+    margin-bottom: 60px;
+}
+
+.navbar {
+    padding-right: 1%;
+}
+
+.navbar-logo {
+    height: 3.5vw;
+    max-height: 88px;
+}
+
+.custom-search-bar {
+    width: 70%;
+    max-width: 850px;
+    max-height: 5vw;
+    border: 3px solid #064d3b;
+    border-radius: 10px;
+    margin-left: 5%;
+    padding-left: 1%;
+    padding-right: 10%;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-search-bar:focus {
+    border-color: #057857;
+    box-shadow: 0 0 15px rgba(6, 77, 59, 0.40);
+    outline: none;
+}
+
+#button-search {
+    width: 12%;
+    max-width: 90px;
+    max-height: 5vw;
+    border: 3px solid #064d3b;
+    border-radius: 0 10px 10px 0;
+    transition: all 0.1s ease-in-out;
+}
+
+#button-search:hover {
+    background-color: #057857;
+    transform: scale(1.1);
+}
+
+.icon-img-search {
+    max-width: 50%;
+    height: auto;
+}
+
+.icon-img {
+    width: auto;
+    height: 2vw;
+    display: inline-table;
+}
+
+.icon-img:hover {
+    transform: scale(1.1);
+    transition: all 0.0s ease-in-out;
+}
+
+.icon-spacing {
+    margin-left: 4vw; 
+}
