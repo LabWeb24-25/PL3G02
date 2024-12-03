@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -44,6 +45,48 @@ namespace LibSpace_Aspnet.Controllers
 
             return View(editora);
         }
+
+        public IActionResult Livro_Create()
+        {
+            return View();
+        }
+
+        // POST: Editoras/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Livro_Create([Bind("NomeEditora,InfoEditora,ImgEditora")] EditoraViewModel editora)
+        {
+            var Extensoes = new[] { ".jpg", ".jpeg", ".png" };
+
+            var extension = Path.GetExtension(editora.ImgEditora.FileName).ToLower();
+
+            if (!Extensoes.Contains(extension))
+            {
+                ModelState.AddModelError("ImgEditora", "Introduza uma imagem válida");
+            }
+            if (ModelState.IsValid)
+            {
+                var _Editora = new Editora();
+                _Editora.NomeEditora = editora.NomeEditora;
+                _Editora.InfoEditora = editora.InfoEditora;
+                _Editora.ImgEditora = Path.GetFileName(editora.ImgEditora.FileName);
+
+
+                string coverFileName = Path.GetFileName(editora.ImgEditora.FileName);
+                string coverFullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", coverFileName);
+                using (var stream = new FileStream(coverFullPath, FileMode.Create))
+                {
+                    await editora.ImgEditora.CopyToAsync(stream);
+                }
+                _context.Add(_Editora);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Create", "Livroes", new { idEditora = _Editora.IdEditora });
+            }
+            return View(editora);
+        }
+
 
         // GET: Editoras/Create
         public IActionResult Create()

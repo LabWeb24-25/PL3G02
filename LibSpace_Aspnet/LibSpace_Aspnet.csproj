@@ -22,4 +22,11 @@
 	<Folder Include="wwwroot\Editora_IMG\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Autors\Livro_Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

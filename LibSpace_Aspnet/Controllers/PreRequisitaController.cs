@@ -10,22 +10,22 @@ using LibSpace_Aspnet.Models;
 
 namespace LibSpace_Aspnet.Controllers
 {
-    public class PaisController : Controller
+    public class PreRequisitaController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PaisController(ApplicationDbContext context)
+        public PreRequisitaController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Pais
+        // GET: PreRequisita
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pais.ToListAsync());
+            return View(await _context.PreRequisita.ToListAsync());
         }
 
-        // GET: Pais/Details/5
+        // GET: PreRequisita/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,61 +33,39 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
-            var pai = await _context.Pais
-                .FirstOrDefaultAsync(m => m.IdPais == id);
-            if (pai == null)
+            var preRequisitum = await _context.PreRequisita
+                .FirstOrDefaultAsync(m => m.Idreserva == id);
+            if (preRequisitum == null)
             {
                 return NotFound();
             }
 
-            return View(pai);
+            return View(preRequisitum);
         }
 
-        // GET: Pais/Create
-        public IActionResult Livro_Create()
-        {
-            return View();
-        }
-
-        // POST: Pais/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Livro_Create([Bind("IdPais,NomePais")] Pai pai)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(pai);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Create", "Livroes", new { idPais = pai.IdPais });
-            }
-            return View(pai);
-        }
-
-        // GET: Pais/Create
+        // GET: PreRequisita/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Pais/Create
+        // POST: PreRequisita/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdPais,NomePais")] Pai pai)
+        public async Task<IActionResult> Create([Bind("Idreserva,Idleitor,Idlivro,EstadoLevantamento")] PreRequisitum preRequisitum)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pai);
+                _context.Add(preRequisitum);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(pai);
+            return View(preRequisitum);
         }
 
-        // GET: Pais/Edit/5
+        // GET: PreRequisita/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,22 +73,22 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
-            var pai = await _context.Pais.FindAsync(id);
-            if (pai == null)
+            var preRequisitum = await _context.PreRequisita.FindAsync(id);
+            if (preRequisitum == null)
             {
                 return NotFound();
             }
-            return View(pai);
+            return View(preRequisitum);
         }
 
-        // POST: Pais/Edit/5
+        // POST: PreRequisita/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPais,NomePais")] Pai pai)
+        public async Task<IActionResult> Edit(int id, [Bind("Idreserva,Idleitor,Idlivro,EstadoLevantamento")] PreRequisitum preRequisitum)
         {
-            if (id != pai.IdPais)
+            if (id != preRequisitum.Idreserva)
             {
                 return NotFound();
             }
@@ -119,12 +97,12 @@ namespace LibSpace_Aspnet.Controllers
             {
                 try
                 {
-                    _context.Update(pai);
+                    _context.Update(preRequisitum);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaiExists(pai.IdPais))
+                    if (!PreRequisitumExists(preRequisitum.Idreserva))
                     {
                         return NotFound();
                     }
@@ -135,10 +113,10 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(pai);
+            return View(preRequisitum);
         }
 
-        // GET: Pais/Delete/5
+        // GET: PreRequisita/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,34 +124,34 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
-            var pai = await _context.Pais
-                .FirstOrDefaultAsync(m => m.IdPais == id);
-            if (pai == null)
+            var preRequisitum = await _context.PreRequisita
+                .FirstOrDefaultAsync(m => m.Idreserva == id);
+            if (preRequisitum == null)
             {
                 return NotFound();
             }
 
-            return View(pai);
+            return View(preRequisitum);
         }
 
-        // POST: Pais/Delete/5
+        // POST: PreRequisita/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var pai = await _context.Pais.FindAsync(id);
-            if (pai != null)
+            var preRequisitum = await _context.PreRequisita.FindAsync(id);
+            if (preRequisitum != null)
             {
-                _context.Pais.Remove(pai);
+                _context.PreRequisita.Remove(preRequisitum);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaiExists(int id)
+        private bool PreRequisitumExists(int id)
         {
-            return _context.Pais.Any(e => e.IdPais == id);
+            return _context.PreRequisita.Any(e => e.Idreserva == id);
         }
     }
 }

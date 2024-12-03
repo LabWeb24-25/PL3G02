@@ -1,0 +1,62 @@
+﻿@model LibSpace_Aspnet.Models.Requisitum
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Requisitum</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdLeitor" class="control-label"></label>
+                <input asp-for="IdLeitor" class="form-control" />
+                <span asp-validation-for="IdLeitor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdBibliotecarioRecetor" class="control-label"></label>
+                <input asp-for="IdBibliotecarioRecetor" class="form-control" />
+                <span asp-validation-for="IdBibliotecarioRecetor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdBibliotecarioRemetente" class="control-label"></label>
+                <input asp-for="IdBibliotecarioRemetente" class="form-control" />
+                <span asp-validation-for="IdBibliotecarioRemetente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdLivro" class="control-label"></label>
+                <select asp-for="IdLivro" class ="form-control" asp-items="ViewBag.IdLivro"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataRequisicao" class="control-label"></label>
+                <input asp-for="DataRequisicao" class="form-control" />
+                <span asp-validation-for="DataRequisicao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataPrevEntrega" class="control-label"></label>
+                <input asp-for="DataPrevEntrega" class="form-control" />
+                <span asp-validation-for="DataPrevEntrega" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataEntrega" class="control-label"></label>
+                <input asp-for="DataEntrega" class="form-control" />
+                <span asp-validation-for="DataEntrega" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

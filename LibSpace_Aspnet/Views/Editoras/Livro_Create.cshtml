@@ -1,0 +1,68 @@
+﻿@model LibSpace_Aspnet.Models.EditoraViewModel
+
+@{
+    ViewData["Title"] = "Livro_Create";
+}
+
+<div class="forms_design">
+    <h4 class="textform_color">Adicionar Editora</h4>
+    <div class="col-md-4">
+        <form asp-action="Livro_Create" class="forms_center" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Campo para adicionar a imagem da editora com preview e botão de remover -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="ImgEditora" class="control-label textform_color">Insira uma foto</label>
+                    <input asp-for="ImgEditora"
+                           type="file"
+                           class="form-control-file"
+                           id="imgEditoraInput"
+                           onchange="previewImage(event, 'imgEditoraPreview')" />
+                    <span asp-validation-for="ImgEditora" class="text-danger"></span>
+                </div>
+                <div class="form-group position-relative">
+                    <img id="imgEditoraPreview"
+                         src="#"
+                         alt="Image Preview"
+                         style="display:none; max-width: 200px; max-height: 200px; margin-top: 10px;" />
+                    <!-- Botão para remover a imagem -->
+                    <button type="button"
+                            class="btn btn-danger btn-sm position-absolute"
+                            style="top: 10px; right: 10px; display: none;"
+                            id="removeImageButton"
+                            onclick="removeImage('imgEditoraInput', 'imgEditoraPreview', 'removeImageButton')">
+                        X
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NomeEditora" class="control-label textform_color">Nome</label>
+                <input asp-for="NomeEditora" class="form-control" />
+                <span asp-validation-for="NomeEditora" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InfoEditora" class="control-label textform_color">Sobre a Editora</label>
+                <textarea asp-for="InfoEditora" class="textbox"></textarea>
+                <span asp-validation-for="InfoEditora" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn_submit" onclick="history.back()">Voltar</button>
+                <input type="submit" value="Criar Editora" class="btn_submit" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS for styling (ensure this path is correct) -->
+    <link rel="stylesheet" href="~/css/create_design_editora.css" />
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

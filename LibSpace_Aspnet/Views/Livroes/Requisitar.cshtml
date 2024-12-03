@@ -1,0 +1,51 @@
+﻿@model LibSpace_Aspnet.Models.Livro
+
+@{
+    ViewData["Title"] = "Requisitar Livro";
+}
+<div class="DivGeneralDetails">
+    <div class="upper-section">
+        <div class="image-container">
+            <!-- Div para a imagem -->
+            <div>
+                <img src="@Url.Content("~/Cover/" + Model.CapaImg)" alt="Imagem de @Model.CapaImg" class="image-details" />
+            </div>
+
+            <!-- Div para a descrição e botões -->
+            <div class="description-wrapper">
+                <p class="isbn">Ref: @Html.DisplayFor(model => model.Isbn)</p>
+                <br />
+            </div>
+        </div>
+        <div class="DivInformation">
+            <h4 class="textform_color">Nome: @Html.DisplayFor(model => model.TituloLivros)</h4>
+            <p>de: @Html.DisplayFor(model => model.IdAutorNavigation.NomeAutor)</p>
+            <hr />
+            <p class="control-label textform_color"><strong>Editora:</strong> @Html.DisplayFor(model => model.IdEditoraNavigation.NomeEditora)</p>
+            <p class="control-label textform_color"><strong>Sinopse:</strong></p>
+            <p>@Html.Raw(Model.Sinopse?.Replace("\n", "<br />"))</p>
+            <p class="control-label textform_color"><strong>Número de Exemplares Disponíveis:</strong> @Html.DisplayFor(model => model.NumExemplares)</p>
+            <hr />
+            <p class="control-label textform_color">Deseja Requisitar?</p>
+            <div class="action-links">
+                <form asp-action="Requisitar" method="post">
+                    <input type="hidden" name="IdLivro" value="@Model.IdLivro" />
+                <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+                    <input type="submit" value="Requisitar" class="btn_submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS for Details Page -->
+    <link rel="stylesheet" href="~/css/details_design_livro.css" />
+}
+
+@section Scripts {
+    <!-- Validation Scripts -->
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -38,6 +38,9 @@ public partial class Livro
     [Column("ID_Lingua")]
     public int IdLingua { get; set; }
 
+    [Column("Clicks")]
+    public int Clicks { get; set; }
+
     [Column(TypeName = "text")]
     public string Sinopse { get; set; } = null!;
 

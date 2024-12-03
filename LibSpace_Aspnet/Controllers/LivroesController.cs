@@ -29,8 +29,7 @@ namespace LibSpace_Aspnet.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Livroes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Requisitar(int? id)
         {
             if (id == null)
             {
@@ -51,13 +50,71 @@ namespace LibSpace_Aspnet.Controllers
             return View(livro);
         }
 
-        // GET: Livroes/Create
-        public IActionResult Create()
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Requisitar(int id)
         {
-            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor");
-            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora");
-            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros");
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
+            var livro = await _context.Livros.FindAsync(id);
+            if (livro == null)
+            {
+                return NotFound();
+            }
+
+            var requisicao = new PreRequisitum
+            {
+                Idlivro = livro.IdLivro,
+                Idleitor = 1, // Ajuste isso para capturar o leitor correto.
+                EstadoLevantamento = 0
+            };
+
+            _context.Add(requisicao);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = livro.IdLivro });
+        }
+
+
+
+        // GET: Livroes/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var livro = await _context.Livros
+                .Include(l => l.IdAutorNavigation)
+                .Include(l => l.IdEditoraNavigation)
+                .Include(l => l.IdGenerosNavigation)
+                .Include(l => l.IdLinguaNavigation)
+                .FirstOrDefaultAsync(m => m.IdLivro == id);
+            if (livro == null)
+            {
+                return NotFound();
+            }
+            livro.Clicks += 1;
+            _context.Livros.Update(livro); // Marca o objeto como modificado.
+            await _context.SaveChangesAsync(); // Salva as mudanças no banco de dados.
+
+            return View(livro);
+        }
+
+
+        // GET: Livroes/Create
+        public IActionResult Create(int? idEditora, int? idAutor, int? idPais, int? idGenero)
+        {
+            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", idAutor);
+            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", idEditora); // Preenche com a editora selecionada
+            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros", idGenero);
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", idPais);
+
             return View();
         }
 
@@ -94,6 +151,7 @@ namespace LibSpace_Aspnet.Controllers
                 // Create a Livro object and populate its fields
                 var livro = new Livro
                 {
+                    Clicks = 0,
                     Isbn = livroViewModel.Isbn,
                     DataEdicao = DateOnly.FromDateTime(livroViewModel.DataEdicao), // Convert DateTime to DateOnly
                     TituloLivros = livroViewModel.TituloLivros,
@@ -111,6 +169,7 @@ namespace LibSpace_Aspnet.Controllers
                 _context.Add(livro);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
 
             // Repopulate dropdowns for the view in case of an error

@@ -10,22 +10,23 @@ using LibSpace_Aspnet.Models;
 
 namespace LibSpace_Aspnet.Controllers
 {
-    public class PaisController : Controller
+    public class RequisicaoController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PaisController(ApplicationDbContext context)
+        public RequisicaoController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Pais
+        // GET: Requisicao
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pais.ToListAsync());
+            var applicationDbContext = _context.Requisita.Include(r => r.IdLivroNavigation);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Pais/Details/5
+        // GET: Requisicao/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,61 +34,42 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
-            var pai = await _context.Pais
-                .FirstOrDefaultAsync(m => m.IdPais == id);
-            if (pai == null)
+            var requisitum = await _context.Requisita
+                .Include(r => r.IdLivroNavigation)
+                .FirstOrDefaultAsync(m => m.IdLeitor == id);
+            if (requisitum == null)
             {
                 return NotFound();
             }
 
-            return View(pai);
+            return View(requisitum);
         }
 
-        // GET: Pais/Create
-        public IActionResult Livro_Create()
-        {
-            return View();
-        }
-
-        // POST: Pais/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Livro_Create([Bind("IdPais,NomePais")] Pai pai)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(pai);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Create", "Livroes", new { idPais = pai.IdPais });
-            }
-            return View(pai);
-        }
-
-        // GET: Pais/Create
+        // GET: Requisicao/Create
         public IActionResult Create()
         {
+            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro");
             return View();
         }
 
-        // POST: Pais/Create
+        // POST: Requisicao/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdPais,NomePais")] Pai pai)
+        public async Task<IActionResult> Create([Bind("IdLeitor,IdBibliotecarioRecetor,IdBibliotecarioRemetente,IdLivro,DataRequisicao,DataPrevEntrega,DataEntrega")] Requisitum requisitum)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pai);
+                _context.Add(requisitum);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(pai);
+            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro", requisitum.IdLivro);
+            return View(requisitum);
         }
 
-        // GET: Pais/Edit/5
+        // GET: Requisicao/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,22 +77,23 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
-            var pai = await _context.Pais.FindAsync(id);
-            if (pai == null)
+            var requisitum = await _context.Requisita.FindAsync(id);
+            if (requisitum == null)
             {
                 return NotFound();
             }
-            return View(pai);
+            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro", requisitum.IdLivro);
+            return View(requisitum);
         }
 
-        // POST: Pais/Edit/5
+        // POST: Requisicao/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPais,NomePais")] Pai pai)
+        public async Task<IActionResult> Edit(int id, [Bind("IdLeitor,IdBibliotecarioRecetor,IdBibliotecarioRemetente,IdLivro,DataRequisicao,DataPrevEntrega,DataEntrega")] Requisitum requisitum)
         {
-            if (id != pai.IdPais)
+            if (id != requisitum.IdLeitor)
             {
                 return NotFound();
             }
@@ -119,12 +102,12 @@ namespace LibSpace_Aspnet.Controllers
             {
                 try
                 {
-                    _context.Update(pai);
+                    _context.Update(requisitum);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaiExists(pai.IdPais))
+                    if (!RequisitumExists(requisitum.IdLeitor))
                     {
                         return NotFound();
                     }
@@ -135,10 +118,11 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(pai);
+            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro", requisitum.IdLivro);
+            return View(requisitum);
         }
 
-        // GET: Pais/Delete/5
+        // GET: Requisicao/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,34 +130,35 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
-            var pai = await _context.Pais
-                .FirstOrDefaultAsync(m => m.IdPais == id);
-            if (pai == null)
+            var requisitum = await _context.Requisita
+                .Include(r => r.IdLivroNavigation)
+                .FirstOrDefaultAsync(m => m.IdLeitor == id);
+            if (requisitum == null)
             {
                 return NotFound();
             }
 
-            return View(pai);
+            return View(requisitum);
         }
 
-        // POST: Pais/Delete/5
+        // POST: Requisicao/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var pai = await _context.Pais.FindAsync(id);
-            if (pai != null)
+            var requisitum = await _context.Requisita.FindAsync(id);
+            if (requisitum != null)
             {
-                _context.Pais.Remove(pai);
+                _context.Requisita.Remove(requisitum);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaiExists(int id)
+        private bool RequisitumExists(int id)
         {
-            return _context.Pais.Any(e => e.IdPais == id);
+            return _context.Requisita.Any(e => e.IdLeitor == id);
         }
     }
 }

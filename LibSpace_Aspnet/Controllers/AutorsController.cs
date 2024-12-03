@@ -50,6 +50,69 @@ namespace LibSpace_Aspnet.Controllers
             return View(autor);
         }
 
+        public IActionResult Livro_Create()
+        {
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
+            return View();
+        }
+
+        // POST: Autors/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Livro_Create(AutorViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                string? uniqueFileName = null;
+
+
+                // Validate the image format
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+
+                    return View(viewModel);
+                }
+
+                // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
+                uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
+                var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                {
+                    await viewModel.FotoAutor.CopyToAsync(fileStream);
+                }
+
+
+                // Create Autor object and populate fields
+                var autor = new Autor
+                {
+                    NomeAutor = viewModel.NomeAutor,
+                    DataNascimento = DateOnly.FromDateTime(viewModel.DataNascimento),
+                    Pseudonimo = viewModel.Pseudonimo,
+                    // Handle nullable DateTime for DataFalecimento
+                    DataFalecimento = viewModel.DataFalecimento.HasValue
+                    ? DateOnly.FromDateTime(viewModel.DataFalecimento.Value)
+                    : null,
+                    Bibliografia = viewModel.Bibliografia,
+                    IdLingua = viewModel.IdLingua,
+                    FotoAutor = uniqueFileName // Save the file name in the database
+                };
+
+                _context.Add(autor);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Create", "Livroes", new { idAutor = autor.IdAutor });
+            }
+
+
+            return View(viewModel);
+        }
+
         // GET: Autors/Create
         public IActionResult Create()
         {
@@ -107,7 +170,8 @@ namespace LibSpace_Aspnet.Controllers
 
                 _context.Add(autor);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var previousUrl = Request.Headers["Referer"].ToString();
+                return Redirect(previousUrl);
             }
 
 

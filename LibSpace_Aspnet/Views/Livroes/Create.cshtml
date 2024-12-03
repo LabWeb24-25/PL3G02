@@ -46,7 +46,7 @@
                 <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
                 <span asp-validation-for="IdAutor" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Create" asp-controller="Autors" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Autor</a>
+                <a asp-action="Livro_Create" asp-controller="Autors" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Autor</a>
             </div>
 
             <!-- Campo Editora com dropdown e link para criar nova editora -->
@@ -55,7 +55,7 @@
                 <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
                 <span asp-validation-for="IdEditora" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Create" asp-controller="Editoras" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Editora</a>
+                <a asp-action="Livro_Create" asp-controller="Editoras" class="btn_rend">Criar Editora</a>
             </div>
         </div>
 
@@ -65,6 +65,9 @@
                 <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
                 <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
                 <span asp-validation-for="IdLingua" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Pais" class="btn_rend">Criar País</a>
+
             </div>
             <div class="form-group">
                 <label asp-for="NumExemplares" class="form-label">Número de Exemplares <span class="text-danger">*</span></label>
@@ -97,6 +100,9 @@
                 <label asp-for="IdGeneros" class="form-label">Gênero <span class="text-danger">*</span></label>
                 <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
                 <span asp-validation-for="IdGeneros" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Generos" class="btn_rend">Criar Genero</a>
+
             </div>
         </div>
 
