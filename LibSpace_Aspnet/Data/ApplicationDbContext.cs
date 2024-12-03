@@ -50,6 +50,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Perfil> Perfils { get; set; }
 
+    public virtual DbSet<PreRequisitum> PreRequisita { get; set; }
+
     public virtual DbSet<Requisitum> Requisita { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -182,6 +184,11 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.EndCodPostalNavigation).WithMany(p => p.Perfils)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Perfil__End_CodP__656C112C");
+        });
+
+        modelBuilder.Entity<PreRequisitum>(entity =>
+        {
+            entity.HasKey(e => e.Idreserva).HasName("PK__PreRequi__D9F2FA67713ECE76");
         });
 
         modelBuilder.Entity<Requisitum>(entity =>

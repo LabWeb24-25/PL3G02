@@ -29,10 +29,10 @@
             <p class="control-label textform_color"><strong>Número de Exemplares Disponíveis:</strong> @Html.DisplayFor(model => model.NumExemplares)</p>
             <hr />
             <div class="action-links">
-                <a asp-action="" asp-route-id="@Model?.IdAutor" class="btn_submit">Ver Requisições</a>
+                <a asp-action="" asp-route-id="@Model?.IdAutor" class="btn_submit">Ver Requisitados</a>
                 <a asp-action="Edit" asp-route-id="@Model?.IdLivro" class="btn_submit">Editar Livro</a>
                 <a asp-action="Delete" asp-route-id="@Model?.IdLivro" class="btn_red">Eliminar Livro</a>
-                <a asp-action="" asp-route-id="@Model?.IdAutor" class="btn_submit">Requisitar</a>
+                <a asp-action="Requisitar" asp-route-id="@Model?.IdLivro" class="btn_submit">Requisitar</a>
             </div>
         </div>
     </div>

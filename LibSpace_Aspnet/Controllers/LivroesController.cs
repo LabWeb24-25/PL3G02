@@ -29,6 +29,58 @@ namespace LibSpace_Aspnet.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> Requisitar(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var livro = await _context.Livros
+                .Include(l => l.IdAutorNavigation)
+                .Include(l => l.IdEditoraNavigation)
+                .Include(l => l.IdGenerosNavigation)
+                .Include(l => l.IdLinguaNavigation)
+                .FirstOrDefaultAsync(m => m.IdLivro == id);
+            if (livro == null)
+            {
+                return NotFound();
+            }
+
+            return View(livro);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Requisitar(int id)
+        {
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
+            var livro = await _context.Livros.FindAsync(id);
+            if (livro == null)
+            {
+                return NotFound();
+            }
+
+            var requisicao = new PreRequisitum
+            {
+                Idlivro = livro.IdLivro,
+                Idleitor = 1, // Ajuste isso para capturar o leitor correto.
+                EstadoLevantamento = 0
+            };
+
+            _context.Add(requisicao);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = livro.IdLivro });
+        }
+
+
+
         // GET: Livroes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,7 +99,7 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-
+            livro.Clicks += 1;
             return View(livro);
         }
 
@@ -96,6 +148,7 @@ namespace LibSpace_Aspnet.Controllers
                 // Create a Livro object and populate its fields
                 var livro = new Livro
                 {
+                    Clicks = 0,
                     Isbn = livroViewModel.Isbn,
                     DataEdicao = DateOnly.FromDateTime(livroViewModel.DataEdicao), // Convert DateTime to DateOnly
                     TituloLivros = livroViewModel.TituloLivros,
