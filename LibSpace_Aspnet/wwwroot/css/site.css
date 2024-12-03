@@ -26,14 +26,14 @@ body {
 }
 
 .navbar-logo {
-    height: 12vw;
+    height: 3.5vw;
     max-height: 88px;
 }
 
 .custom-search-bar {
     width: 70%;
     max-width: 850px;
-    max-height: 47px;
+    max-height: 5vw;
     border: 3px solid #064d3b;
     border-radius: 10px;
     margin-left: 5%;
@@ -52,7 +52,7 @@ body {
 #button-search {
     width: 12%;
     max-width: 90px;
-    max-height: 47px;
+    max-height: 5vw;
     border: 3px solid #064d3b;
     border-radius: 0 10px 10px 0;
     transition: all 0.1s ease-in-out;
@@ -70,7 +70,7 @@ body {
 
 .icon-img {
     width: auto;
-    height: 2.4vw;
+    height: 2vw;
     display: inline-table;
 }
 
@@ -80,5 +80,5 @@ body {
 }
 
 .icon-spacing {
-    margin-left: 70px; 
+    margin-left: 4vw; 
 }
