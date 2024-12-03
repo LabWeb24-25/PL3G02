@@ -1,0 +1,36 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Confirmação de registo";
+}
+<div class="confirm-container">
+    <div class="confirm-card">
+        <div class="logo-container">
+            <img src="/images/logo.png" alt="LibSpaceLogo" class="logo">
+        </div>
+        <h1>@ViewData["Title"]</h1>
+        @{
+            if (@Model.DisplayConfirmAccountLink)
+            {
+                <p class="status-message">
+                    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
+                    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
+                </p>
+            }
+            else
+            {
+                <p class="status-message">
+                    Por favor, verifique o seu email para confirmar a sua conta.
+                </p>
+            }
+        }
+    </div>
+   
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/registerConfirm.css" />
+}

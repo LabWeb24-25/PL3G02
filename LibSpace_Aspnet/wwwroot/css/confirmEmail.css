@@ -1,0 +1,79 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    background: #4a5568;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-image: url('/images/background.png');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.confirm-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.confirm-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.email-icon {
+    color: #4fd1c5;
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #333;
+    margin: 0 0 20px 0;
+    font-size: 24px;
+}
+
+.status-message {
+    color: #2c7a73;
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+.back-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #4fd1c5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+    .back-button:hover {
+        background-color: #3db1a7;
+    }
+
+@media (max-width: 576px) {
+    .confirm-card {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .status-message {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,91 @@
+﻿@page
+@model RegisterGoogleModel
+@{
+    ViewData["Title"] = "Registar";
+}
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="logo-container">
+            <img src="~/images/logo.png" alt="LibSpace Logo" class="logo" />
+        </div>
+        <h2>Registo</h2>
+        <p class="subtitle">Preencha os seus dados para criar uma nova conta</p>
+
+        <form id="registerForm" method="post" asp-route-returnUrl="@Model.ReturnUrl">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <input type="hidden" asp-for="Input.Email" />
+
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        <input asp-for="Input.Nome" class="form-control" autocomplete="name" aria-required="true" placeholder="Nome" />
+                    </div>
+                    <span asp-validation-for="Input.Nome" class="text-danger"></span>
+                </div>
+
+                <div class="form-group half-width">
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        <input asp-for="Input.Apelido" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Apelido" />
+                    </div>
+                    <span asp-validation-for="Input.Apelido" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-home input-icon"></i>
+                    <input asp-for="Input.Morada" class="form-control" autocomplete="street-address" aria-required="true" placeholder="Morada" />
+                </div>
+                <span asp-validation-for="Input.Morada" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <div class="input-container">
+                        <i class="fas fa-city input-icon"></i>
+                        <input asp-for="Input.Cidade" class="form-control" autocomplete="address-level2" aria-required="true" placeholder="Cidade" />
+                    </div>
+                    <span asp-validation-for="Input.Cidade" class="text-danger"></span>
+                </div>
+
+                <div class="form-group half-width">
+                    <div class="input-container">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <input asp-for="Input.CodigoPostal" class="form-control" autocomplete="postal-code" aria-required="true" placeholder="Código Postal" />
+                    </div>
+                    <span asp-validation-for="Input.CodigoPostal" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-phone input-icon"></i>
+                    <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" aria-required="true" placeholder="Telefone" pattern="9[1236]\d{7}" />
+                </div>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-calendar input-icon"></i>
+                    <input asp-for="Input.Birthday" class="form-control" autocomplete="birthday" aria-required="true" placeholder="Data de Nascimento" type="date" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+                <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="register-button">Registar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/register.css" />
+}

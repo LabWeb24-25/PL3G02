@@ -29,6 +29,7 @@ public partial class Perfil
     public string NomePerfil { get; set; } = null!;
 
     [Column("DataNascimento_Perfil")]
+    [DataType(DataType.Date)]
     public DateOnly DataNascimentoPerfil { get; set; }
 
     [StringLength(50)]
@@ -38,7 +39,7 @@ public partial class Perfil
     [Column("Img_Perfil")]
     [StringLength(300)]
     [Unicode(false)]
-    public string ImgPerfil { get; set; } = null!;
+    public string? ImgPerfil { get; set; } = null!;
 
     [StringLength(450)]
     public string AspNetUserId { get; set; } = null!;

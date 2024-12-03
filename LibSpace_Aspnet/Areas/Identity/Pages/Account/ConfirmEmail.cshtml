@@ -1,0 +1,24 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirmar email";
+}
+
+<div class="confirm-container">
+    <div class="confirm-card">
+        <div class="logo-container">
+            <img src="/images/logo.png" alt="LibSpaceLogo" class="logo">
+        </div>
+        <h1>@ViewData["Title"]</h1>
+        <div class="status-message">
+            <partial name="_StatusMessage" model="Model.StatusMessage" />
+        </div>
+        <a href="/" class="back-button">Voltar à Página Inicial</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/confirmEmail.css" />
+}
