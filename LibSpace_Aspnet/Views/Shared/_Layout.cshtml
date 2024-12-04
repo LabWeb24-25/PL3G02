@@ -25,14 +25,16 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/img/logo.png" alt="Logo" class="navbar-logo" />
                 </a>
+                <form method="get" action="@Url.Action("Index", "Livroes")">
                 <div class=" align-items-center flex-grow-1">
                     <div class="input-group">
-                        <input type="text" class="custom-search-bar" placeholder="Search" aria-label="Search" aria-describedby="button-search">
-                        <button class="" type="button" id="button-search">
+                            <input type="text" class="custom-search-bar" name="query" value="@ViewData["Query"]" placeholder="Search" aria-label="Search" aria-describedby="button-search">
+                        <button type="submit" id="button-search">
                             <img src="~/img/icons/ico_search.png" alt="Search Icon" class="icon-img-search" />
                         </button>
                     </div>
                 </div>
+                </form>
                 <div class="d-flex align-items-center">
                     <a href="#" class="mx-auto">
                         <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
