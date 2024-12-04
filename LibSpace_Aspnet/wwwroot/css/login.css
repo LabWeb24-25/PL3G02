@@ -84,6 +84,8 @@ h2 {
 
 .input-container {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .input-icon {
@@ -96,11 +98,11 @@ h2 {
 
 .form-control {
     width: 100%;
-    padding: 12px 12px 12px 40px;
+    padding: 12px 40px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 16px;
-    box-sizing: border-box;
+    transition: border-color 0.3s;
 }
 
     .form-control:focus {
@@ -184,3 +186,26 @@ h2 {
         font-size: 14px;
     }
 }
+/* Password toggle styles */
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.password-toggle:hover {
+    color: #333;
+}
+
+/* Password input specific styling */
+input[type="password"].form-control {
+    padding-right: 40px;
+}
+

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 namespace LibSpace_Aspnet.Data;
 
-public partial class ApplicationDbContext : IdentityDbContext <IdentityUser>
+public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
     public ApplicationDbContext()
     {

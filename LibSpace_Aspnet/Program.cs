@@ -14,8 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Configurar o Identity com opções personalizadas
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-{
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
     options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireDigit = true;
     options.Password.RequireNonAlphanumeric = false;
@@ -23,15 +22,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = true;
 
-    // Configurações de bloqueio
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 
-    // Configurações de utilizador
     options.User.RequireUniqueEmail = true;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+
 
 // Configurar a autenticação externa (Google)
 builder.Services.AddAuthentication()
@@ -47,6 +47,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    SeedRoles.Seed(roleManager);
+}
 
 // Configurar o pipeline de middleware
 if (app.Environment.IsDevelopment())

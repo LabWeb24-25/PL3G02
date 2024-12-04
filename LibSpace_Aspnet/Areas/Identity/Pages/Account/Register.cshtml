@@ -87,6 +87,7 @@
                 <div class="input-container">
                     <i class="fas fa-lock input-icon"></i>
                     <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Palavra-passe" type="password" />
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword(this)"></i>
                 </div>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
@@ -95,8 +96,19 @@
                 <div class="input-container">
                     <i class="fas fa-lock input-icon"></i>
                     <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirmar Palavra-passe" type="password" />
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword(this)"></i>
                 </div>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-user-tag input-icon"></i>
+                    <select asp-for="Input.Role" class="form-control" 
+                            asp-items='@(new SelectList(ViewBag.roles, "Name", "Name"))'>
+                        <option value="">-- Selecionar Função --</option>
+                    </select>
+                </div>
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
             </div>
 
             <div class="form-group terms-container">
@@ -118,10 +130,7 @@
                     <span class="or-text">Ou</span>
                 </div>
 
-
-
-                <form id="external-account" asp-page="./ExternalLogin"
-                      asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     @foreach (var provider in Model.ExternalLogins!)
                     {
                         <button type="submit" class="login-button external-button"
@@ -148,4 +157,18 @@
     <partial name="_ValidationScriptsPartial" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/register.css" />
+    <script>
+        function togglePassword(element) {
+            const passwordInput = element.previousElementSibling;
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                element.classList.remove("fa-eye");
+                element.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                element.classList.remove("fa-eye-slash");
+                element.classList.add("fa-eye");
+            }
+        }
+    </script>
 }
