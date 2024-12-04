@@ -45,6 +45,8 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, Iden
 
     public virtual DbSet<Requisitum> Requisita { get; set; }
 
+    public virtual DbSet<BibliotecarioPendente> BibliotecarioPendentes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("name=ApplicationDbContext");
 

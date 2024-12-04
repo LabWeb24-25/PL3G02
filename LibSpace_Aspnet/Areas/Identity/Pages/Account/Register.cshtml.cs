@@ -158,29 +158,56 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            // Define o URL de retorno padrão se não for fornecido
             returnUrl ??= Url.Content("~/");
+            // Obtém os esquemas de autenticação externa disponíveis
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
+                // Cria uma nova instância de utilizador
                 var user = CreateUser();
                 user.PhoneNumber = Input.PhoneNumber;
+
+                // Define o nome de utilizador e o email
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
+                // Cria o utilizador com a senha fornecida
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Utilizador criou uma nova conta com password.");
 
-                    await _userManager.AddToRoleAsync(user, Input.Role);
+                    if (Input.Role == "Bibliotecario")
+                    {
+                        // Se o papel for "bibliotecario", não atribui imediatamente
+                        // Adiciona o utilizador à tabela de bibliotecários pendentes
+                        var bibliotecarioPendente = new BibliotecarioPendente
+                        {
+                            AspNetUserId = user.Id,
+                            ApplicationDate = DateTime.Now,
+                            IsApproved = false
+                        };
+                        _dbContext.BibliotecarioPendentes.Add(bibliotecarioPendente);
+                        await _dbContext.SaveChangesAsync();
 
-                    // Verificar se o código postal já existe
+                        // Opcional: atribui um papel padrão
+                        await _userManager.AddToRoleAsync(user, "Leitor");
+                    }
+                    else
+                    {
+                        // Atribui o papel selecionado normalmente
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+
+                    // Verifica se o código postal já existe na base de dados
                     var codigoPostal = await _dbContext.CodigoPostals.FirstOrDefaultAsync(cp => cp.EndCodPostal == Input.CodigoPostal);
 
                     if (codigoPostal == null)
                     {
-                        // Se não existir, criar um novo
+                        // Se não existir, cria um novo registo de código postal
                         codigoPostal = new CodigoPostal
                         {
                             EndCodPostal = Input.CodigoPostal,
@@ -189,6 +216,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         _dbContext.CodigoPostals.Add(codigoPostal);
                     }
 
+                    // Cria um novo perfil para o utilizador
                     var perfil = new Perfil
                     {
                         EndMorada = $"{Input.Morada}, {Input.Cidade}",
@@ -200,39 +228,51 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         ImgPerfil = null
                     };
 
+                    // Adiciona o perfil à base de dados
                     _dbContext.Perfils.Add(perfil);
                     await _dbContext.SaveChangesAsync();
 
+                    // Gera o token de confirmação de email
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                    // Cria o URL de callback para confirmação de email
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
+                    // Envia o email de confirmação
                     await _emailSender.SendEmailAsync(Input.Email, "Confirme o seu email",
-                        $"Por favor, confirme a sua conta clicando <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> aqui </a>.");
+                        $"Por favor, confirme a sua conta clicando <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aqui</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        // Redireciona para a página de confirmação de registo
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
+                        // Inicia sessão automaticamente
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }
+
+                // Adiciona erros ao ModelState se a criação do utilizador falhar
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            // Recarrega a lista de papéis disponíveis se algo falhar
             ViewData["Roles"] = _roleManager.Roles.ToList();
-            // If we got this far, something failed, redisplay form
+            // Se ocorrer um erro, reexibe o formulário
             return Page();
         }
+
 
         private IdentityUser CreateUser()
         {

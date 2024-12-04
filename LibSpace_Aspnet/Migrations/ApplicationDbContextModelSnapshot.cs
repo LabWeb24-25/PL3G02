@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LibSpace_Aspnet.Data.Migrations
+namespace LibSpace_Aspnet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -127,6 +127,30 @@ namespace LibSpace_Aspnet.Data.Migrations
                     b.HasIndex("EndCodPostal");
 
                     b.ToTable("Biblioteca");
+                });
+
+            modelBuilder.Entity("LibSpace_Aspnet.Models.BibliotecarioPendente", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AspNetUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PendingBibliotecarios");
                 });
 
             modelBuilder.Entity("LibSpace_Aspnet.Models.Bloquear", b =>
@@ -279,6 +303,10 @@ namespace LibSpace_Aspnet.Data.Migrations
                         .HasColumnType("varchar(250)")
                         .HasColumnName("Capa_IMG");
 
+                    b.Property<int>("Clicks")
+                        .HasColumnType("int")
+                        .HasColumnName("Clicks");
+
                     b.Property<DateOnly>("DataEdicao")
                         .HasColumnType("date");
 
@@ -417,30 +445,30 @@ namespace LibSpace_Aspnet.Data.Migrations
                 });
 
             modelBuilder.Entity("LibSpace_Aspnet.Models.PreRequisitum", b =>
-            {
-                b.Property<int>("Idreserva")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int")
-                    .HasColumnName("IDReserva");
+                {
+                    b.Property<int>("Idreserva")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("IDReserva");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Idreserva"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Idreserva"));
 
-                b.Property<int>("EstadoLevantamento")
-                    .HasColumnType("int");
+                    b.Property<int>("EstadoLevantamento")
+                        .HasColumnType("int");
 
-                b.Property<int>("Idleitor")
-                    .HasColumnType("int")
-                    .HasColumnName("IDLeitor");
+                    b.Property<int>("Idleitor")
+                        .HasColumnType("int")
+                        .HasColumnName("IDLeitor");
 
-                b.Property<int>("Idlivro")
-                    .HasColumnType("int")
-                    .HasColumnName("IDLivro");
+                    b.Property<int>("Idlivro")
+                        .HasColumnType("int")
+                        .HasColumnName("IDLivro");
 
-                b.HasKey("Idreserva")
-                    .HasName("PK__PreRequi__D9F2FA67713ECE76");
+                    b.HasKey("Idreserva")
+                        .HasName("PK__PreRequi__D9F2FA67713ECE76");
 
-                b.ToTable("PreRequisita");
-            });
+                    b.ToTable("PreRequisita");
+                });
 
             modelBuilder.Entity("LibSpace_Aspnet.Models.Requisitum", b =>
                 {
@@ -625,12 +653,10 @@ namespace LibSpace_Aspnet.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -667,12 +693,10 @@ namespace LibSpace_Aspnet.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
