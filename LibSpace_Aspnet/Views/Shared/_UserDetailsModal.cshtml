@@ -1,0 +1,51 @@
+@model LibSpace_Aspnet.Models.Perfil
+@{
+    Console.WriteLine($"Rendering _UserDetailsModal with model: {(Model == null ? "null" : Model.NomePerfil)}");
+}
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalhes do Utilizador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="user-details-content">
+                    <div class="user-avatar-large">
+                        @if (!string.IsNullOrEmpty(Model?.ImgPerfil))
+                        {
+                            <img src="@Model.ImgPerfil" alt="User Avatar">
+                        }
+                        else
+                        {
+                            <i class="fas fa-user"></i>
+                        }
+                    </div>
+                    <div class="user-info-grid">
+                        <div class="info-group">
+                            <label>Nome</label>
+                            <p>@Model?.NomePerfil</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Apelido</label>
+                            <p>@Model?.Apelido</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Data de Nascimento</label>
+                            <p>@Model?.DataNascimentoPerfil.ToString("dd/MM/yyyy")</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Morada</label>
+                            <p>@Model?.EndMorada</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Código Postal</label>
+                            <p>@Model?.EndCodPostal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
