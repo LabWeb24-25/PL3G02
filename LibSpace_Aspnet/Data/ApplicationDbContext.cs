@@ -169,6 +169,14 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, Iden
                 .HasConstraintName("FK__Requisita__ID_Li__7C4F7684");
         });
 
+        modelBuilder.Entity<BibliotecarioPendente>(entity =>
+        {
+            entity.HasOne(b => b.AspNetUser)
+                .WithMany()
+                .HasForeignKey(b => b.AspNetUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

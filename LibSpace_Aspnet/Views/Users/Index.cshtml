@@ -1,5 +1,27 @@
+@model LibSpace_Aspnet.Models.UsersViewModel
 @{
     ViewData["Title"] = "Gestão de Utilizadores";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var token = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 <div class="user-management-container">
@@ -11,45 +33,331 @@
         </button>
     </div>
 
-    <div class="search-section">
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Procurar utilizador...">
+    <div class="users-list-container mb-4">
+        <div class="list-header" onclick="toggleSection('pending-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Bibliotecários Pendentes
+            </h3>
         </div>
-        <button class="btn btn-outline-secondary sort-btn">
-            <i class="fas fa-sort"></i>
-            Ordenar
-        </button>
+        
+        <div id="pending-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar bibliotecário pendente..." 
+                           onkeyup="searchUsers('pending-users', this.value)">
+                </div>
+            </div>
+
+            <div class="users-list" id="pending-users">
+                @if (!Model.PendingBibliotecarios.Any())
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Não existem bibliotecários pendentes no momento.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var pending in Model.PendingBibliotecarios)
+                    {
+                        <div class="user-item">
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-clock"></i>
+                                </div>
+                                <div class="user-details">
+                                    <div class="user-name">@pending.AspNetUser.UserName</div>
+                                    <div class="user-email">@pending.AspNetUser.Email</div>
+                                    <div class="user-pending-date">Pendente desde: @pending.ApplicationDate.ToShortDateString()</div>
+                                </div>
+                            </div>
+                            <div class="user-actions">
+                                <form asp-action="ApproveBibliotecario" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@pending.AspNetUserId" />
+                                    <button type="submit" class="btn btn-success action-btn" title="Aprovar">
+                                        <i class="fas fa-check"></i> Aprovar
+                                    </button>
+                                </form>
+                                
+                                <form asp-action="RejectBibliotecario" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@pending.AspNetUserId" />
+                                    <button type="submit" class="btn btn-danger action-btn" title="Rejeitar">
+                                        <i class="fas fa-times"></i> Rejeitar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </div>
 
     <div class="users-list-container">
-        <h3 class="list-title">Utilizadores</h3>
-        <div class="users-list">
-            @for (int i = 0; i < 8; i++)
-            {
-                <div class="user-item">
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-details">
-                            <div class="user-name">Nome do Utilizador</div>
-                            <div class="user-email">email@exemplo.com</div>
-                        </div>
-                    </div>
-                    <div class="user-actions">
-                        <button class="btn btn-light action-btn" title="Detalhes">
-                            <i class="fas fa-cog"></i> Detalhes
-                        </button>
-                        <button class="btn btn-light action-btn" title="Promover">
-                            <i class="fas fa-star"></i> Promover
-                        </button>
-                        <button class="btn btn-light action-btn text-danger" title="Bloquear">
-                            <i class="fas fa-ban"></i> Bloquear
-                        </button>
-                    </div>
+        <div class="list-header" onclick="toggleSection('all-users-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Todos os Utilizadores
+            </h3>
+        </div>
+
+        <div id="all-users-list" class="section-content">
+            <div class="search-section">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar utilizador..." 
+                           onkeyup="searchUsers('all-users', this.value)">
                 </div>
-            }
+                <button class="btn btn-outline-secondary sort-btn">
+                    <i class="fas fa-sort"></i>
+                    Ordenar
+                </button>
+            </div>
+
+            <div class="users-list" id="all-users">
+                @foreach (var user in Model.AllUsers)
+                {
+                    <div class="user-item">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-details">
+                                <div class="user-name">@user.UserName</div>
+                                <div class="user-email">@user.Email</div>
+                                <div class="user-roles">
+                                    @if (Model.UserRoles.ContainsKey(user.Id))
+                                    {
+                                        foreach (var role in Model.UserRoles[user.Id])
+                                        {
+                                            string badgeClass = role.ToLower() switch
+                                            {
+                                                "bibliotecario" => "badge-bibliotecario",
+                                                "leitor" => "badge-leitor",
+                                                "admin" => "badge-admin",
+                                                _ => "badge-role"
+                                            };
+                                            
+                                            <span class="badge-role @badgeClass">@role</span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-actions">
+                            <button class="btn btn-light action-btn" title="Detalhes"
+                                    onclick="showUserDetails('@user.Id')">
+                                <i class="fas fa-cog"></i> Detalhes
+                            </button>
+                            <button class="btn btn-light action-btn" title="Promover">
+                                <i class="fas fa-star"></i> Promover
+                            </button>
+                            <button class="btn btn-light action-btn text-danger" title="Bloquear">
+                                <i class="fas fa-ban"></i> Bloquear
+                            </button>
+                        </div>
+                    </div>
+                }
+
+            </div>
         </div>
     </div>
 </div>
+
+<turbo-frame id="user-details">
+    <div id="userDetailsModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Utilizador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Partial view will load here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</turbo-frame>
+
+<style>
+.list-header {
+    cursor: pointer;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.list-header:hover {
+    background-color: #f8f9fa;
+}
+
+.section-toggle {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.section-toggle.collapsed {
+    transform: rotate(-90deg);
+}
+
+.section-content {
+    transition: all 0.3s ease-out;
+    overflow: hidden;
+    opacity: 1;
+    max-height: 2000px;
+}
+
+.section-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.user-details-container {
+    padding: 1rem;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    margin-right: 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-image img, .profile-image i {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    font-size: 40px;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-title {
+    flex: 1;
+}
+
+.profile-title h4 {
+    margin: 0;
+    color: #333;
+}
+
+.details-section {
+    display: grid;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.detail-item i {
+    margin-right: 1rem;
+    color: #6c757d;
+    width: 20px;
+    text-align: center;
+}
+
+.badge {
+    background-color: #17a2b8;
+    color: white;
+    padding: 0.5em 1em;
+    border-radius: 1rem;
+    font-weight: normal;
+}
+</style>
+
+<script>
+function toggleSection(sectionId) {
+    const content = document.getElementById(sectionId);
+    const icon = content.previousElementSibling.querySelector('.section-toggle');
+    
+    if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        icon.classList.remove('collapsed');
+        content.style.maxHeight = content.scrollHeight + 'px';
+    } else {
+        content.classList.add('collapsed');
+        icon.classList.add('collapsed');
+        content.style.maxHeight = '0';
+    }
+}
+
+function searchUsers(containerId, searchText) {
+    const container = document.getElementById(containerId);
+    const items = container.getElementsByClassName('user-item');
+    
+    searchText = searchText.toLowerCase();
+    
+    Array.from(items).forEach(item => {
+        const userName = item.querySelector('.user-name').textContent.toLowerCase();
+        const userEmail = item.querySelector('.user-email').textContent.toLowerCase();
+        
+        if (userName.includes(searchText) || userEmail.includes(searchText)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.getElementsByClassName('section-content');
+    Array.from(sections).forEach(section => {
+        section.classList.remove('collapsed');
+        section.style.maxHeight = section.scrollHeight + 'px';
+    });
+});
+
+function showUserDetails(userId) {
+    $.get('/Users/GetUserDetails', { userId: userId })
+        .done(function(response) {
+            $('#userDetailsModal .modal-body').html(response);
+            var modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+            modal.show();
+        })
+        .fail(function(error) {
+            alert('Erro ao carregar detalhes do utilizador');
+            console.error('Error:', error);
+        });
+}
+</script>

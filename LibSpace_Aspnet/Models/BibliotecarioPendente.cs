@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace LibSpace_Aspnet.Models
 {
@@ -19,6 +20,9 @@ namespace LibSpace_Aspnet.Models
 
         [Required]
         public bool IsApproved { get; set; } = false;
+
+        [ForeignKey("AspNetUserId")]
+        public virtual IdentityUser AspNetUser { get; set; } = null!;
 
     }
 }
