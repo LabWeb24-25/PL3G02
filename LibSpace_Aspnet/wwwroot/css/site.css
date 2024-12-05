@@ -20,6 +20,12 @@ html {
     min-height: 100%;
 }
 
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
 body {
     margin-bottom: 60px;
 }
@@ -117,12 +123,10 @@ body {
     vertical-align: top; /* Garante que o texto comece no topo */
 }
 
-    .textbox:focus {
-        border-color: #034C39; /* Cor da borda ao focar */
-        box-shadow: 0 0 5px rgba(3, 76, 57, 0.5); /* Sombra ao focar */
-        outline: none; /* Remove o contorno padrão do navegador */
-    }
-    margin-bottom: 60px;
+.textbox:focus {
+    border-color: #034C39; /* Cor da borda ao focar */
+    box-shadow: 0 0 5px rgba(3, 76, 57, 0.5); /* Sombra ao focar */
+    outline: none; /* Remove o contorno padrão do navegador */
 }
 
 .navbar {

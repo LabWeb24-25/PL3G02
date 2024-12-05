@@ -43,7 +43,11 @@ builder.Services.AddAuthentication()
 
 // Adicionar serviços de controladores com views e páginas
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    //Maps do url
+    // options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "register");
+});
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 var app = builder.Build();
