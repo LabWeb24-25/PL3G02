@@ -54,10 +54,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
-    .btn_submit:hover {
-        background-color: #003d33; /* Cor mais escura no hover */
-        color: #ffffff;
-    }
+.btn_submit:hover {
+    background-color: #003d33; /* Cor mais escura no hover */
+    color: #ffffff;
+}
 
 .forms_design {
     display: flex; /* Habilita o uso do flexbox */

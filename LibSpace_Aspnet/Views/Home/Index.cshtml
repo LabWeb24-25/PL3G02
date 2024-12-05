@@ -2,7 +2,106 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-1 mb-4">
+            <div class="card announcements-container">
+                <div class="card-body">
+                    <h2>Announcements</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-primary btn-prev"><</button>
+        <div class="row row-cols-1 row-cols-md-5 g-4 overflow-x-auto">
+            <div class="col">
+                <div class="card">
+                    <img src="/img/book1.jpg" class="card-img-top" alt="Book 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Título Autor</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="/img/book2.jpg" class="card-img-top" alt="Book 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Título Autor</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="/img/book3.jpg" class="card-img-top" alt="Book 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Título Autor</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="/img/book4.jpg" class="card-img-top" alt="Book 4">
+                    <div class="card-body">
+                        <h5 class="card-title">Título Autor</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="/img/book5.jpg" class="card-img-top" alt="Book 5">
+                    <div class="card-body">
+                        <h5 class="card-title">Título Autor</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary btn-next">></button>
+    </div>
 </div>
+
+<style>
+    .btn-primary {
+        background-color: #004d40;
+        border-color: #004d40;
+    }
+
+    .btn-primary:hover {
+        background-color: #003d33;
+        border-color: #003d33;
+    }
+
+    .announcements-container {
+        height: 250px;
+        width: 1855px;
+        overflow-y: auto;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .row.row-cols-1.row-cols-md-5.g-4.overflow-x-auto {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .row.row-cols-1.row-cols-md-5.g-4.overflow-x-auto .col {
+        display: inline-block;
+        float: none;
+        white-space: normal;
+    }
+</style>
+
+<script>
+    const prevBtn = document.querySelector('.btn-prev');
+    const nextBtn = document.querySelector('.btn-next');
+    const bookContainer = document.querySelector('.row.row-cols-1.row-cols-md-5.g-4.overflow-x-auto');
+
+    prevBtn.addEventListener('click', () => {
+        bookContainer.scrollLeft -= 200;
+    });
+
+    nextBtn.addEventListener('click', () => {
+        bookContainer.scrollLeft += 200;
+    });
+</script>

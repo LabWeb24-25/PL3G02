@@ -74,9 +74,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Configurar as rotas padrão
+app.MapGet("/login", context =>
+{
+    context.Response.Redirect("/identity/account/login");
+    return Task.CompletedTask;
+});
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
+
 app.MapRazorPages();
 
 app.Run();
