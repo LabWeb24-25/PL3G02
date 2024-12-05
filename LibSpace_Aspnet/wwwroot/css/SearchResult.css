@@ -1,0 +1,35 @@
+﻿#resultsDiv {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    max-height: 300px; /* Ajustado para permitir mais espaço */
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px; /* Espaçamento interno */
+}
+
+    #resultsDiv .search-result-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+        #resultsDiv .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        #resultsDiv .search-result-item:hover {
+            background-color: #f0f0f0;
+        }
+
+    #resultsDiv .mini-book-cover {
+        width: 40px;
+        height: 60px;
+        object-fit: cover;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
