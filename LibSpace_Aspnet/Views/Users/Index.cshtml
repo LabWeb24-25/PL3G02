@@ -1,55 +1,71 @@
+@model IEnumerable<LibSpace_Aspnet.Models.Perfil>
+
 @{
-    ViewData["Title"] = "Gestão de Utilizadores";
+    ViewData["Title"] = "Index";
 }
 
-<div class="user-management-container">
-    <div class="header-section">
-        <h2 class="section-title">Gestão de Utilizadores</h2>
-        <button class="btn btn-primary add-user-btn">
-            <i class="fas fa-user-plus"></i>
-            Adicionar Utilizador
-        </button>
-    </div>
+<h1>Index</h1>
 
-    <div class="search-section">
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Procurar utilizador...">
-        </div>
-        <button class="btn btn-outline-secondary sort-btn">
-            <i class="fas fa-sort"></i>
-            Ordenar
-        </button>
-    </div>
-
-    <div class="users-list-container">
-        <h3 class="list-title">Utilizadores</h3>
-        <div class="users-list">
-            @for (int i = 0; i < 8; i++)
-            {
-                <div class="user-item">
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-details">
-                            <div class="user-name">Nome do Utilizador</div>
-                            <div class="user-email">email@exemplo.com</div>
-                        </div>
-                    </div>
-                    <div class="user-actions">
-                        <button class="btn btn-light action-btn" title="Detalhes">
-                            <i class="fas fa-cog"></i> Detalhes
-                        </button>
-                        <button class="btn btn-light action-btn" title="Promover">
-                            <i class="fas fa-star"></i> Promover
-                        </button>
-                        <button class="btn btn-light action-btn text-danger" title="Bloquear">
-                            <i class="fas fa-ban"></i> Bloquear
-                        </button>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EndMorada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NomePerfil)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataNascimentoPerfil)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apelido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImgPerfil)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AspNetUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndCodPostalNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndMorada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomePerfil)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataNascimentoPerfil)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apelido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImgPerfil)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AspNetUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndCodPostalNavigation.EndCodPostal)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdPerfil">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdPerfil">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdPerfil">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

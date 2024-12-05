@@ -32,9 +32,35 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <a href="@(User.Identity.IsAuthenticated ? Url.Action("Perfil", "Users") : "/login")" class="mx-auto">
-                        <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="dropdown">
+            <a href="#" class="mx-auto" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item" href="@Url.Action("Perfil", "Users")">
+                        <i class="fas fa-user"></i> Profile
                     </a>
+                </li>
+                <li>
+                    <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="btn btn-link p-0">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <a href="/login" class="mx-auto">
+            <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
+        </a>
+    }
+    
                     <a href="~/Requisitados" class="icon-spacing">
                         <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
                     </a>
