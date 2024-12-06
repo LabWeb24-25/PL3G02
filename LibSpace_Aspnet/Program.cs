@@ -31,7 +31,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Users/Notauthorized";
+});
 
 // Configurar a autenticação externa (Google)
 builder.Services.AddAuthentication()

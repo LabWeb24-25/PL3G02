@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
 using LibSpace.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -23,9 +24,14 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Livroes
-        public async Task<IActionResult> Index(string filter, int? authorId, int? editorId, int? countryId)
+        public async Task<IActionResult> Index(string filter, string query, int? authorId, int? editorId, int? countryId)
         {
             var livrosQuery = _context.Livros.AsQueryable();
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                livrosQuery = livrosQuery.Where(l => EF.Functions.Like(l.TituloLivros.ToLower(), $"%{query.ToLower()}%"));
+            }
 
             if (filter == "clicks")
             {
@@ -51,6 +57,7 @@ namespace LibSpace_Aspnet.Controllers
                 .Include(l => l.IdLinguaNavigation)
                 .ToListAsync();
 
+            ViewData["Query"] = query;
             ViewBag.Autores = await _context.Autors.ToListAsync();
             ViewBag.Editoras = await _context.Editoras.ToListAsync();
             ViewBag.Paises = await _context.Pais.ToListAsync();
@@ -64,6 +71,7 @@ namespace LibSpace_Aspnet.Controllers
 
 
 
+        [Authorize(Roles="Leitor")]
         public async Task<IActionResult> Requisitar(int? id)
         {
             if (id == null)
@@ -143,8 +151,18 @@ namespace LibSpace_Aspnet.Controllers
 
 
         // GET: Livroes/Create
+     
         public IActionResult Create(int? idEditora, int? idAutor, int? idPais, int? idGenero)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para requisitar livros.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", idAutor);
             ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", idEditora); // Preenche com a editora selecionada
             ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros", idGenero);

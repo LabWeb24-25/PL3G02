@@ -8,5 +8,10 @@ namespace YourNamespace.Controllers
         {
             return View();
         }
+
+        public IActionResult Notauthorized()
+        {
+            return View();
+        }
     }
 }
