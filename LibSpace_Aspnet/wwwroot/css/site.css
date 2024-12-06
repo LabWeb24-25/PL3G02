@@ -304,8 +304,11 @@ body {
             margin-left: auto;
         }
     }
-    /* ora bem isto daqui foi tirado do developer tools do google, lá funcionou entao basicamente, NAO MEXER */
+/* ora bem isto daqui foi tirado do developer tools do google, lá funcionou entao basicamente, NAO MEXER */
     .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+}
+.card-img, .card-img-bottom, .card-img-top {
+    height: 266.666666667px;
 }

@@ -19,7 +19,7 @@ namespace LibSpace_Aspnet.Controllers
         {
             var featuredBooks = _context.Livros
                 .Include(l => l.IdAutorNavigation)
-                .Take(5)  // Limit to 5 books or adjust as needed
+                .Take(6)  // Limit to 5 books or adjust as needed
                 .ToList();
             
             return View(featuredBooks);

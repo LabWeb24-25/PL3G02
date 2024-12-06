@@ -1,4 +1,6 @@
-﻿@model IEnumerable<LibSpace_Aspnet.Models.Livro>
+﻿@using LibSpace_Aspnet.Extensions
+@model IEnumerable<LibSpace_Aspnet.Models.Livro>
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -83,7 +85,7 @@
 
     .home-page .book-carousel {
         flex: 1;
-        overflow-x: hidden;
+        overflow-x: visible;
         margin: 0 2rem;
     }
 
@@ -98,13 +100,15 @@
     }
 
     .home-page .book-title {
-        color: #004d40;
+        color: #004d40 ;
+        font-size: 1.1rem;
         margin-bottom: 0.2rem;
     }
 
     .home-page .book-author {
         color: #666;
-        margin-bottom: 0;
+        font-size: 0.7rem;
+        margin-bottom: 0.2rem;
     }
 
     .book-link {
@@ -125,6 +129,14 @@
     .book-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        height: 88px;
+    }
+
+    .card-img, .card-img-bottom, .card-img-top {
+        width: auto;
     }
 </style>
 
