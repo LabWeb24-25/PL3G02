@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<LibSpace_Aspnet.Models.Livro>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -22,17 +23,20 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <button class="btn btn-nav btn-prev">&lt;</button>
                     <div class="row row-cols-1 row-cols-md-5 g-4 book-carousel">
-                        <!-- Book cards remain the same structure but with updated styling -->
-                        <div class="col">
-                            <div class="card book-card">
-                                <img src="/img/book1.jpg" class="card-img-top" alt="Book 1">
-                                <div class="card-body text-center">
-                                    <h5 class="book-title">Título</h5>
-                                    <p class="book-author">Autor</p>
-                                </div>
+                        @foreach (var book in Model)
+                        {
+                            <div class="col">
+                                <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
+                                    <div class="card book-card">
+                                        <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
+                                        <div class="card-body text-center">
+                                            <h5 class="book-title">@book.TituloLivros</h5>
+                                            <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
-                        </div>
-                        <!-- Repeat for other books -->
+                        }
                     </div>
                     <button class="btn btn-nav btn-next">&gt;</button>
                 </div>
@@ -101,6 +105,26 @@
     .home-page .book-author {
         color: #666;
         margin-bottom: 0;
+    }
+
+    .book-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .book-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .book-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 </style>
 

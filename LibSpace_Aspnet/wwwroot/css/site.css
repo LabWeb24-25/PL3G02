@@ -231,38 +231,81 @@ body {
     object-fit: contain;  /* Maintain aspect ratio */
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        height: auto;
-        min-height: 50px;
-        padding: 10px 20px;
-    }
-
-    .navbar-content {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .navbar-brand {
-        height: 50px;
-    }
-
-    .search-section {
-        order: 2;
-        flex-basis: 100%;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-    .icon-container {
-        order: 1;
-        margin-left: auto;
-    }
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #064d3b;
 }
 
-/* ora bem isto daqui foi tirado do developer tools do google, lá funcionou entao basicamente, NAO MEXER */
-.input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
+    .dropdown-item:hover {
+        background-color: #f8f9fa; /* Light grey background */
+        color: #057857; /* Lighter green on hover */
+    }
+
+    .dropdown-item button {
+        color: #064d3b;
+        text-decoration: none;
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+    }
+
+        .dropdown-item button:hover {
+            color: #057857; /* Lighter green on hover */
+        }
+
+
+
+
+/* Add styles for Font Awesome icons */
+.fas {
+    color: #064d3b;
+}
+
+
+.dropdown-item:hover .fas {
+    color: #057857; /* Icons change color on hover too */
+}
+
+.dropdown-item,
+.dropdown-item:link, /* Add these selectors to override */
+.dropdown-item:visited, /* default link styles */
+.dropdown-item:active {
+    padding: 0.5rem 1rem;
+    color: #064d3b;
+    text-decoration: none;
+}
+    @media (max-width: 768px) {
+        .navbar {
+            height: auto;
+            min-height: 50px;
+            padding: 10px 20px;
+        }
+
+        .navbar-content {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .navbar-brand {
+            height: 50px;
+        }
+
+        .search-section {
+            order: 2;
+            flex-basis: 100%;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .icon-container {
+            order: 1;
+            margin-left: auto;
+        }
+    }
+    /* ora bem isto daqui foi tirado do developer tools do google, lá funcionou entao basicamente, NAO MEXER */
+    .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
