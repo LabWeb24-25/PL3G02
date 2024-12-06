@@ -9,18 +9,26 @@ namespace LibSpace_Aspnet.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private const int PageSize = 5; // Nº LIVROS POR SECCÇÃO AQUIII <-----------------
 
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
+            var totalBooks = _context.Livros.Count();
+            var totalPages = (int)Math.Ceiling(totalBooks / (double)PageSize);
+
             var featuredBooks = _context.Livros
                 .Include(l => l.IdAutorNavigation)
-                .Take(6)  // Limit to 5 books or adjust as needed
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
                 .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
             
             return View(featuredBooks);
         }

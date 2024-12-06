@@ -23,7 +23,7 @@
             <div class="col-12">
                 <h2 class="featured-title">Em Destaque</h2>
                 <div class="d-flex justify-content-between align-items-center">
-                    <button class="btn btn-nav btn-prev">&lt;</button>
+                    <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
                     <div class="row row-cols-1 row-cols-md-5 g-4 book-carousel">
                         @foreach (var book in Model)
                         {
@@ -40,7 +40,7 @@
                             </div>
                         }
                     </div>
-                    <button class="btn btn-nav btn-next">&gt;</button>
+                    <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
                 </div>
             </div>
         </div>
@@ -138,18 +138,39 @@
     .card-img, .card-img-bottom, .card-img-top {
         width: auto;
     }
+
+    .btn-nav[disabled] {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .book-carousel {
+        display: flex;
+        flex-wrap: wrap;
+    }
 </style>
 
 <script>
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.btn-next');
-    const bookContainer = document.querySelector('.row.row-cols-1.row-cols-md-5.g-4.overflow-x-auto');
+    document.addEventListener('DOMContentLoaded', function() {
+        const prevBtn = document.querySelector('.btn-prev');
+        const nextBtn = document.querySelector('.btn-next');
 
-    prevBtn.addEventListener('click', () => {
-        bookContainer.scrollLeft -= 200;
-    });
+        function navigatePage(page) {
+            window.location.href = `/?page=${page}`;
+        }
 
-    nextBtn.addEventListener('click', () => {
-        bookContainer.scrollLeft += 200;
+        prevBtn.addEventListener('click', () => {
+            if (!prevBtn.hasAttribute('disabled')) {
+                const prevPage = parseInt(prevBtn.getAttribute('data-page'));
+                navigatePage(prevPage);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (!nextBtn.hasAttribute('disabled')) {
+                const nextPage = parseInt(nextBtn.getAttribute('data-page'));
+                navigatePage(nextPage);
+            }
+        });
     });
 </script>
