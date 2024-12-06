@@ -4,11 +4,58 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@if (ViewData["Query"] != null)
+{
+    <p class="search-query">Resultados para: @Html.Encode(ViewData["Query"].ToString())</p>
+}
+<div>
+    <h2>Filtrar Por</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <!-- Filtro por Número de Cliques -->
+    <a href="@Url.Action("Index", new { filter = "clicks" })" class="filter-link">Número de Cliques</a>
+
+    <br /><br />
+
+    <!-- Filtro por Autor -->
+    <form method="get" action="@Url.Action("Index")">
+        <label for="filter-author">Autor:</label>
+        <select id="filter-author" name="authorId" onchange="this.form.submit()">
+            <option value="">Selecione um autor</option>
+            @foreach (var autor in ViewBag.Autores)
+            {
+                <option value="@autor.IdAutor">@autor.NomeAutor</option>
+            }
+        </select>
+    </form>
+
+    <br />
+
+    <!-- Filtro por Editora -->
+    <form method="get" action="@Url.Action("Index")">
+        <label for="filter-editor">Editora:</label>
+        <select id="filter-editor" name="editorId" onchange="this.form.submit()">
+            <option value="">Selecione uma editora</option>
+            @foreach (var editora in ViewBag.Editoras)
+            {
+                <option value="@editora.IdEditora">@editora.NomeEditora</option>
+            }
+        </select>
+    </form>
+
+    <br />
+
+    <!-- Filtro por País de Origem -->
+    <form method="get" action="@Url.Action("Index")">
+        <label for="filter-country">País de Origem:</label>
+        <select id="filter-country" name="countryId" onchange="this.form.submit()">
+            <option value="">Selecione um país</option>
+            @foreach (var pais in ViewBag.Paises)
+            {
+                <option value="@pais.IdPais">@pais.NomePais</option>
+            }
+        </select>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr>

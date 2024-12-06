@@ -23,30 +23,41 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Livroes
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(string filter, int? authorId, int? editorId, int? countryId)
         {
-            // Comece com a consulta básica de Livros
             var livrosQuery = _context.Livros.AsQueryable();
 
-            // Verifique se a query foi passada e se não é vazia
-            if (!string.IsNullOrEmpty(query))
+            if (filter == "clicks")
             {
-                // Tornar ambos os lados da comparação minúsculos para uma busca insensível a maiúsculas/minúsculas
-                livrosQuery = livrosQuery.Where(l => EF.Functions.Like(l.TituloLivros.ToLower(), $"%{query.ToLower()}%"));
+                livrosQuery = livrosQuery.OrderByDescending(l => l.Clicks);
+            }
+            else if (authorId.HasValue)
+            {
+                livrosQuery = livrosQuery.Where(l => l.IdAutor == authorId);
+            }
+            else if (editorId.HasValue)
+            {
+                livrosQuery = livrosQuery.Where(l => l.IdEditora == editorId);
+            }
+            else if (countryId.HasValue)
+            {
+                livrosQuery = livrosQuery.Where(l => l.IdLinguaNavigation.IdPais == countryId);
             }
 
-            // Inclua as entidades relacionadas (as navegações) após aplicar o filtro
-            livrosQuery = livrosQuery
-                          .Include(l => l.IdAutorNavigation)
-                          .Include(l => l.IdEditoraNavigation)
-                          .Include(l => l.IdGenerosNavigation)
-                          .Include(l => l.IdLinguaNavigation);
+            var livros = await livrosQuery
+                .Include(l => l.IdAutorNavigation)
+                .Include(l => l.IdEditoraNavigation)
+                .Include(l => l.IdGenerosNavigation)
+                .Include(l => l.IdLinguaNavigation)
+                .ToListAsync();
 
-            // Execute a consulta e obtenha os resultados
-            var livros = await livrosQuery.ToListAsync();
+            ViewBag.Autores = await _context.Autors.ToListAsync();
+            ViewBag.Editoras = await _context.Editoras.ToListAsync();
+            ViewBag.Paises = await _context.Pais.ToListAsync();
 
             return View(livros);
         }
+
 
 
 

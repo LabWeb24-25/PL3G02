@@ -13,10 +13,9 @@
     <script src="~/js/site.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/users.css" />
+    <link rel="stylesheet" href="~/css/SearchResult.css" />
 
-    <!-- Adicione a seção de estilos aqui -->
-    @RenderSection("Styles", required: false)
-
+    @await RenderSectionAsync("Scripts", required: false)
 </head>
 <body>
     <header>
@@ -25,15 +24,16 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/img/logo.png" alt="Logo" class="navbar-logo" />
                 </a>
-                <form method="get" action="@Url.Action("Index", "Livroes")">
-                <div class=" align-items-center flex-grow-1">
-                    <div class="input-group">
-                            <input type="text" class="custom-search-bar" name="query" value="@ViewData["Query"]" placeholder="Search" aria-label="Search" aria-describedby="button-search">
-                        <button type="submit" id="button-search">
-                            <img src="~/img/icons/ico_search.png" alt="Search Icon" class="icon-img-search" />
-                        </button>
+                <form id="searchForm" onsubmit="return false;">
+                    <div class="align-items-center flex-grow-1">
+                        <div class="input-group">
+                            <input type="text" id="searchBox" class="custom-search-bar" placeholder="Search" aria-label="Search">
+                            <button type="button" id="button-search">
+                                <img src="~/img/icons/ico_search.png" alt="Search Icon" class="icon-img-search" />
+                            </button>
+                        </div>
+                        <div id="resultsDiv" style="display: none;" class="search-results-container"></div>
                     </div>
-                </div>
                 </form>
                 <div class="d-flex align-items-center">
                     <a href="#" class="mx-auto">
@@ -67,8 +67,70 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.getElementById('searchBox').addEventListener('input', function () {
+            let query = this.value.trim();
+
+            if (query.length > 2) {
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', '@Url.Action("GetBooks", "Search")?query=' + encodeURIComponent(query), true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        let data = JSON.parse(xhr.responseText);
+                        console.log(data); // Para inspecionar os dados recebidos
+
+                        let resultsDiv = document.getElementById('resultsDiv');
+                        resultsDiv.innerHTML = ''; // Limpa resultados anteriores
+
+                        if (data.length > 0) {
+                            resultsDiv.style.display = 'block';
+                            data.forEach(book => {
+                                let div = document.createElement('div');
+                                div.classList.add('search-result-item');
+
+                                // Criação da imagem e link com ID correto
+                                let link = document.createElement('a');
+                                link.href = '/Livroes/Details?id=' + book.idLivro; // Use a propriedade correta!
+                                link.textContent = book.tituloLivros;
+
+                                let img = document.createElement('img');
+                                img.src = '/Cover/' + book.capaImg;
+                                img.alt = book.tituloLivros;
+                                img.classList.add('result-img'); // Classe CSS para personalizar imagem
+
+                                div.appendChild(img);
+                                div.appendChild(link);
+                                resultsDiv.appendChild(div);
+                            });
+                        } else {
+                            resultsDiv.style.display = 'none';
+                        }
+                    }
+                };
+                xhr.send();
+            } else {
+                document.getElementById('resultsDiv').style.display = 'none';
+            }
+        });
+        function redirectToIndex(query) {
+            window.location.href = '/Livroes/Index?query=' + encodeURIComponent(query);
+        }
+        document.getElementById('button-search').addEventListener('click', function () {
+            const query = document.getElementById('searchBox').value.trim();
+            if (query) {
+                redirectToIndex(query);
+            }
+
+        });
+    </script>
+
+
+
+
+   
 </body>
 </html>
