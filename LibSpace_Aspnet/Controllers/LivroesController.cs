@@ -23,11 +23,35 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Livroes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string query)
         {
-            var applicationDbContext = _context.Livros.Include(l => l.IdAutorNavigation).Include(l => l.IdEditoraNavigation).Include(l => l.IdGenerosNavigation).Include(l => l.IdLinguaNavigation);
-            return View(await applicationDbContext.ToListAsync());
+            // Comece com a consulta básica de Livros
+            var livrosQuery = _context.Livros.AsQueryable();
+
+            // Verifique se a query foi passada e se não é vazia
+            if (!string.IsNullOrEmpty(query))
+            {
+                // Tornar ambos os lados da comparação minúsculos para uma busca insensível a maiúsculas/minúsculas
+                livrosQuery = livrosQuery.Where(l => EF.Functions.Like(l.TituloLivros.ToLower(), $"%{query.ToLower()}%"));
+            }
+
+            // Inclua as entidades relacionadas (as navegações) após aplicar o filtro
+            livrosQuery = livrosQuery
+                          .Include(l => l.IdAutorNavigation)
+                          .Include(l => l.IdEditoraNavigation)
+                          .Include(l => l.IdGenerosNavigation)
+                          .Include(l => l.IdLinguaNavigation);
+
+            // Execute a consulta e obtenha os resultados
+            var livros = await livrosQuery.ToListAsync();
+
+            return View(livros);
         }
+
+
+
+
+
 
         public async Task<IActionResult> Requisitar(int? id)
         {
