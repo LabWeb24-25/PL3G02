@@ -2,93 +2,105 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container my-5">
-    <div class="row">
-        <div class="col-1 mb-4">
-            <div class="card announcements-container">
-                <div class="card-body">
-                    <h2>Announcements</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <button class="btn btn-primary btn-prev"><</button>
-        <div class="row row-cols-1 row-cols-md-5 g-4 overflow-x-auto">
-            <div class="col">
-                <div class="card">
-                    <img src="/img/book1.jpg" class="card-img-top" alt="Book 1">
+<div class="home-page">
+    <div class="container-fluid">
+        <!-- Announcements Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card announcements-container">
                     <div class="card-body">
-                        <h5 class="card-title">Título Autor</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <img src="/img/book2.jpg" class="card-img-top" alt="Book 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Título Autor</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <img src="/img/book3.jpg" class="card-img-top" alt="Book 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Título Autor</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <img src="/img/book4.jpg" class="card-img-top" alt="Book 4">
-                    <div class="card-body">
-                        <h5 class="card-title">Título Autor</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <img src="/img/book5.jpg" class="card-img-top" alt="Book 5">
-                    <div class="card-body">
-                        <h5 class="card-title">Título Autor</h5>
+                        <h1>Announcements</h1>
                     </div>
                 </div>
             </div>
         </div>
-        <button class="btn btn-primary btn-next">></button>
+
+        <!-- Featured Books Section -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="featured-title">Em Destaque</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-nav btn-prev">&lt;</button>
+                    <div class="row row-cols-1 row-cols-md-5 g-4 book-carousel">
+                        <!-- Book cards remain the same structure but with updated styling -->
+                        <div class="col">
+                            <div class="card book-card">
+                                <img src="/img/book1.jpg" class="card-img-top" alt="Book 1">
+                                <div class="card-body text-center">
+                                    <h5 class="book-title">Título</h5>
+                                    <p class="book-author">Autor</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Repeat for other books -->
+                    </div>
+                    <button class="btn btn-nav btn-next">&gt;</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    .btn-primary {
-        background-color: #004d40;
-        border-color: #004d40;
+    .home-page .container-fluid {
+        padding: 2rem;
     }
 
-    .btn-primary:hover {
-        background-color: #003d33;
-        border-color: #003d33;
-    }
-
-    .announcements-container {
-        height: 250px;
-        width: 1855px;
-        overflow-y: auto;
-        background-color: #f5f5f5;
-        border-radius: 8px;
+    .home-page .announcements-container {
+        background-color: #fff;
+        border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        min-height: 200px;
     }
 
-    .row.row-cols-1.row-cols-md-5.g-4.overflow-x-auto {
-        overflow-x: auto;
-        white-space: nowrap;
+    .home-page .featured-title {
+        color: #004d40;
+        margin-bottom: 2rem;
     }
 
-    .row.row-cols-1.row-cols-md-5.g-4.overflow-x-auto .col {
-        display: inline-block;
-        float: none;
-        white-space: normal;
+    .home-page .btn-nav {
+        background-color: #004d40;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 1rem;
+    }
+
+    .home-page .btn-nav:hover {
+        background-color: #003d33;
+        color: white;
+    }
+
+    .home-page .book-carousel {
+        flex: 1;
+        overflow-x: hidden;
+        margin: 0 2rem;
+    }
+
+    .home-page .book-card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .home-page .book-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .home-page .book-title {
+        color: #004d40;
+        margin-bottom: 0.2rem;
+    }
+
+    .home-page .book-author {
+        color: #666;
+        margin-bottom: 0;
     }
 </style>
 
