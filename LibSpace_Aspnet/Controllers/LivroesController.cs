@@ -166,8 +166,10 @@ namespace LibSpace_Aspnet.Controllers
                     .Select(f => new { f.IdLivro, f.IdBibliotecario })
                     .FirstOrDefaultAsync();
 
-                // Atualiza o ViewBag com o ID do bibliotecário ou null se não encontrado
-                ViewBag.BibliotecarioId = livroAssociacao?.IdBibliotecario;
+                var perfilB = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.IdPerfil == livroAssociacao.IdBibliotecario);
+
+                ViewBag.BibliotecarioId = perfilB.NomePerfil;
             }
 
             // Verifica se o usuário está autenticado e é um leitor
@@ -376,9 +378,28 @@ namespace LibSpace_Aspnet.Controllers
                     CapaImg = coverFileName // Save the file name in the database
                 };
 
-
                 // Simulate database save
                 _context.Add(livro);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+                if (userIdClaim == null)
+                {
+                    return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+                }
+
+                var userId = userIdClaim.Value;
+
+                var perfilB = await _context.Perfils
+                    .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
+                var inserirlivro = new InserirLivro
+                {
+                    IdLivro = livro.IdLivro,
+                    IdBibliotecario = perfilB.IdPerfil
+                };
+
+                _context.Add(inserirlivro);
+                await _context.SaveChangesAsync();
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
 

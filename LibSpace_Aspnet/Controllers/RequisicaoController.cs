@@ -22,8 +22,17 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Requisicao
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Requisita.Include(r => r.IdLivroNavigation);
-            return View(await applicationDbContext.ToListAsync());
+            var requisitas = await _context.Requisita.ToListAsync();
+
+            var prerequisitas = await _context.PreRequisita.ToListAsync();
+
+            var viewModel = new RequisitaViewModel
+            {
+                Requisita = requisitas,
+                PreRequisita = prerequisitas
+            };
+
+            return View(viewModel);
         }
 
         // GET: Requisicao/Details/5
