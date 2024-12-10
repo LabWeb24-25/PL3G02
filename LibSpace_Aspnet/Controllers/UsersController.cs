@@ -5,6 +5,7 @@ using LibSpace_Aspnet.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace YourNamespace.Controllers
 {
@@ -12,11 +13,15 @@ namespace YourNamespace.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public UsersController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UsersController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
+
+
         }
 
         public async Task<IActionResult> Index()
@@ -43,6 +48,57 @@ namespace YourNamespace.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PromoteUsertoAdmin(string userId)
+        {
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "ID do utilizador inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            try
+            {
+                if (string.IsNullOrEmpty(userId))
+                {
+                TempData["Error"] = "ID do utilizador inválido.";
+                return RedirectToAction(nameof(Index));
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Utilizador não encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                await _userManager.RemoveFromRoleAsync(user, "Leitor");
+                await _userManager.AddToRoleAsync(user, "Admin");
+
+                await _context.SaveChangesAsync();
+
+                var userEmail = await _userManager.GetEmailAsync(user);
+
+                await _emailSender.SendEmailAsync(
+                    userEmail,
+                    "Utilizador Promovido",
+                    "Você foi promovido para administrador.");
+                                
+
+                TempData["Success"] = "Utilizador promovido com sucesso!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao processar o pedido.";
+                return RedirectToAction(nameof(Index));
+            }
+
         }
 
         [HttpPost]
@@ -81,6 +137,14 @@ namespace YourNamespace.Controllers
                 _context.BibliotecarioPendentes.Remove(pendingBibliotecario);
                 await _context.SaveChangesAsync();
 
+                var userEmail = await _userManager.GetEmailAsync(user);
+
+                await _emailSender.SendEmailAsync(
+                    userEmail,
+                    "Pedido Aceite",
+                    "Você foi aceite como bibliotecário.");
+                                
+
                 TempData["Success"] = "Bibliotecário aprovado com sucesso!";
                 return RedirectToAction(nameof(Index));
             }
@@ -112,11 +176,45 @@ namespace YourNamespace.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
+
                 // Just remove from pending table
                 _context.BibliotecarioPendentes.Remove(pendingBibliotecario);
                 await _context.SaveChangesAsync();
 
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Utilizador não encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var userEmail = await _userManager.GetEmailAsync(user);
+
+                await _emailSender.SendEmailAsync(
+                    userEmail,
+                    "Pedido Rejeitado",
+                    "Você não foi aceite como bibliotecário.");
+
+
+
                 TempData["Success"] = "Pedido rejeitado com sucesso.";
+
+                //Apagar o perfil
+                // Apagar o perfil associado ao userId
+
+                var perfil = await _context.Perfils.SingleOrDefaultAsync(p => p.AspNetUserId == userId);
+                if (perfil != null)
+                {
+                    _context.Perfils.Remove(perfil);
+                    await _context.SaveChangesAsync();
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException($"Ocorreu um erro inesperado ao apagar o utilizador.");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -181,6 +279,8 @@ namespace YourNamespace.Controllers
                 return StatusCode(500, "Erro ao carregar detalhes do utilizador");
             }
         }
+
+
 
         public class UserActionModel
         {

@@ -153,9 +153,13 @@
                                     onclick="showUserDetails('@user.Id')">
                                 <i class="fas fa-cog"></i> Detalhes
                             </button>
-                            <button class="btn btn-light action-btn" title="Promover">
-                                <i class="fas fa-star"></i> Promover
-                            </button>
+                            <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-light action-btn" title="Promover">
+                                    <i class="fas fa-star"></i> Promover
+                                </button>
+                            </form>
                             <button class="btn btn-light action-btn text-danger" title="Bloquear">
                                 <i class="fas fa-ban"></i> Bloquear
                             </button>
