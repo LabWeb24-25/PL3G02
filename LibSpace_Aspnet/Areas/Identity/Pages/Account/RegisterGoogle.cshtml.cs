@@ -154,13 +154,13 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                     // Create Perfil
                     var perfil = new Perfil
                     {
-                        EndMorada = Input.Morada,
+                        EndMorada = $"{Input.Morada}, {Input.Cidade}",
                         EndCodPostal = Input.CodigoPostal,
                         NomePerfil = Input.Nome,
                         DataNascimentoPerfil = DateOnly.FromDateTime(Input.Birthday),
                         Apelido = Input.Apelido,
                         AspNetUserId = user.Id,
-                        ImgPerfil = null
+                        ImgPerfil = "/images/profiles/deafult_lab.webp" // Caminho da imagem padrão
                     };
 
                     _dbContext.Perfils.Add(perfil);
