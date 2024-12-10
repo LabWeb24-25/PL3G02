@@ -48,6 +48,15 @@ namespace LibSpace_Aspnet.Controllers
 
         public IActionResult Livro_Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             return View();
         }
 
@@ -91,6 +100,15 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Editoras/Create
         public IActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             return View();
         }
 
@@ -136,6 +154,15 @@ namespace LibSpace_Aspnet.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
             }
 
             var editora = await _context.Editoras.FindAsync(id);
@@ -187,6 +214,15 @@ namespace LibSpace_Aspnet.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
             }
 
             var editora = await _context.Editoras

@@ -9,6 +9,7 @@ using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
 using LibSpace.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -68,15 +69,21 @@ namespace LibSpace_Aspnet.Controllers
 
 
 
-
-
-
-        [Authorize(Roles="Leitor")]
         public async Task<IActionResult> Requisitar(int? id)
         {
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Leitor"))
+            {
+                return Redirect("/Users/Notauthorized");
             }
 
             var livro = await _context.Livros
@@ -109,10 +116,23 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            // Converte o Guid para string para facilitar a manipulação e visualização
+            var userId = userIdClaim.Value;
+
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
             var requisicao = new PreRequisitum
             {
                 Idlivro = livro.IdLivro,
-                Idleitor = 1, // Ajuste isso para capturar o leitor correto.
+                Idleitor = perfil.IdPerfil,
                 EstadoLevantamento = 0
             };
 
@@ -127,36 +147,175 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Livroes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            // Verifica se o ID é nulo
             if (id == null)
             {
                 return NotFound();
             }
 
+            // Declaração inicial do ViewBag para evitar redundâncias
+            ViewBag.BibliotecarioId = null;
+            ViewBag.IsFavorito = false;
+
+            // Verifica se o usuário está autenticado e é um administrador
+            if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                // Busca a associação do livro com o bibliotecário
+                var livroAssociacao = await _context.InserirLivros
+                    .Where(f => f.IdLivro == id)
+                    .Select(f => new { f.IdLivro, f.IdBibliotecario })
+                    .FirstOrDefaultAsync();
+
+                // Atualiza o ViewBag com o ID do bibliotecário ou null se não encontrado
+                ViewBag.BibliotecarioId = livroAssociacao?.IdBibliotecario;
+            }
+
+            // Verifica se o usuário está autenticado e é um leitor
+            if (User.Identity.IsAuthenticated && User.IsInRole("Leitor"))
+            {
+                // Obtém o ID do usuário atual
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    // Verifica se o livro está nos favoritos do usuário
+                    var isFavorito = await _context.Favoritos
+                        .AnyAsync(f => f.IdLeitor == int.Parse(userId) && f.IdLivro == id);
+
+                    // Atualiza o ViewBag com a informação de favorito
+                    ViewBag.IsFavorito = isFavorito;
+                }
+            }
+
+            // Busca os detalhes do livro e suas associações
             var livro = await _context.Livros
                 .Include(l => l.IdAutorNavigation)
                 .Include(l => l.IdEditoraNavigation)
                 .Include(l => l.IdGenerosNavigation)
                 .Include(l => l.IdLinguaNavigation)
                 .FirstOrDefaultAsync(m => m.IdLivro == id);
+
+            // Verifica se o livro foi encontrado
             if (livro == null)
             {
                 return NotFound();
             }
-            livro.Clicks += 1;
-            _context.Livros.Update(livro); // Marca o objeto como modificado.
-            await _context.SaveChangesAsync(); // Salva as mudanças no banco de dados.
 
+            // Incrementa os cliques no livro e salva a alteração no banco de dados
+            livro.Clicks += 1;
+            _context.Livros.Update(livro);
+            await _context.SaveChangesAsync();
+
+            // Retorna a view com os detalhes do livro
             return View(livro);
         }
 
 
+ 
+        [HttpPost]
+        public async Task<IActionResult> AdicionarFavorito(int idLivro)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Json(new { success = false, message = "Usuário não autenticado." });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            // Converte o Guid para string para facilitar a manipulação e visualização
+            var userId = userIdClaim.Value;
+
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
+
+            var livro = await _context.Livros.FindAsync(idLivro);
+            if (livro == null)
+            {
+                return Json(new { success = false, message = "Livro não encontrado." });
+            }
+
+            var favorito = new Favorito
+            {
+                IdLivro = idLivro,
+                IdLeitor = perfil.IdPerfil,
+            };
+
+            try
+            {
+                _context.Favoritos.Add(favorito);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Livro adicionado aos favoritos com sucesso!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao adicionar aos favoritos: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoverFavorito(int idLivro)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Json(new { success = false, message = "Usuário não autenticado." });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            // Converte o Guid para string para facilitar a manipulação e visualização
+            var userId = userIdClaim.Value;
+
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
+
+            var livro = await _context.Livros.FindAsync(idLivro);
+            if (livro == null)
+            {
+                return Json(new { success = false, message = "Livro não encontrado." });
+            }
+
+            var favoritoExistente = await _context.Favoritos
+                .FirstOrDefaultAsync(f => f.IdLivro == idLivro && f.IdLeitor == perfil.IdPerfil);
+
+            if (favoritoExistente == null)
+            {
+                return Json(new { success = false, message = "Livro não está nos favoritos." });
+            }
+
+            _context.Favoritos.Remove(favoritoExistente);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Livro removido dos favoritos com sucesso!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao remover dos favoritos: {ex.Message}" });
+            }
+        }
+
         // GET: Livroes/Create
-     
+
         public IActionResult Create(int? idEditora, int? idAutor, int? idPais, int? idGenero)
         {
             if (!User.Identity.IsAuthenticated)
             {
-                TempData["Mensagem"] = "Por favor, faça login para requisitar livros.";
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
                 return Redirect("/Identity/Account/Login");
             }
             if (!User.IsInRole("Bibliotecario"))
@@ -262,9 +421,20 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Livroes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+           
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
             }
 
             var livro = await _context.Livros.FindAsync(id);
@@ -321,11 +491,20 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Livroes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            
             if (id == null)
             {
                 return NotFound();
             }
-
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             var livro = await _context.Livros
                 .Include(l => l.IdAutorNavigation)
                 .Include(l => l.IdEditoraNavigation)

@@ -52,6 +52,15 @@ namespace LibSpace_Aspnet.Controllers
 
         public IActionResult Livro_Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
         }
@@ -116,6 +125,15 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Autors/Create
         public IActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
         }
@@ -188,6 +206,16 @@ namespace LibSpace_Aspnet.Controllers
                 return NotFound();
             }
 
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
+
             var autor = await _context.Autors.FindAsync(id);
             if (autor == null)
             {
@@ -239,6 +267,16 @@ namespace LibSpace_Aspnet.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
             }
 
             var autor = await _context.Autors

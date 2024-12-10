@@ -17,8 +17,11 @@
         <div class="action-links">
             <hr />
             <br />
-            <a asp-action="Edit" asp-route-id="@Model.IdEditora" class="btn_submit">Editar Editora</a>
-            <a asp-action="Delete" asp-route-id="@Model.IdEditora" class="btn_red">Eliminar Editora</a>
+            @if (User.IsInRole("Bibliotecario"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.IdEditora" class="btn_submit">Editar Editora</a>
+                <a asp-action="Delete" asp-route-id="@Model.IdEditora" class="btn_red">Eliminar Editora</a>
+            }
         </div>
     </div>
 </div>

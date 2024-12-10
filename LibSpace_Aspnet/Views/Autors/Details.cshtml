@@ -36,8 +36,11 @@
         <hr />
         <br />
         <div class="action-links">
-            <a asp-action="Edit" asp-route-id="@Model?.IdAutor" class="btn_submit">Editar Autor</a>
-            <a asp-action="Delete" asp-route-id="@Model?.IdAutor" class="btn_red">Eliminar Autor</a>
+            @if (User.IsInRole("Bibliotecario"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model?.IdAutor" class="btn_submit">Editar Autor</a>
+                <a asp-action="Delete" asp-route-id="@Model?.IdAutor" class="btn_red">Eliminar Autor</a>
+            }
         </div>
     </div>
 </div>

@@ -82,62 +82,12 @@ namespace LibSpace_Aspnet.Controllers
             {
                 _context.Add(pai);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Create", "Livroes", new { idPais = pai.IdPais });
             }
             return View(pai);
         }
 
-        // GET: Pais/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pai = await _context.Pais.FindAsync(id);
-            if (pai == null)
-            {
-                return NotFound();
-            }
-            return View(pai);
-        }
-
-        // POST: Pais/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPais,NomePais")] Pai pai)
-        {
-            if (id != pai.IdPais)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(pai);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PaiExists(pai.IdPais))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(pai);
-        }
-
+       
         // GET: Pais/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
