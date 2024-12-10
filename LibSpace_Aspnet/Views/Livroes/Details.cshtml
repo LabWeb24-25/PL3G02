@@ -43,7 +43,7 @@
         <p class="control-label textform_color">
             <strong>Autor:</strong> @Html.DisplayFor(model => model.IdAutorNavigation.Pseudonimo) <a asp-action="Details" asp-controller="Autors" asp-route-id="@Model.IdAutorNavigation.IdAutor">Ver detalhes do autor</a>
         </p>
-        <p class="control-label textform_color"><strong>Editora:</strong> @Html.DisplayFor(model => model.IdEditoraNavigation.NomeEditora) <a asp-action="Details" asp-controller="Autors" asp-route-id="@Model.IdEditoraNavigation.IdEditora">Ver detalhes da editora</a></p>
+        <p class="control-label textform_color"><strong>Editora:</strong> @Html.DisplayFor(model => model.IdEditoraNavigation.NomeEditora) <a asp-action="Details" asp-controller="Editoras" asp-route-id="@Model.IdEditoraNavigation.IdEditora">Ver detalhes da editora</a></p>
         <p class="control-label textform_color"><strong>Data de Edição:</strong> @Html.DisplayFor(model => model.DataEdicao)</p>
         <p class="control-label textform_color"><strong>Gênero:</strong> @Html.DisplayFor(model => model.IdGenerosNavigation.NomeGeneros)</p>
         <p class="control-label textform_color"><strong>País de Origem:</strong> @Html.DisplayFor(model => model.IdLinguaNavigation.NomePais)</p>
