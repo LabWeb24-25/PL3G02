@@ -155,3 +155,18 @@
     .btn_submit:hover {
         background-color: #003d33; /* Darker shade on hover */
     }
+
+.btn_gray {
+    padding: 10px 15px;
+    background-color: #888; /* Cinza para o botão */
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: not-allowed; /* Botão desabilitado */
+}
+
+    .btn_gray:hover {
+        background-color: #666; /* Escurece a cor de fundo ao passar o mouse */
+    }

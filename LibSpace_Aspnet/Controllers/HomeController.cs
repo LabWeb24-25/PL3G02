@@ -1,5 +1,7 @@
+using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace LibSpace_Aspnet.Controllers
@@ -7,16 +9,24 @@ namespace LibSpace_Aspnet.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _context;
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+
+        public async Task<IActionResult> Sobre()
+        {
+            var info = await _context.Bibliotecas.ToListAsync();
+            return View(info);
+        }
+
 
         public IActionResult Privacy()
         {

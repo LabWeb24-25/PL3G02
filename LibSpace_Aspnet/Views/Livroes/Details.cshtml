@@ -51,7 +51,18 @@
                 }
                 @if (!User.IsInRole("Bibliotecario") && !User.IsInRole("Admin"))
                 {
-                    <a asp-action="Requisitar" asp-route-id="@Model?.IdLivro" class="btn_submit">Requisitar</a>
+                    @if (ViewBag.estreq == 0)
+                    {
+                        <a asp-action="Requisitar" asp-route-id="@Model?.IdLivro" class="btn_submit">Requisitar</a>
+                    }
+                    @if (ViewBag.estreq == 1)
+                    {
+                        <button class="btn_gray" disabled>A Aguardar Requisição</button>
+                    }
+                    @if (ViewBag.estreq == 2)
+                    {
+                        <button class="btn_gray" disabled>Requisitado - Aguarda Entrega</button>
+                    }
                 }
             </div>
         </div>
@@ -86,6 +97,13 @@
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    .disabled {
+        pointer-events: none; /* Desativa interações com o link */
+        color: gray;         /* Muda a aparência visual */
+        text-decoration: none;
+    }
+</style>
     <script>
         $(document).ready(function () {
             function atualizarBotaoFavorito(livroId, adicionar) {

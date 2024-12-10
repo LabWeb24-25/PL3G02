@@ -152,11 +152,15 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            ViewBag.estreq=0;
+           
 
             // Declaração inicial do ViewBag para evitar redundâncias
             ViewBag.BibliotecarioId = null;
             ViewBag.IsFavorito = false;
-
+            
             // Verifica se o usuário está autenticado e é um administrador
             if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
@@ -176,16 +180,31 @@ namespace LibSpace_Aspnet.Controllers
             if (User.Identity.IsAuthenticated && User.IsInRole("Leitor"))
             {
                 // Obtém o ID do usuário atual
-                var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userId = userIdClaim.Value;
 
-                if (!string.IsNullOrEmpty(userId))
-                {
+                var perfil = await _context.Perfils
+                    .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
                     // Verifica se o livro está nos favoritos do usuário
-                    var isFavorito = await _context.Favoritos
-                        .AnyAsync(f => f.IdLeitor == int.Parse(userId) && f.IdLivro == id);
+                var isFavorito = await _context.Favoritos
+                        .AnyAsync(f => f.IdLeitor == perfil.IdPerfil && f.IdLivro == id);
+                ViewBag.IsFavorito = isFavorito;
+                
 
-                    // Atualiza o ViewBag com a informação de favorito
-                    ViewBag.IsFavorito = isFavorito;
+                var preRequisitos = await _context.PreRequisita
+                .Where(pr => pr.Idlivro == id && pr.Idleitor == perfil.IdPerfil) // Supondo que PreRequisita tenha um campo LivroId
+                .ToListAsync();
+
+                var Requisitos = await _context.Requisita
+                    .Where(r => r.IdLivro == id && r.IdLeitor == perfil.IdPerfil && r.DataEntrega == null) // Supondo que PreRequisita tenha um campo LivroId
+                    .ToListAsync();
+                if (preRequisitos.Any())
+                {
+                    ViewBag.estreq = 1;
+                }
+                if (Requisitos.Any())
+                {
+                    ViewBag.estreq = 2;
                 }
             }
 
