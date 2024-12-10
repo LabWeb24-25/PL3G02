@@ -18,6 +18,7 @@
 
     <!-- Filtro por Autor -->
     <form method="get" action="@Url.Action("Index")">
+        <input type="hidden" name="query" value="@ViewData["Query"]" />
         <label for="filter-author">Autor:</label>
         <select id="filter-author" name="authorId" onchange="this.form.submit()">
             <option value="">Selecione um autor</option>
@@ -32,6 +33,7 @@
 
     <!-- Filtro por Editora -->
     <form method="get" action="@Url.Action("Index")">
+        <input type="hidden" name="query" value="@ViewData["Query"]" />
         <label for="filter-editor">Editora:</label>
         <select id="filter-editor" name="editorId" onchange="this.form.submit()">
             <option value="">Selecione uma editora</option>
@@ -46,6 +48,7 @@
 
     <!-- Filtro por País de Origem -->
     <form method="get" action="@Url.Action("Index")">
+        <input type="hidden" name="query" value="@ViewData["Query"]" />
         <label for="filter-country">País de Origem:</label>
         <select id="filter-country" name="countryId" onchange="this.form.submit()">
             <option value="">Selecione um país</option>

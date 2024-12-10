@@ -16,7 +16,21 @@
             <div class="description-wrapper">
                 <p class="isbn">Ref: @Html.DisplayFor(model => model.Isbn)</p>
                 <br />
-                <button class="favorite-button" asp-action="" asp-route-id="@Model?.IdAutor">Adicionar Favorito</button>
+                @if (User.IsInRole("Leitor"))
+                {
+                    @if (!ViewBag.IsFavorito)
+                    {
+                        <button id="favorite-button-@Model.IdLivro" class="favorite-button" data-livro-id="@Model.IdLivro">Adicionar Favorito</button>
+                    }
+                    else
+                    {
+                        <button id="Rfavorite-button-@Model.IdLivro" class="Rfavorite-button" data-livro-id="@Model.IdLivro">Remover Favorito</button>
+                    }
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <p class="isbn">Criado por: @ViewBag.BibliotecarioId</p>
+                }
             </div>
         </div>
         <div class="DivInformation">
@@ -29,10 +43,27 @@
             <p class="control-label textform_color"><strong>Número de Exemplares Disponíveis:</strong> @Html.DisplayFor(model => model.NumExemplares)</p>
             <hr />
             <div class="action-links">
-                <a asp-action="" asp-route-id="@Model?.IdAutor" class="btn_submit">Ver Requisitados</a>
-                <a asp-action="Edit" asp-route-id="@Model?.IdLivro" class="btn_submit">Editar Livro</a>
-                <a asp-action="Delete" asp-route-id="@Model?.IdLivro" class="btn_red">Eliminar Livro</a>
-                <a asp-action="Requisitar" asp-route-id="@Model?.IdLivro" class="btn_submit">Requisitar</a>
+                @if (User.IsInRole("Bibliotecario"))
+                {
+                    <a asp-action="" asp-route-id="@Model?.IdAutor" class="btn_submit">Ver Requisitados</a>
+                    <a asp-action="Edit" asp-route-id="@Model?.IdLivro" class="btn_submit">Editar Livro</a>
+                    <a asp-action="Delete" asp-route-id="@Model?.IdLivro" class="btn_red">Eliminar Livro</a>
+                }
+                @if (!User.IsInRole("Bibliotecario") && !User.IsInRole("Admin"))
+                {
+                    @if (ViewBag.estreq == 0)
+                    {
+                        <a asp-action="Requisitar" asp-route-id="@Model?.IdLivro" class="btn_submit">Requisitar</a>
+                    }
+                    @if (ViewBag.estreq == 1)
+                    {
+                        <button class="btn_gray" disabled>A Aguardar Requisição</button>
+                    }
+                    @if (ViewBag.estreq == 2)
+                    {
+                        <button class="btn_gray" disabled>Requisitado - Aguarda Entrega</button>
+                    }
+                }
             </div>
         </div>
     </div>
@@ -65,6 +96,89 @@
 }
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    .disabled {
+        pointer-events: none; /* Desativa interações com o link */
+        color: gray;         /* Muda a aparência visual */
+        text-decoration: none;
+    }
+</style>
+    <script>
+        $(document).ready(function () {
+            function atualizarBotaoFavorito(livroId, adicionar) {
+                if (adicionar) {
+                    $(`#favorite-button-${livroId}`)
+                        .text('Adicionar Favorito')
+                        .removeClass('Rfavorite-button')
+                        .addClass('favorite-button');
+                } else {
+                    $(`#favorite-button-${livroId}`)
+                        .text('Remover Favorito')
+                        .removeClass('favorite-button')
+                        .addClass('Rfavorite-button');
+                }
+            }
+
+            // Função para adicionar favorito
+            function adicionarFavorito(livroId) {
+                $.ajax({
+                    url: '@Url.Action("AdicionarFavorito", "Livroes")',
+                    type: 'POST',
+                    data: { idLivro: livroId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            atualizarBotaoFavorito(livroId, false);
+                        } else {
+                            alert(response.message || 'Erro ao adicionar favorito.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Erro ao fazer a solicitação:", {
+                            status: jqXHR.status,
+                            statusText: textStatus,
+                            error: errorThrown
+                        });
+                        alert(`Erro ao adicionar o favorito. Código: ${jqXHR.status}, Erro: ${errorThrown}`);
+                    }
+                });
+            }
+
+            // Função para remover favorito
+            function removerFavorito(livroId) {
+                $.ajax({
+                    url: '@Url.Action("RemoverFavorito", "Livroes")',
+                    type: 'POST',
+                    data: { idLivro: livroId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            atualizarBotaoFavorito(livroId, true);
+                        } else {
+                            alert(response.message || 'Erro ao remover favorito.');
+                        }
+                    },
+                    error: function () {
+                        alert("Ocorreu um erro ao tentar remover o favorito.");
+                    }
+                });
+            }
+
+            // Event listeners para os botões de favorito
+            $(document).on("click", ".favorite-button", function () {
+                const livroId = $(this).data("livro-id");
+                adicionarFavorito(livroId);
+            });
+
+            $(document).on("click", ".Rfavorite-button", function () {
+                const livroId = $(this).data("livro-id");
+                removerFavorito(livroId);
+            });
+        });
+    </script>
+
     <!-- Validation Scripts -->
     <partial name="_ValidationScriptsPartial" />
 }
+

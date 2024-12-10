@@ -5,6 +5,14 @@
 		CHECK (End_CodPostal LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]')
 )
 
+CREATE TABLE PreRequisita(
+	IDReserva	INT	NOT NULL IDENTITY(1,1),
+	IDLeitor	INT NOT NULL,
+	Idlivro		INT NOT NULL,
+	EstadoLevantamento	INT NOT NULL,
+	PRIMARY KEY(IDReserva),
+)
+
 --Biblioteca(Id_Biblioteca, End_Morada, End_CodigoPostal (FK), Nome, Email, Telefone, Horario)
 CREATE TABLE Biblioteca(
 		Id_Biblioteca	INT	IDENTITY(1,1)	NOT NULL,

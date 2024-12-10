@@ -4,76 +4,124 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="container form-container">
+    <h4 class="form-title">Adicionar Livro</h4>
+    <form asp-action="Edit" class="form-content" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h4>Livro</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdLivro" />
+        <!-- Campo para adicionar a capa do livro -->
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="Isbn" class="control-label"></label>
+                <label asp-for="CapaImg" class="form-label">Adicionar Capa</label>
+                <input type="file" asp-for="CapaImg" class="form-control-file" id="capaImgInput" onchange="previewImage(event, 'imagePreview')" />
+                <span asp-validation-for="CapaImg" class="text-danger"></span>
+            </div>
+            <div class="form-group position-relative">
+                <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 200px; max-height: 200px; margin-top: 10px;" />
+                <!-- Add the remove button -->
+                <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px; display: none;" id="removeImageButton" onclick="removeImage('capaImgInput', 'imagePreview', 'removeImageButton')">
+                    X
+                </button>
+            </div>
+        </div>
+
+        <!-- Campos ISBN e Título -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Isbn" class="form-label">ISBN <span class="text-danger">*</span></label>
                 <input asp-for="Isbn" class="form-control" />
                 <span asp-validation-for="Isbn" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataEdicao" class="control-label"></label>
-                <input asp-for="DataEdicao" class="form-control" />
-                <span asp-validation-for="DataEdicao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TituloLivros" class="control-label"></label>
+                <label asp-for="TituloLivros" class="form-label">Título <span class="text-danger">*</span></label>
                 <input asp-for="TituloLivros" class="form-control" />
                 <span asp-validation-for="TituloLivros" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Campos Autor com dropdown e link para criar novo autor -->
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="NumExemplares" class="control-label"></label>
+                <label asp-for="IdAutor" class="form-label">Autor <span class="text-danger">*</span></label>
+                <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
+                <span asp-validation-for="IdAutor" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Autors" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Autor</a>
+            </div>
+
+            <!-- Campo Editora com dropdown e link para criar nova editora -->
+            <div class="form-group">
+                <label asp-for="IdEditora" class="form-label">Editora <span class="text-danger">*</span></label>
+                <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
+                <span asp-validation-for="IdEditora" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Editoras" class="btn_rend">Criar Editora</a>
+            </div>
+        </div>
+
+        <!-- Campos Idioma e Número de Exemplares -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
+                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
+                <span asp-validation-for="IdLingua" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Pais" class="btn_rend">Criar País</a>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="NumExemplares" class="form-label">Número de Exemplares <span class="text-danger">*</span></label>
                 <input asp-for="NumExemplares" class="form-control" />
                 <span asp-validation-for="NumExemplares" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Campo Data de Edição -->
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="CapaImg" class="control-label"></label>
-                <input asp-for="CapaImg" class="form-control" />
-                <span asp-validation-for="CapaImg" class="text-danger"></span>
+                <label asp-for="DataEdicao" class="form-label">Data de Publicação <span class="text-danger">*</span></label>
+                <input asp-for="DataEdicao" type="date" class="form-control" />
+                <span asp-validation-for="DataEdicao" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Campo Sinopse -->
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdEditora" class="control-label"></label>
-                <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
-                <span asp-validation-for="IdEditora" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdLingua" class="control-label"></label>
-                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
-                <span asp-validation-for="IdLingua" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Sinopse" class="control-label"></label>
-                <input asp-for="Sinopse" class="form-control" />
+                <label asp-for="Sinopse" class="form-label">Sinopse <span class="text-danger">*</span></label>
+                <textarea asp-for="Sinopse" class="form-control textarea"></textarea>
                 <span asp-validation-for="Sinopse" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Campo Gênero -->
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="IdAutor" class="control-label"></label>
-                <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
-                <span asp-validation-for="IdAutor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdGeneros" class="control-label"></label>
+                <label asp-for="IdGeneros" class="form-label">Gênero <span class="text-danger">*</span></label>
                 <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
                 <span asp-validation-for="IdGeneros" class="text-danger"></span>
+                <label class="control-label">Caso não exista:</label>
+                <a asp-action="Livro_Create" asp-controller="Generos" class="btn_rend">Criar Genero</a>
+
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+            <input type="submit" value="Editar Livro" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Styles {
+    <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS for styling (ensure this path is correct) -->
+    <link rel="stylesheet" href="~/css/create_design_livro.css" />
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }
+

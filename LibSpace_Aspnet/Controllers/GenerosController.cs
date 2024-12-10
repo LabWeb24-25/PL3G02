@@ -46,6 +46,15 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Generos/Create
         public IActionResult Livro_Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             return View();
         }
 
@@ -68,6 +77,15 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Generos/Create
         public IActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             return View();
         }
 
@@ -87,56 +105,6 @@ namespace LibSpace_Aspnet.Controllers
             return View(genero);
         }
 
-        // GET: Generos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var genero = await _context.Generos.FindAsync(id);
-            if (genero == null)
-            {
-                return NotFound();
-            }
-            return View(genero);
-        }
-
-        // POST: Generos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdGeneros,NomeGeneros")] Genero genero)
-        {
-            if (id != genero.IdGeneros)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(genero);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GeneroExists(genero.IdGeneros))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(genero);
-        }
 
         // GET: Generos/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -144,6 +112,16 @@ namespace LibSpace_Aspnet.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
             }
 
             var genero = await _context.Generos
