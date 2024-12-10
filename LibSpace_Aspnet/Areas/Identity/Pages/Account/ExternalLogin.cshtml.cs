@@ -89,7 +89,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
             {
                 string email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 var user = await _userManager.FindByEmailAsync(email);
-
+                
                 if (user == null)
                 {
                     user = new IdentityUser
@@ -123,7 +123,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         // No profile - redirect to complete registration
                         return RedirectToPage("/Account/RegisterGoogle", new { email = email });
                     }
-
+                    
                     // Has profile - sign in
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl ?? "~/");
