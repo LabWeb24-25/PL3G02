@@ -9,7 +9,7 @@
     }
 }
 
-<link rel="stylesheet" href="~/css/manage.css" />
+<link rel="stylesheet" href="~/css/manage.css" asp-append-version="true" />
 
 @RenderSection("Styles", required: false)
 
@@ -20,7 +20,7 @@
     <hr />
     <div class="row">
         <div class="col-md-3">
-            <partial name="_ManageNav" />
+            <partial name="/Areas/Identity/Pages/Account/Manage/_ManageNav.cshtml" />
         </div>
         <div class="col-md-9">
             @RenderBody()
@@ -28,6 +28,4 @@
     </div>
 </div>
 
-@section Scripts {
-    @RenderSection("Scripts", required: false)
-}
+@RenderSection("Scripts", required: false)
