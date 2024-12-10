@@ -1,8 +1,9 @@
 ﻿@page
-@model LibSpace_Aspnet.Areas.Identity.Pages.Account.LoginWith2faModel
+@model LoginWith2faModel
 @{
     ViewData["Title"] = "Autenticação dois-fatores";
 }
+
 <div class="login-container">
     <div class="login-card">
         <div class="logo-container">
@@ -37,8 +38,12 @@
         </form>
     </div>
 </div>
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+
+@section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/login2fa.css" />
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Verificação do Código de Recuperação";
 }
+
 <div class="login-container">
     <div class="login-card">
         <div class="logo-container">
@@ -36,8 +37,11 @@
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+@section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/LoginWithRec.css" />
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
