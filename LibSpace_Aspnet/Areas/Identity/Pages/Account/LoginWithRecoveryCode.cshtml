@@ -1,0 +1,43 @@
+﻿@page
+@model LoginWithRecoveryCodeModel
+@{
+    ViewData["Title"] = "Verificação do Código de Recuperação";
+}
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="/images/logo.png" alt="LibSpaceLogo" class="logo">
+        </div>
+        <h2>@ViewData["Title"]</h2>
+        <p class="subtitle">
+            Solicitou iniciar sessão com um código de recuperação. Esta sessão não será memorizada
+            até fornecer um código da aplicação autenticadora ou desativar a autenticação dois fatores
+            e iniciar sessão novamente.
+        </p>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-shield-alt input-icon"></i>
+                    <input asp-for="Input.RecoveryCode" class="form-control"
+                           autocomplete="off"
+                           placeholder="Código de Recuperação" />
+                    <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
+                </div>
+            </div>
+            <button type="submit" class="login-button">Iniciar Sessão</button>
+            <div class="recovery-link-container">
+                <a asp-page="./Login" class="recovery-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar ao início de sessão
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/LoginWithRec.css" />
+}

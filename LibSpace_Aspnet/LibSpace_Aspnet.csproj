@@ -19,30 +19,4 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\img\logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Cover\" />
-    <Folder Include="wwwroot\Foto_Autor\" />
-	<Folder Include="wwwroot\Editora_IMG\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Views\Autors\Livro_Create.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
