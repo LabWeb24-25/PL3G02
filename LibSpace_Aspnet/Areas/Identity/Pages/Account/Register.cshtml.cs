@@ -197,7 +197,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         DataNascimentoPerfil = DateOnly.FromDateTime(Input.Birthday),
                         Apelido = Input.Apelido,
                         AspNetUserId = user.Id,
-                        ImgPerfil = null
+                        ImgPerfil = "/images/profiles/deafult_lab.webp" // Caminho da imagem padrão
                     };
 
                     _dbContext.Perfils.Add(perfil);

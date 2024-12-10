@@ -1,0 +1,49 @@
+﻿@page
+@model LoginWith2faModel
+@{
+    ViewData["Title"] = "Autenticação dois-fatores";
+}
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="/images/logo.png" alt="LibSpaceLogo" class="logo">
+        </div>
+        <h2>@ViewData["Title"]</h2>
+        <p class="subtitle">Por favor, insira o código gerado pela sua aplicação autenticadora.</p>
+        <form method="post">
+            <div class="form-group">
+                <div class="input-container">
+                    <i class="fas fa-key input-icon"></i>
+                    <input asp-for="Input.TwoFactorCode" class="form-control"
+                           placeholder="Código de autenticação" autofocus />
+                    <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="remember-label">
+                    <input asp-for="Input.RememberMachine" class="form-check-input" />
+                    <span>Lembrar este dispositivo</span>
+                </label>
+            </div>
+            <button type="submit" class="login-button">Iniciar sessão</button>
+            <div class="recovery-link-container">
+                <a asp-page="./LoginWithRecoveryCode"
+                   asp-route-returnUrl="@Model.ReturnUrl"
+                   class="recovery-link">
+                    <i class="fas fa-unlock-alt"></i>
+                    Usar código de recuperação
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/login2fa.css" />
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
