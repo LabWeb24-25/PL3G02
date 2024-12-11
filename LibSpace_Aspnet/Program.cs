@@ -46,7 +46,11 @@ builder.Services.AddAuthentication()
 
 // Adicionar serviços de controladores com views e páginas
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    //Maps do url
+    // options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "register");
+});
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 var app = builder.Build();
@@ -79,10 +83,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Configurar as rotas padrão
+app.MapGet("/login", context =>
+{
+    context.Response.Redirect("/identity/account/login");
+    return Task.CompletedTask;
+});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
-);
+    );
+
 app.MapRazorPages();
 
 app.Run();
