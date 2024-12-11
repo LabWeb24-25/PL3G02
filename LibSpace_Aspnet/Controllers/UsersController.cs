@@ -46,6 +46,11 @@ namespace LibSpace_Aspnet.Controllers
             return View(perfil);
         }
 
+        public IActionResult Notauthorized()
+        {
+            return View();
+        }
+
         // GET: Users/Create
         public IActionResult Create()
         {
