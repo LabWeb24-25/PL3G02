@@ -20,22 +20,23 @@ body {
     margin: 20px 0; /* Adiciona margem superior e inferior */
 }
 
-.separator .or-text {
-    background-color: white; /* Cor de fundo do texto */
-    padding: 0 10px; /* Adiciona espaçamento ao redor do texto */
-    z-index: 1; /* Garante que o texto fique acima da linha */
-    position: center;
-}
+    .separator .or-text {
+        background-color: white; /* Cor de fundo do texto */
+        padding: 0 10px; /* Adiciona espaçamento ao redor do texto */
+        z-index: 1; /* Garante que o texto fique acima da linha */
+        position: center;
+    }
 
-.separator::before,
-.separator::after {
-    content: '';
-    flex-grow: 1; /* Faz as linhas ocuparem o espaço disponível */
-    height: 1px; /* Altura da linha */
-    background-color: #ccc; /* Cor da linha */
-    position: relative;
-    top: -0.2em;
-}
+
+    .separator::before,
+    .separator::after {
+        content: '';
+        flex-grow: 1; /* Faz as linhas ocuparem o espaço disponível */
+        height: 1px; /* Altura da linha */
+        background-color: #ccc; /* Cor da linha */
+        position: relative;
+        top: -0.2em;
+    }
 
 .register-card {
 
@@ -94,15 +95,15 @@ h2 {
     transition: border-color 0.3s;
 }
 
-.form-control:focus {
-    border-color: #4fd1c5;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
-}
+    .form-control:focus {
+        border-color: #4fd1c5;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+    }
 
-.form-control::placeholder {
-    color: #adb5bd;
-}
+    .form-control::placeholder {
+        color: #adb5bd;
+    }
 
 .terms-container {
     display: flex;
@@ -138,9 +139,9 @@ h2 {
     transition: background-color 0.3s;
 }
 
-.register-button:hover {
-    background-color: #3db1a7;
-}
+    .register-button:hover {
+        background-color: #3db1a7;
+    }
 
 .login-link {
     text-align: center;
@@ -148,14 +149,14 @@ h2 {
     color: #666;
 }
 
-.login-link a {
-    color: #4fd1c5;
-    text-decoration: none;
-}
+    .login-link a {
+        color: #4fd1c5;
+        text-decoration: none;
+    }
 
-.login-link a:hover {
-    text-decoration: underline;
-}
+        .login-link a:hover {
+            text-decoration: underline;
+        }
 
 .text-danger {
     color: #dc3545;
@@ -183,6 +184,7 @@ input[type="date"] {
     }
 }
 
+
 /* Add these new styles to your existing CSS file */
 
 .form-row {
@@ -199,18 +201,18 @@ input[type="date"] {
 
 /* Update your existing media query */
 @media (max-width: 576px) {
-.form-row {
-    flex-direction: column;
-    gap: 10px;
-}
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
 
-.half-width {
-    margin-bottom: 20px;
-}
+    .half-width {
+        margin-bottom: 20px;
+    }
 
-.half-width:last-child {
-    margin-bottom: 0;
-}
+        .half-width:last-child {
+            margin-bottom: 0;
+        }
 }
 
 /* Add these styles to your existing register.css file */

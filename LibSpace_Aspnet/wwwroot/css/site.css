@@ -20,31 +20,25 @@ html {
     min-height: 100%;
 }
 
-header {
-    position: sticky;
-    top: 0;
-    z-index: 1030;
-}
-
 body {
     margin-bottom: 60px;
 }
 
 .btn_group {
     display: flex;
-    justify-content: space-between; /* Espaï¿½a os botï¿½es horizontalmente */
-    width: 100%; /* Faz os botï¿½es ocuparem toda a largura */
-    gap: 20px; /* Espaï¿½amento entre os botï¿½es */
-    margin-top: 20px; /* Espaï¿½amento superior */
+    justify-content: space-between; /* Espaça os botões horizontalmente */
+    width: 100%; /* Faz os botões ocuparem toda a largura */
+    gap: 20px; /* Espaçamento entre os botões */
+    margin-top: 20px; /* Espaçamento superior */
 }
 
 .btn_submit {
-    flex-grow: 1; /* Faz com que os botï¿½es se expandam igualmente */
+    flex-grow: 1; /* Faz com que os botões se expandam igualmente */
     background-color: #004d40;
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    padding: 15px 20px; /* Botï¿½es maiores */
+    padding: 15px 20px; /* Botões maiores */
     text-align: center;
     text-decoration: none;
     border: none;
@@ -54,10 +48,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.btn_submit:hover {
-    background-color: #003d33; /* Cor mais escura no hover */
-    color: #ffffff;
-}
+    .btn_submit:hover {
+        background-color: #003d33; /* Cor mais escura no hover */
+        color: #ffffff;
+    }
 
 .forms_design {
     display: flex; /* Habilita o uso do flexbox */
@@ -66,13 +60,13 @@ body {
     align-items: center; /* Alinha os elementos horizontalmente */
     height: 100%; /* Faz com que o container ocupe toda a altura da tela */
     margin: auto; /* Centraliza horizontalmente */
-    width: 80%; /* Expande a largura para 80% da pï¿½gina */
-    max-width: 100%; /* Permite ocupar atï¿½ 100% da largura */
+    width: 80%; /* Expande a largura para 80% da página */
+    max-width: 100%; /* Permite ocupar até 100% da largura */
     background-color: #ffffff; /* Fundo branco */
-    padding: 40px; /* Espaï¿½amento interno maior */
+    padding: 40px; /* Espaçamento interno maior */
     border-radius: 10px; /* Bordas arredondadas */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
-    text-align: center; /* Centraliza texto dentro do formulï¿½rio */
+    text-align: center; /* Centraliza texto dentro do formulário */
 }
 
 
@@ -84,231 +78,111 @@ body {
 .forms_center {
     display: flex;
     flex-direction: column; /* Organiza os elementos verticalmente */
-    align-items: stretch; /* Faz os elementos ocuparem toda a largura disponï¿½vel */
-    width: 100%; /* Garante que o conteï¿½do dentro ocupe toda a largura */
-    max-width: 800px; /* Largura mï¿½xima maior */
-    gap: 10px; /* Reduz o espaï¿½amento vertical entre os elementos */
+    align-items: stretch; /* Faz os elementos ocuparem toda a largura disponível */
+    width: 100%; /* Garante que o conteúdo dentro ocupe toda a largura */
+    max-width: 800px; /* Largura máxima maior */
+    gap: 10px; /* Reduz o espaçamento vertical entre os elementos */
 }
 
 .caixatexto {
-    width: 100%; /* Faz com que a caixa de texto ocupe toda a largura do formulï¿½rio */
-    padding: 10px; /* Reduz o espaï¿½amento interno */
-    border: 1px solid #ccc; /* Borda padrï¿½o */
+    width: 100%; /* Faz com que a caixa de texto ocupe toda a largura do formulário */
+    padding: 10px; /* Reduz o espaçamento interno */
+    border: 1px solid #ccc; /* Borda padrão */
     border-radius: 5px; /* Bordas arredondadas */
     font-size: 16px; /* Tamanho da fonte */
-    margin: 5px 0; /* Reduz o espaï¿½amento vertical entre as caixas */
+    margin: 5px 0; /* Reduz o espaçamento vertical entre as caixas */
 }
 
 .caixatextopeq {
     height: 120px; /* Altura ajustada para caixa de texto menor */
-    resize: none; /* Desabilita redimensionamento para manter consistï¿½ncia */
-    margin: 5px 0; /* Reduz o espaï¿½amento vertical */
+    resize: none; /* Desabilita redimensionamento para manter consistência */
+    margin: 5px 0; /* Reduz o espaçamento vertical */
 }
 
 .textbox {
-    width: 100%; /* Preenche o espaï¿½o disponï¿½vel */
+    width: 100%; /* Preenche o espaço disponível */
     height: 150px; /* Altura inicial */
-    padding: 10px; /* Espaï¿½amento interno */
+    padding: 10px; /* Espaçamento interno */
     font-size: 16px; /* Tamanho da fonte */
     font-family: 'Roboto', sans-serif; /* Define a fonte */
-    line-height: 1.5; /* Melhora o espaï¿½amento entre linhas */
+    line-height: 1.5; /* Melhora o espaçamento entre linhas */
     border: 1px solid #ccc; /* Borda leve */
     border-radius: 5px; /* Bordas arredondadas */
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra interna */
     resize: vertical; /* Permite redimensionar verticalmente */
-    overflow-y: auto; /* Exibe a barra de rolagem vertical quando necessï¿½rio */
-    outline: none; /* Remove contorno padrï¿½o do navegador */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Transiï¿½ï¿½o suave para foco */
-    text-align: left; /* Alinhamento ï¿½ esquerda */
+    overflow-y: auto; /* Exibe a barra de rolagem vertical quando necessário */
+    outline: none; /* Remove contorno padrão do navegador */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Transição suave para foco */
+    text-align: left; /* Alinhamento à esquerda */
     vertical-align: top; /* Garante que o texto comece no topo */
 }
 
-.textbox:focus {
-    border-color: #034C39; /* Cor da borda ao focar */
-    box-shadow: 0 0 5px rgba(3, 76, 57, 0.5); /* Sombra ao focar */
-    outline: none; /* Remove o contorno padrï¿½o do navegador */
+    .textbox:focus {
+        border-color: #034C39; /* Cor da borda ao focar */
+        box-shadow: 0 0 5px rgba(3, 76, 57, 0.5); /* Sombra ao focar */
+        outline: none; /* Remove o contorno padrão do navegador */
+    }
+    margin-bottom: 60px;
 }
 
 .navbar {
-    padding: 0 20px;
-    height: 50px;
-    background-color: white;
-}
-
-.navbar-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    gap: 20px;
-}
-
-.navbar-brand {
-    display: flex;
-    align-items: center;
-    padding: 0;
-    margin: 0;
+    padding-right: 1%;
 }
 
 .navbar-logo {
-    height: 50px;  /* Fixed height instead of vw */
-    width: auto;
-    object-fit: contain;
-}
-
-.search-section{
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 800px;
-    min-width: 200px;
-    height: 35px;
-    margin-bottom: 0px;
-}
-
-.input-group {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
+    height: 3.5vw;
+    max-height: 88px;
 }
 
 .custom-search-bar {
-    height: 100%;
-    width: 100%;
-    border: 2px solid #064d3b;
-    border-radius: 8px;
-    padding: 0 40px 0 15px;
+    width: 70%;
+    max-width: 850px;
+    max-height: 5vw;
+    border: 3px solid #064d3b;
+    border-radius: 10px;
+    margin-left: 5%;
+    padding-left: 1%;
+    padding-right: 10%;
     font-size: 1rem;
     transition: all 0.3s ease-in-out;
 }
 
+.custom-search-bar:focus {
+    border-color: #057857;
+    box-shadow: 0 0 15px rgba(6, 77, 59, 0.40);
+    outline: none;
+}
+
 #button-search {
-    position: absolute;
-    right: 0;
-    height: 35px;
-    width: 35px;
-    padding: 6px;
-    border: none;
-    background: transparent;
-    z-index: 1;
+    width: 12%;
+    max-width: 90px;
+    max-height: 5vw;
+    border: 3px solid #064d3b;
+    border-radius: 0 10px 10px 0;
+    transition: all 0.1s ease-in-out;
+}
+
+#button-search:hover {
+    background-color: #057857;
+    transform: scale(1.1);
 }
 
 .icon-img-search {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
-.icon-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;  /* Consistent spacing between icons */
-    margin-left: 20px;
-}
-
-.icon-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;  /* Fixed size */
-    height: 40px;
-    padding: 8px;
-    border-radius: 8px;
-    background-color: transparent;
-    transition: all 0.2s ease-in-out;
-}
-
-.icon-link:hover {
-    background-color: rgba(6, 77, 59, 0.1);
+    max-width: 50%;
+    height: auto;
 }
 
 .icon-img {
-    width: 24px;  /* Slightly larger icons */
-    height: 24px;
-    object-fit: contain;  /* Maintain aspect ratio */
+    width: auto;
+    height: 2vw;
+    display: inline-table;
 }
 
-.dropdown-item {
-    padding: 0.5rem 1rem;
-    color: #064d3b;
+.icon-img:hover {
+    transform: scale(1.1);
+    transition: all 0.0s ease-in-out;
 }
 
-    .dropdown-item:hover {
-        background-color: #f8f9fa; /* Light grey background */
-        color: #057857; /* Lighter green on hover */
-    }
-
-    .dropdown-item button {
-        color: #064d3b;
-        text-decoration: none;
-        background: none;
-        border: none;
-        width: 100%;
-        text-align: left;
-    }
-
-        .dropdown-item button:hover {
-            color: #057857; /* Lighter green on hover */
-        }
-
-
-
-
-/* Add styles for Font Awesome icons */
-.fas {
-    color: #064d3b;
-}
-
-
-.dropdown-item:hover .fas {
-    color: #057857; /* Icons change color on hover too */
-}
-
-.dropdown-item,
-.dropdown-item:link, /* Add these selectors to override */
-.dropdown-item:visited, /* default link styles */
-.dropdown-item:active {
-    padding: 0.5rem 1rem;
-    color: #064d3b;
-    text-decoration: none;
-}
-    @media (max-width: 768px) {
-        .navbar {
-            height: auto;
-            min-height: 50px;
-            padding: 10px 20px;
-        }
-
-        .navbar-content {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .navbar-brand {
-            height: 50px;
-        }
-
-        .search-section {
-            order: 2;
-            flex-basis: 100%;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .icon-container {
-            order: 1;
-            margin-left: auto;
-        }
-    }
-/* ora bem isto daqui foi tirado do developer tools do google, lÃ¡ funcionou entao basicamente, NAO MEXER */
-    .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-.card-img, .card-img-bottom, .card-img-top {
-    height: 266.666666667px;
+.icon-spacing {
+    margin-left: 4vw; 
 }
