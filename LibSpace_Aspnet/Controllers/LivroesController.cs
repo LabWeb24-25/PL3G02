@@ -334,15 +334,15 @@ namespace LibSpace_Aspnet.Controllers
 
         public IActionResult Create(int? idEditora, int? idAutor, int? idPais, int? idGenero)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
-            }
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+            //    return Redirect("/Identity/Account/Login");
+            //}
+            //if (!User.IsInRole("Bibliotecario"))
+            //{
+            //    return Redirect("/Users/Notauthorized");
+            //}
             ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", idAutor);
             ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", idEditora); // Preenche com a editora selecionada
             ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros", idGenero);
