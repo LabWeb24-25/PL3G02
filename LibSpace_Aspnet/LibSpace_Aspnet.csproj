@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Livroes\View.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
@@ -17,6 +21,34 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
+    <Folder Include="NewFolder\" />
+    <Folder Include="wwwroot\images\" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\img\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Cover\" />
+    <Folder Include="wwwroot\Foto_Autor\" />
+	<Folder Include="wwwroot\Editora_IMG\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Autors\Livro_Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
