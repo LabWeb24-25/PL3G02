@@ -153,10 +153,11 @@
                                     onclick="showUserDetails('@user.Id')">
                                 <i class="fas fa-cog"></i> Detalhes
                             </button>
-                            <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;">
+                            <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;" id="promoteForm-@user.Id">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="userId" value="@user.Id" />
-                                <button type="submit" class="btn btn-light action-btn" title="Promover">
+                                <button type="button" class="btn btn-light action-btn" title="Promover" 
+                                        onclick="showPromoteConfirm('@user.Id')">
                                     <i class="fas fa-star"></i> Promover
                                 </button>
                             </form>
@@ -187,6 +188,24 @@
         </div>
     </div>
 </turbo-frame>
+
+<div class="modal fade" id="promoteConfirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Promoção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja promover este utilizador para Administrador?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="confirmPromote()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
 .list-header {
@@ -363,5 +382,19 @@ function showUserDetails(userId) {
             alert('Erro ao carregar detalhes do utilizador');
             console.error('Error:', error);
         });
+}
+
+let currentPromoteForm = null;
+
+function showPromoteConfirm(userId) {
+    currentPromoteForm = document.getElementById(`promoteForm-${userId}`);
+    const modal = new bootstrap.Modal(document.getElementById('promoteConfirmModal'));
+    modal.show();
+}
+
+function confirmPromote() {
+    if (currentPromoteForm) {
+        currentPromoteForm.submit();
+    }
 }
 </script>

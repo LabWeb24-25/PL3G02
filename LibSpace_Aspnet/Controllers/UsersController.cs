@@ -54,7 +54,6 @@ namespace YourNamespace.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PromoteUsertoAdmin(string userId)
         {
-
             if (string.IsNullOrEmpty(userId))
             {
                 TempData["Error"] = "ID do utilizador inválido.";
