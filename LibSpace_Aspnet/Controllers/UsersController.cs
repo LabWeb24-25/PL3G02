@@ -21,7 +21,6 @@ namespace YourNamespace.Controllers
             _userManager = userManager;
             _emailSender = emailSender;
 
-
         }
 
         public async Task<IActionResult> Index()
@@ -144,7 +143,7 @@ namespace YourNamespace.Controllers
                     "Você foi aceite como bibliotecário.");
                                 
 
-                TempData["Success"] = "Bibliotecário aprovado com sucesso!";
+                TempData["Success"] = "Bibliotec��rio aprovado com sucesso!";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -153,6 +152,51 @@ namespace YourNamespace.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+        //Revoke Bibliotecario Role
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RevokeBibliotecarioRole(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "ID do utilizador inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+            try {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Utilizador não encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Check if user actually has the role before trying to remove it
+                if (!await _userManager.IsInRoleAsync(user, "Bibliotecario"))
+                {
+                    TempData["Error"] = "Utilizador não é um bibliotecário.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                await _userManager.RemoveFromRoleAsync(user, "Bibliotecario");
+                await _userManager.AddToRoleAsync(user, "Leitor");
+
+                var userEmail = await _userManager.GetEmailAsync(user);
+                await _emailSender.SendEmailAsync(
+                    userEmail,
+                    "Status de Bibliotecário Revogado",
+                    "Você não é mais bibliotecário.");
+
+                TempData["Success"] = "Papel de Bibliotecário revogado com sucesso.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao processar o pedido.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -278,8 +322,6 @@ namespace YourNamespace.Controllers
                 return StatusCode(500, "Erro ao carregar detalhes do utilizador");
             }
         }
-
-
 
         public class UserActionModel
         {

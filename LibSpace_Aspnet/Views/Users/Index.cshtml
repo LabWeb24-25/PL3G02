@@ -153,11 +153,24 @@
                                     onclick="showUserDetails('@user.Id')">
                                 <i class="fas fa-cog"></i> Detalhes
                             </button>
+                            
+                            @if (Model.UserRoles[user.Id].Contains("Bibliotecario"))
+                            {
+                                <form asp-action="RevokeBibliotecarioRole" method="post" style="display: inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-warning action-btn" title="Revogar Bibliotecário"
+                                            onclick="return confirm('Tem certeza que deseja revogar o papel de Bibliotecário deste utilizador?')">
+                                        <i class="fas fa-user-minus"></i> Revogar Bibliotecário
+                                    </button>
+                                </form>
+                            }
+
                             <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;" id="promoteForm-@user.Id">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="userId" value="@user.Id" />
                                 <button type="button" class="btn btn-light action-btn" title="Promover" 
-                                        onclick="showPromoteConfirm('@user.Id')">
+                                        onclick="return confirm('Tem certeza que deseja promover o utilizador para administrador?')">
                                     <i class="fas fa-star"></i> Promover
                                 </button>
                             </form>
@@ -202,6 +215,24 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="confirmPromote()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="revokeConfirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Revogação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja revogar o papel de Bibliotecário deste utilizador?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="confirmRevoke()">Confirmar</button>
             </div>
         </div>
     </div>
@@ -384,17 +415,5 @@ function showUserDetails(userId) {
         });
 }
 
-let currentPromoteForm = null;
 
-function showPromoteConfirm(userId) {
-    currentPromoteForm = document.getElementById(`promoteForm-${userId}`);
-    const modal = new bootstrap.Modal(document.getElementById('promoteConfirmModal'));
-    modal.show();
-}
-
-function confirmPromote() {
-    if (currentPromoteForm) {
-        currentPromoteForm.submit();
-    }
-}
 </script>
