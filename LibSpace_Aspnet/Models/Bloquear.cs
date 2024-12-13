@@ -10,11 +10,11 @@ namespace LibSpace_Aspnet.Models;
 public partial class Bloquear
 {
     [Column("ID_Admin")]
-    public int IdAdmin { get; set; }
+    public string IdAdmin { get; set; } = null!;
 
     [Key]
     [Column("ID_User")]
-    public int IdUser { get; set; }
+    public string IdUser { get; set; } = null!;
 
     [Column("Motivo_Bloquear", TypeName = "text")]
     public string MotivoBloquear { get; set; } = null!;

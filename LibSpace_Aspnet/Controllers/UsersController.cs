@@ -153,6 +153,71 @@ namespace YourNamespace.Controllers
             }
         }
 
+        //Bloquear utilizador
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BlockUser(string userId, string blockReason, bool blockForever, DateTime? blockUntil)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "ID do utilizador inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try 
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Utilizador não encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var adminId = _userManager.GetUserId(User);
+
+                // Remove all roles from user
+                var userRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+                // Add block record
+                var blockRecord = new Bloquear
+                {
+                    IdAdmin = adminId,
+                    IdUser = userId,
+                    MotivoBloquear = blockReason,
+                    DataBloqueio = DateOnly.FromDateTime(DateTime.Now)
+                };
+
+                _context.Bloquears.Add(blockRecord);
+                await _context.SaveChangesAsync();
+
+                // Set lockout based on forever flag or until date
+                await _userManager.SetLockoutEnabledAsync(user, true);
+                await _userManager.SetLockoutEndDateAsync(user, 
+                    blockForever ? DateTimeOffset.MaxValue : new DateTimeOffset(blockUntil.Value));
+
+                var adminName = await _userManager.GetUserNameAsync(await _userManager.FindByIdAsync(adminId));
+                var userEmail = await _userManager.GetEmailAsync(user);
+                
+                var blockDurationText = blockForever ? 
+                    "permanentemente" : 
+                    $"até {blockUntil?.ToString("dd/MM/yyyy")}";
+                    
+                await _emailSender.SendEmailAsync(
+                    userEmail,
+                    "A sua conta foi bloqueada",
+                    $"A sua conta foi bloqueada {blockDurationText} pelo administrador {adminName}. Motivo: {blockReason}");
+
+                TempData["Success"] = "Utilizador bloqueado com sucesso.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao processar o pedido.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
         //Revoke Bibliotecario Role
         [HttpPost]
         [ValidateAntiForgeryToken]

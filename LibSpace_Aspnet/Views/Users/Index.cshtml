@@ -171,10 +171,12 @@
                                 <input type="hidden" name="userId" value="@user.Id" />
                                 <button type="button" class="btn btn-light action-btn" title="Promover" 
                                         onclick="return confirm('Tem certeza que deseja promover o utilizador para administrador?')">
-                                    <i class="fas fa-star"></i> Promover
+                                    <i class="fas fa-star text-warning"></i> Promover
                                 </button>
                             </form>
-                            <button class="btn btn-light action-btn text-danger" title="Bloquear">
+                            <button class="btn btn-light action-btn text-danger" 
+                                    onclick="showBlockModal('@user.Id')" 
+                                    title="Bloquear">
                                 <i class="fas fa-ban"></i> Bloquear
                             </button>
                         </div>
@@ -234,6 +236,46 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-warning" onclick="confirmRevoke()">Confirmar</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="blockUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bloquear Utilizador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="BlockUser" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" name="userId" id="blockUserId" />
+                    <div class="mb-3">
+                        <label for="blockReason" class="form-label">Motivo do Bloqueio</label>
+                        <textarea class="form-control" id="blockReason" name="blockReason" 
+                                rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="blockForever" name="blockForever" value="true">
+                            <input type="hidden" name="blockForever" value="false" />
+                            <label class="form-check-label" for="blockForever">
+                                Bloquear permanentemente
+                            </label>
+                        </div>
+                        <div id="untilDateGroup">
+                            <label for="blockUntil" class="form-label">Bloquear até</label>
+                            <input type="date" class="form-control" id="blockUntil" name="blockUntil"
+                                   min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar Bloqueio</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -415,5 +457,23 @@ function showUserDetails(userId) {
         });
 }
 
+function showBlockModal(userId) {
+    document.getElementById('blockUserId').value = userId;
+    var modal = new bootstrap.Modal(document.getElementById('blockUserModal'));
+    modal.show();
+}
+
+document.getElementById('blockForever').addEventListener('change', function() {
+    const untilDateGroup = document.getElementById('untilDateGroup');
+    const blockUntil = document.getElementById('blockUntil');
+    
+    if (this.checked) {
+        untilDateGroup.style.display = 'none';
+        blockUntil.removeAttribute('required');
+    } else {
+        untilDateGroup.style.display = 'block';
+        blockUntil.setAttribute('required', '');
+    }
+});
 
 </script>
