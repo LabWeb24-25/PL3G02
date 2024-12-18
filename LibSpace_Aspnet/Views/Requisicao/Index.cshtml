@@ -1,59 +1,195 @@
-﻿@model IEnumerable<LibSpace_Aspnet.Models.Requisitum>
+﻿@model LibSpace_Aspnet.Models.RequisitaView
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Requisições e Pré-Requisições";
 }
 
-<h1>Index</h1>
+<h1>Requisições e Pré-Requisições</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<!-- Tabela para exibir Pré-Requisições -->
+<h2>Pré-Requisições</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdBibliotecarioRecetor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdBibliotecarioRemetente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataPrevEntrega)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataEntrega)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdLivroNavigation)
-            </th>
-            <th></th>
+            <th>Título do Livro</th>
+            <th>Nome do Leitor</th>
+            <th>Estado de Levantamento</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdBibliotecarioRecetor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdBibliotecarioRemetente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataPrevEntrega)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataEntrega)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdLivroNavigation.IdLivro)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var preRequisita in Model.PreRequisita)
+        {
+            <tr>
+                <td>@preRequisita.NomeLivro</td>
+                <td>@preRequisita.NomeLeitor</td>
+                <td>@preRequisita.EstadoLevantamento</td>
+                <td>
+                    <a href="javascript:void(0);" class="btn-approve" data-url="@Url.Action("AceitarReq", new { id = preRequisita.IdReserva })">
+                        Aprovar Requisição
+                    </a> |
+                    <a href="javascript:void(0);" class="btn-reject" data-url="@Url.Action("RejeitarReq", new { id = preRequisita.IdReserva })">
+                        Rejeitar Requisição
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<h2>Requisitados</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título do Livro</th>
+            <th>Nome do Leitor</th>
+            <th>Data da Requisição</th>
+            <th>Data Prevista de Entrega</th>
+            <th>Data de Entrega</th>
+            <th>Bibliotecário Remetente</th>
+            <th>Bibliotecário Recetor</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var requisita in Model.Requisita)
+        {
+            if (requisita.NomeBibliotecarioRemetente == "N/A")
+            {
+                <tr>
+                    <td>@requisita.NomeLivro</td>
+                    <td>@requisita.NomeLeitor</td>
+                    <td>@requisita.DataRequisicao.ToString("d")</td>
+                    <td>@requisita.DataPrevEntrega.ToString("d")</td>
+                    <td>N/A</td>
+                    <td>@requisita.NomeBibliotecarioRecetor ?? "N/A"</td>
+                    <td>N/A</td>
+                    <td>
+                        <a asp-action="Entrega" asp-route-id="idem.IdReserva">Finalizar Requisição</a> |
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+<h2>Entregues</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título do Livro</th>
+            <th>Nome do Leitor</th>
+            <th>Data da Requisição</th>
+            <th>Data Prevista de Entrega</th>
+            <th>Data de Entrega</th>
+            <th>Bibliotecário Recetor</th>
+            <th>Bibliotecário Remetente</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var requisita in Model.Requisita)
+        {
+            if (requisita.NomeBibliotecarioRemetente != "N/A")
+            {
+                <tr>
+                    <td>@requisita.NomeLivro</td>
+                    <td>@requisita.NomeLeitor</td>
+                    <td>@requisita.DataRequisicao.ToString("d")</td>
+                    <td>@requisita.DataPrevEntrega.ToString("d")</td>
+                    <td>@requisita.DataEntrega.ToString("d")</td>
+                    <td>@requisita.NomeBibliotecarioRecetor ?? "N/A"</td>
+                    <td>@requisita.NomeBibliotecarioRemetente ?? "N/A"</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<!-- Modal de Confirmação -->
+<div id="confirm-modal" style="display:none;">
+    <div id="modal-content">
+        <h3>Confirmar Ação</h3>
+        <p id="modal-message">Tem certeza que deseja realizar esta ação?</p>
+        <div>
+            <button id="btn-yes" style="background-color: #28a745; color: white; padding: 10px; border: none; border-radius: 5px;">Sim</button>
+            <button id="btn-no" style="background-color: #dc3545; color: white; padding: 10px; border: none; border-radius: 5px;">Não</button>
+        </div>
+    </div>
+</div>
+
+<!-- CSS para o Modal -->
+<style>
+    #confirm-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    #modal-content {
+        background: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<!-- JavaScript para controlar o Modal e fazer a requisição AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const modal = $("#confirm-modal");
+        const modalMessage = $("#modal-message");
+        let targetUrl = '';
+
+        // Função para mostrar o modal
+        function showModal(message, url) {
+            modalMessage.text(message);
+            targetUrl = url;
+            modal.show();
+        }
+
+        // Botão "Aprovar Requisição"
+        $(".btn-approve").click(function () {
+            const url = $(this).data('url');
+            showModal("Tem certeza que deseja aprovar esta requisição?", url);
+        });
+
+        // Botão "Rejeitar Requisição"
+        $(".btn-reject").click(function () {
+            const url = $(this).data('url');
+            showModal("Tem certeza que deseja rejeitar esta requisição?", url);
+        });
+
+        // Botão "Sim" no modal
+        $("#btn-yes").click(function () {
+            $.ajax({
+                url: targetUrl, // URL da ação no controlador
+                type: 'POST',
+                success: function (response) {
+                    alert(response.message); // Mensagem do controlador
+                    if (response.success) {
+                        location.reload(); // Atualiza a página
+                    }
+                },
+                error: function () {
+                    alert("Ocorreu um erro. Por favor, tente novamente.");
+                }
+            });
+            modal.hide();
+        });
+
+        // Botão "Não" no modal
+        $("#btn-no").click(function () {
+            modal.hide();
+        });
+    });
+</script>
