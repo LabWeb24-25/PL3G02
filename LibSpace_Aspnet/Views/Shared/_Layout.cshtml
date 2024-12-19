@@ -34,6 +34,32 @@
                     <div class="icon-container">
                         @if (User.Identity.IsAuthenticated)
                         {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="~/" class="icon-link">
+                                    <img src="~/img/icons/ico_gestao_contas.png" alt="ico_gestao_contas.png" class="icon-img" />
+                                </a>
+                            }
+                            @if (User.IsInRole("Bibliotecario"))
+                            {
+                                <div class="dropdown">
+                                    <a href="#" class="icon-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="~/img/icons/ico_add_book.png" alt="ico_add_book.png" class="icon-img" />
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="~/Livroes/Create">
+                                                <i class="fas fa-book"></i> Adicionar Livro
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="~/Autors/Create">
+                                                <i class="fas fa-feather"></i> Adicionar Autor
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
                             <div class="dropdown">
                                 <a href="#" class="icon-link" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
@@ -45,11 +71,9 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                            <button type="submit" class="btn btn-link p-0">
-                                                <i class="fas fa-sign-out-alt"></i> Logout
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                             <i class="fas fa-sign-out-alt"></i> Logout
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -57,16 +81,30 @@
                         else
                         {
                             <a href="/login" class="icon-link">
-                                <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
+                                <img src="~/img/icons/ico_login.png" alt="ico_login.png" class="icon-img" />
                             </a>
                         }
-                        
-                        <a href="~/Requisitados" class="icon-link">
-                            <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
-                        </a>
-                        <a href="~/Favoritos" class="icon-link">
-                            <img src="~/img/icons/ico_wishlist.png" alt="ico_wishlist.png" class="icon-img" />
-                        </a>
+                        @if (User.IsInRole("Admin")) // MUDAR AQUI O INDICE DE REQUISICAO para BIBLIOTEACARIO
+                        {
+                            <a href="~/Requisicao" class="icon-link">
+                                <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
+                            </a>
+                        }
+                        else if (User.IsInRole("Bibliotecario"))
+                        { // MUDAR AQUI O INDICE DE REQUISICAO para BIBLIOTEACARIO
+                            <a href="~/Requisicao" class="icon-link">
+                                <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
+                            </a>
+                        }
+                        else
+                        { // MUDAR AQUI O INDICE DE REQUISICAO para BIBLIOTEACARIO
+                            <a href="~/Requisicao" class="icon-link">
+                                <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
+                            </a>
+                            <a href="~/Favoritos" class="icon-link">
+                                <img src="~/img/icons/ico_wishlist.png" alt="ico_wishlist.png" class="icon-img" />
+                            </a>
+                        }
                         <a href="~/Ajuda" class="icon-link">
                             <img src="~/img/icons/ico_ajuda.png" alt="ico_ajuda.png" class="icon-img" />
                         </a>

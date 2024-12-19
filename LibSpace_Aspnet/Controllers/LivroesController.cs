@@ -81,6 +81,7 @@ namespace LibSpace_Aspnet.Controllers
                 TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
                 return Redirect("/Identity/Account/Login");
             }
+
             if (!User.IsInRole("Leitor"))
             {
                 return Redirect("/Users/Notauthorized");
@@ -230,8 +231,6 @@ namespace LibSpace_Aspnet.Controllers
             // Retorna a view com os detalhes do livro
             return View(livro);
         }
-
-
  
         [HttpPost]
         public async Task<IActionResult> AdicionarFavorito(int idLivro)
@@ -411,14 +410,14 @@ namespace LibSpace_Aspnet.Controllers
                 var perfilB = await _context.Perfils
                     .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
 
-                var inserirlivro = new InserirLivro
-                {
-                    IdLivro = livro.IdLivro,
-                    IdBibliotecario = perfilB.IdPerfil
-                };
+                //var inserirlivro = new InserirLivro
+                //{
+                //    IdLivro = livro.IdLivro,
+                //    IdBibliotecario = perfilB.IdPerfil
+                //};
 
-                _context.Add(inserirlivro);
-                await _context.SaveChangesAsync();
+                //_context.Add(inserirlivro);
+                //await _context.SaveChangesAsync();
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
 
