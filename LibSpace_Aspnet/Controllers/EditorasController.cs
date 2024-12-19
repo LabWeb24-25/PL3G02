@@ -119,6 +119,7 @@ namespace LibSpace_Aspnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("NomeEditora,InfoEditora,ImgEditora")] EditoraViewModel editora)
         {
+            
             var Extensoes = new[] { ".jpg", ".jpeg", ".png" };
 
             var extension = Path.GetExtension(editora.ImgEditora.FileName).ToLower();
@@ -155,22 +156,28 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
-            }
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+            //    return Redirect("/Identity/Account/Login");
+            //}
+            //if (!User.IsInRole("Bibliotecario"))
+            //{
+            //    return Redirect("/Users/Notauthorized");
+            //}
 
             var editora = await _context.Editoras.FindAsync(id);
             if (editora == null)
             {
                 return NotFound();
             }
-            return View(editora);
+            var editoraviewmodel = new EditoraViewModel
+            {
+                NomeEditora = editora.NomeEditora,
+                InfoEditora = editora.InfoEditora
+            };
+            ViewBag.ImgEditora = "~/Editora_IMG/" + editora.ImgEditora;
+            return View(editoraviewmodel);
         }
 
         // POST: Editoras/Edit/5

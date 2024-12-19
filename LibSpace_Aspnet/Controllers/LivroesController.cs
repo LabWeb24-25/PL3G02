@@ -361,26 +361,25 @@ namespace LibSpace_Aspnet.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validate the cover image format
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                var fileExtension = Path.GetExtension(livroViewModel.CapaImg?.FileName).ToLower();
-
-                if (!allowedExtensions.Contains(fileExtension))
+                if (livroViewModel.CapaImg != null)
                 {
-                    ModelState.AddModelError("CapaImg", "Please upload a valid image file (jpg, jpeg, png, gif, bmp).");
-                    PopulateMockDropdowns();
-                    return View(livroViewModel);
+                    // Validate the cover image format
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(livroViewModel.CapaImg?.FileName).ToLower();
+
+                    // Save the image to a folder
+                    var coverFileName = Path.GetFileName(livroViewModel.CapaImg.FileName);
+                    var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Cover", coverFileName);
+
+                    using (var stream = new FileStream(coverPath, FileMode.Create))
+                    {
+                        await livroViewModel.CapaImg.CopyToAsync(stream);
+                    }
                 }
-
-                // Save the image to a folder
-                var coverFileName = Path.GetFileName(livroViewModel.CapaImg.FileName);
-                var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Cover", coverFileName);
-
-                using (var stream = new FileStream(coverPath, FileMode.Create))
+                else
                 {
-                    await livroViewModel.CapaImg.CopyToAsync(stream);
+                    var CoverFileName = "livrosemfoto.png";
                 }
-
                 // Create a Livro object and populate its fields
                 var livro = new Livro
                 {

@@ -76,25 +76,31 @@ namespace LibSpace_Aspnet.Controllers
             {
                 string? uniqueFileName = null;
 
-
-                // Validate the image format
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
-
-                if (!allowedExtensions.Contains(fileExtension))
+                if (viewModel.FotoAutor != null)
                 {
-                    ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+                    // Validate the image format
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
 
-                    return View(viewModel);
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+
+                        return View(viewModel);
+                    }
+
+                    // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
+                    uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
+                    var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                    using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                    {
+                        await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    }
                 }
-
-                // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
-                uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
-                var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
-
-                using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                else
                 {
-                    await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    var autorImagePath = "autorsemfoto.jpeg";
                 }
 
 
