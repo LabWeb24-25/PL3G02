@@ -153,6 +153,29 @@ namespace YourNamespace.Controllers
             }
         }
 
+        //Desbloquear Utilizador
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnblockUser(string userId)
+        {
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "ID do utilizador inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+            try {
+                await _userManager.SetLockoutEndDateAsync(await _userManager.FindByIdAsync(userId), null);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao processar o pedido.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
         //Bloquear utilizador
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -175,9 +198,13 @@ namespace YourNamespace.Controllers
 
                 var adminId = _userManager.GetUserId(User);
 
-                // Remove all roles from user
+                // If role is not Leitor, change to Leitor
                 var userRoles = await _userManager.GetRolesAsync(user);
-                await _userManager.RemoveFromRolesAsync(user, userRoles);
+                if (!userRoles.Contains("Leitor"))
+                {
+                    await _userManager.RemoveFromRolesAsync(user, userRoles);
+                    await _userManager.AddToRoleAsync(user, "Leitor");
+                }
 
                 // Add block record
                 var blockRecord = new Bloquear
