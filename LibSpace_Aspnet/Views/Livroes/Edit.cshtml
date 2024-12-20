@@ -1,27 +1,39 @@
-﻿@model LibSpace_Aspnet.Models.Livro
+﻿@model LibSpace.Models.LivroViewModel
 
 @{
     ViewData["Title"] = "Edit";
 }
 
 <div class="container form-container">
-    <h4 class="form-title">Adicionar Livro</h4>
+    <h4 class="form-title">Editar Livros</h4>
     <form asp-action="Edit" class="form-content" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <!-- Campo para adicionar a capa do livro -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="CapaImg" class="form-label">Adicionar Capa</label>
-                <input type="file" asp-for="CapaImg" class="form-control-file" id="capaImgInput" onchange="previewImage(event, 'imagePreview')" />
+                <label asp-for="CapaImg" class="control-label textform_color">Insira uma foto</label>
+                <input asp-for="CapaImg"
+                       type="file"
+                       class="form-control-file"
+                       id="CapaImgInput"
+                       onchange="previewImage(event, 'CapaImgPreview')" />
                 <span asp-validation-for="CapaImg" class="text-danger"></span>
             </div>
             <div class="form-group position-relative">
-                <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 200px; max-height: 200px; margin-top: 10px;" />
-                <!-- Add the remove button -->
-                <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px; display: none;" id="removeImageButton" onclick="removeImage('capaImgInput', 'imagePreview', 'removeImageButton')">
+                <img id="CapaImgPreview"
+                     src="@Url.Content(ViewBag.CapaImg)"
+                     alt="Image Preview"
+                     style="max-width: 200px; max-height: 200px; margin-top: 10px; display:@(ViewBag.CapaImg != null ? "block" : "none");" />
+                <!-- Botão para remover a imagem -->
+                <button type="button"
+                        class="btn btn-danger btn-sm position-absolute"
+                        style="top: 10px; right: 10px; display:@(ViewBag.CapaImg != null ? "block" : "none");"
+                        id="removeImageButton"
+                        onclick="removeImage('CapaImgInput', 'CapaImgPreview', 'removeImageButton')">
                     X
                 </button>
+
             </div>
         </div>
 
@@ -108,7 +120,7 @@
 
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
-            <input type="submit" value="Editar Livro" class="btn btn-primary" />
+            <input type="submit" value="Adicionar Livro" class="btn btn-primary" />
         </div>
     </form>
 </div>
@@ -123,5 +135,42 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}
+    <script>
+        function previewImage(event, previewId) {
+            const input = event.target;
+            const preview = document.getElementById(previewId);
 
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block'; // Exibe a imagem no preview
+                    document.getElementById('removeImageButton').style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                document.getElementById('removeImageButton').style.display = 'none';
+            }
+        }
+
+        function removeImage(inputId, previewId, buttonId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const button = document.getElementById(buttonId);
+
+            input.value = ''; // Limpa o input
+            preview.src = ''; // Remove o src da imagem
+            preview.style.display = 'none'; // Esconde o preview
+            button.style.display = 'none'; // Esconde o botão
+            if (statusInput != null) {
+                statusInput.value = 1; // Define o valor para 1, indicando que a imagem foi removida
+            }
+        }
+
+
+    </script>
+}

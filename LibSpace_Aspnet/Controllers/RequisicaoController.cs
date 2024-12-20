@@ -23,18 +23,22 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Requisicao
         public async Task<IActionResult> Index()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
-            }
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+            //    return Redirect("/Identity/Account/Login");
+            //}
+            //if (!User.IsInRole("Bibliotecario"))
+            //{
+            //    return Redirect("/Users/Notauthorized");
+            //}
             var Requisita = await _context.Requisita
                 .Select(req => new RequisitaViewModel
                 {
+                    IdLivro = req.IdLivro,
+                    IdLeitor = req.IdLeitor,
+                    IdBiblioRecetor = req.IdBibliotecarioRecetor,
+                    IdBiblioRemetente = req.IdBibliotecarioRemetente,
                     NomeLivro = _context.Livros
                         .Where(l => l.IdLivro == req.IdLivro)
                         .Select(l => l.TituloLivros)
@@ -131,8 +135,7 @@ namespace LibSpace_Aspnet.Controllers
                 DataPrevEntrega = DateOnly.FromDateTime(DateTime.Now.AddDays(15)),
             };
 
-
-
+            
             try
             {
                 _context.Requisita.Add(requisita);
@@ -164,12 +167,53 @@ namespace LibSpace_Aspnet.Controllers
                 return Json(new { success = false, message = "Erro" });
             }
 
+            var livro = await _context.Livros.FindAsync(prerequisita.Idlivro);
+            livro.NumExemplares = livro.NumExemplares + 1;
             prerequisita.EstadoLevantamento = -1;
 
             return Json(new { success = true, message = "Livro Requisitado" });
             
 
         }
+        [HttpPost]
+        public async Task<IActionResult> FinalizarReq([FromBody] RequisitaViewModel requisita)
+        {
+            // Validação dos dados recebidos
+            if (requisita == null || string.IsNullOrWhiteSpace(requisita.NomeLivro))
+            {
+                return Json(new { success = false, message = "Dados inválidos ou incompletos." });
+            }
+
+            try
+            {
+                // Busca o registro no banco de dados com base no nome do livro
+                var _requisita = await _context.Requisita
+                    .Include(r => r.IdLivroNavigation) // Certifica-se de incluir a navegação para o título do livro
+                    .FirstOrDefaultAsync(r => r.IdLivro == requisita.IdLivro && r.IdBibliotecarioRecetor==requisita.IdBiblioRecetor && r.IdBibliotecarioRemetente == requisita.IdBiblioRemetente && r.DataRequisicao==r.DataRequisicao);
+
+                
+                if (_requisita == null)
+                {
+                    return Json(new { success = false, message = "Requisição não encontrada para o livro especificado." });
+                }
+
+                // Realize as alterações necessárias no registro (_requisita)
+                // Exemplo: Atualizar a data de entrega ou estado da requisição
+                _requisita.DataEntrega = DateTime.Now;
+                _context.Requisita.Update(_requisita);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Requisição finalizada com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                // Log da exceção (opcional, mas recomendado para depuração)
+                // _logger.LogError(ex, "Erro ao finalizar requisição.");
+
+                return Json(new { success = false, message = "Ocorreu um erro ao finalizar a requisição. Por favor, tente novamente mais tarde." });
+            }
+        }
+
     }
 }
 

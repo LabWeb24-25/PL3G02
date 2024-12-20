@@ -61,13 +61,15 @@
 
         <!-- Campos Idioma e Número de Exemplares -->
         <div class="form-row">
-            <div class="form-group">
-                <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
-                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
-                <span asp-validation-for="IdLingua" class="text-danger"></span>
-                <label class="control-label">Caso não exista:</label>
-                <a asp-action="Livro_Create" asp-controller="Pais" class="btn_rend">Criar País</a>
-
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
+                    <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
+                    <span asp-validation-for="IdLingua" class="text-danger"></span>
+                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#createPaisModal">
+                        Criar País
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="NumExemplares" class="form-label">Número de Exemplares <span class="text-danger">*</span></label>
@@ -112,7 +114,29 @@
         </div>
     </form>
 </div>
-
+<div class="modal fade" id="createPaisModal" tabindex="-1" aria-labelledby="createPaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPaisModalLabel">Criar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPaisForm">
+                    <div class="form-group">
+                        <label for="NomePais" class="control-label">Nome do País</label>
+                        <input type="text" id="NomePais" name="NomePais" class="form-control" />
+                        <span class="text-danger" id="nomePaisValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitPaisForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Styles {
     <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -123,4 +147,43 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Envia o formulário de criação de País via AJAX
+        function submitPaisForm() {
+            const nomePais = document.getElementById("NomePais").value;
+            const validationMessage = document.getElementById("nomePaisValidation");
+
+            validationMessage.textContent = ""; // Limpa mensagens de erro
+
+            fetch('/Pais/Create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() // CSRF Token
+                },
+                body: JSON.stringify({ NomePais: nomePais })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        return response.json().then(error => { throw error; });
+                    }
+                })
+                .then(data => {
+                    // Fecha o modal e atualiza a lista de países
+                    $('#createPaisModal').modal('hide');
+                    const select = document.querySelector('select[name="IdLingua"]');
+                    const option = new Option(data.nome, data.id, false, true);
+                    select.add(option);
+                })
+                .catch(error => {
+                    if (error.errors && error.errors.NomePais) {
+                        validationMessage.textContent = error.errors.NomePais;
+                    } else {
+                        alert("Erro ao criar país. Tente novamente.");
+                    }
+                });
+        }
+    </script>
 }

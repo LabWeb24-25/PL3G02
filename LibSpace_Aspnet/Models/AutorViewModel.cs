@@ -14,7 +14,7 @@ namespace LibSpace_Aspnet.Models
         [Required(ErrorMessage = "A Data de Nascimento é obrigatória.")]
         [DataType(DataType.Date)]
         [Display(Name = "Data de Nascimento")]
-        public DateTime DataNascimento { get; set; }
+        public DateOnly DataNascimento { get; set; }
 
         [StringLength(100, ErrorMessage = "O Pseudônimo não pode exceder {1} caracteres.")]
         [Display(Name = "Pseudônimo")]
@@ -22,7 +22,7 @@ namespace LibSpace_Aspnet.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Data de Falecimento")]
-        public DateTime? DataFalecimento { get; set; }
+        public DateOnly? DataFalecimento { get; set; }
 
         [Display(Name = "Foto do Autor")]
         public IFormFile? FotoAutor { get; set; }
@@ -35,5 +35,7 @@ namespace LibSpace_Aspnet.Models
         [Required(ErrorMessage = "O campo Idioma é obrigatório.")]
         [Display(Name = "Idioma")]
         public int IdLingua { get; set; }
+
+        public int statusimg { get; set; }
     }
 }

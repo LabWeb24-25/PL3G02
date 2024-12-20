@@ -16,5 +16,7 @@ namespace LibSpace_Aspnet.Models
         [DataType(DataType.Upload)]
         [Display(Name = "Capa do Livro")]
         public IFormFile? ImgEditora { get; set; }
+
+        public int stateimage { get; set; }
     }
 }

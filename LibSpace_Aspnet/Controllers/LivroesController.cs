@@ -111,7 +111,7 @@ namespace LibSpace_Aspnet.Controllers
             }
 
             var livro = await _context.Livros.FindAsync(id);
-            if (livro == null)
+            if (livro == null || livro.NumExemplares ==0)
             {
                 return NotFound();
             }
@@ -123,12 +123,13 @@ namespace LibSpace_Aspnet.Controllers
                 return Json(new { success = false, message = "Não foi possível identificar o usuário." });
             }
 
+
             // Converte o Guid para string para facilitar a manipulação e visualização
             var userId = userIdClaim.Value;
 
             var perfil = await _context.Perfils
                 .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
-
+            livro.NumExemplares = livro.NumExemplares - 1;
             var requisicao = new PreRequisitum
             {
                 Idlivro = livro.IdLivro,
@@ -334,15 +335,15 @@ namespace LibSpace_Aspnet.Controllers
 
         public IActionResult Create(int? idEditora, int? idAutor, int? idPais, int? idGenero)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
-            }
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+            //    return Redirect("/Identity/Account/Login");
+            //}
+            //if (!User.IsInRole("Bibliotecario"))
+            //{
+            //    return Redirect("/Users/Notauthorized");
+            //}
             ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", idAutor);
             ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", idEditora); // Preenche com a editora selecionada
             ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros", idGenero);
@@ -361,14 +362,16 @@ namespace LibSpace_Aspnet.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (livroViewModel.CapaImg != null)
+                string coverFileName;
+
+                if (livroViewModel.CapaImg != null && livroViewModel.CapaImg.Length > 0)
                 {
                     // Validate the cover image format
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                    var fileExtension = Path.GetExtension(livroViewModel.CapaImg?.FileName).ToLower();
+                    var fileExtension = Path.GetExtension(livroViewModel.CapaImg.FileName).ToLower();
 
                     // Save the image to a folder
-                    var coverFileName = Path.GetFileName(livroViewModel.CapaImg.FileName);
+                    coverFileName = Path.GetFileName(livroViewModel.CapaImg.FileName);
                     var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Cover", coverFileName);
 
                     using (var stream = new FileStream(coverPath, FileMode.Create))
@@ -378,14 +381,16 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 else
                 {
-                    var CoverFileName = "livrosemfoto.png";
+                    // Define a imagem padrão caso nenhuma seja enviada
+                    coverFileName = "livrosemfoto.png";
                 }
+
                 // Create a Livro object and populate its fields
                 var livro = new Livro
                 {
                     Clicks = 0,
                     Isbn = livroViewModel.Isbn,
-                    DataEdicao = DateOnly.FromDateTime(livroViewModel.DataEdicao), // Convert DateTime to DateOnly
+                    DataEdicao = livroViewModel.DataEdicao, // Convert DateTime to DateOnly
                     TituloLivros = livroViewModel.TituloLivros,
                     NumExemplares = livroViewModel.NumExemplares,
                     IdEditora = livroViewModel.IdEditora,
@@ -396,13 +401,14 @@ namespace LibSpace_Aspnet.Controllers
                     CapaImg = coverFileName // Save the file name in the database
                 };
 
+
                 // Simulate database save
                 _context.Add(livro);
                 var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
                 if (userIdClaim == null)
                 {
-                    return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+                    return Json(new { success = false, message = "Não foi possível identificar o utilizador." });
                 }
 
                 var userId = userIdClaim.Value;
@@ -481,11 +487,22 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "IdAutor", livro.IdAutor);
-            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "IdEditora", livro.IdEditora);
-            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "IdGeneros", livro.IdGeneros);
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais", livro.IdLingua);
-            return View(livro);
+            var _livro = new LivroViewModel
+            {
+                Isbn = livro.Isbn,
+                TituloLivros = livro.TituloLivros,
+                DataEdicao = livro.DataEdicao,
+                NumExemplares = livro.NumExemplares,
+                Sinopse = livro.Sinopse,
+               
+            };
+  
+            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", livro.IdAutor);
+            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", livro.IdEditora);
+            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros", livro.IdGeneros);
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", livro.IdLingua);
+            ViewBag.CapaImg = "~/Cover/" + livro.CapaImg;
+            return View(_livro);
         }
 
         // POST: Livroes/Edit/5
@@ -493,23 +510,57 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdLivro,Isbn,DataEdicao,TituloLivros,NumExemplares,CapaImg,IdEditora,IdLingua,Sinopse,IdAutor,IdGeneros")] Livro livro)
+        public async Task<IActionResult> Edit(int id, [Bind("Isbn,DataEdicao,TituloLivros,NumExemplares,CapaImg,IdEditora,IdLingua,Sinopse,IdAutor,IdGeneros,statusimg")] LivroViewModel livro)
         {
-            if (id != livro.IdLivro)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
+                var _livro = await _context.Livros.FindAsync(id);
+                if (livro.CapaImg == null)
+                {
+                    if (livro.statusimg == 1 && _livro.CapaImg != "livrosemfoto.png")
+                    {
+                        var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Cover", _livro.CapaImg);
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+
+                    }
+                    _livro.CapaImg = "livrosemfoto.png"; // ou definir como o valor padrão
+                }
+                else
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(livro.CapaImg.FileName).ToLower();
+
+                    // Save the image to a folder
+                    var coverFileName = Path.GetFileName(livro.CapaImg.FileName);
+                    _livro.CapaImg = coverFileName;
+                    var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Cover", coverFileName);
+
+                    using (var stream = new FileStream(coverPath, FileMode.Create))
+                    {
+                        await livro.CapaImg.CopyToAsync(stream);
+                    }
+                }
+                _livro.Isbn = livro.Isbn;
+                _livro.DataEdicao = livro.DataEdicao;
+                _livro.TituloLivros = livro.TituloLivros;
+                _livro.NumExemplares = livro.NumExemplares;
+                _livro.IdEditora = livro.IdEditora;
+                _livro.IdLingua = livro.IdLingua;
+                _livro.Sinopse = livro.Sinopse;
+                _livro.IdAutor = livro.IdAutor;
+                _livro.IdGeneros = livro.IdGeneros;
+
                 try
                 {
-                    _context.Update(livro);
+                    _context.Update(_livro);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LivroExists(livro.IdLivro))
+                    if (!LivroExists(_livro.IdAutor))
                     {
                         return NotFound();
                     }
@@ -520,10 +571,10 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "IdAutor", livro.IdAutor);
-            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "IdEditora", livro.IdEditora);
-            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "IdGeneros", livro.IdGeneros);
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais", livro.IdLingua);
+            ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", livro.IdAutor);
+            ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", livro.IdEditora);
+            ViewData["IdGeneros"] = new SelectList(_context.Generos, "IdGeneros", "NomeGeneros", livro.IdGeneros);
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", livro.IdLingua);
             return View(livro);
         }
 

@@ -23,7 +23,7 @@
                 </div>
                 <div class="form-group position-relative">
                     <img id="imgEditoraPreview"
-                         src="@Url.Content(ViewBag.ImgEditora ?? "~/images/livrosemimagem.png")"
+                         src="@Url.Content(ViewBag.ImgEditora)"
                          alt="Image Preview"
                          style="max-width: 200px; max-height: 200px; margin-top: 10px; display:@(ViewBag.ImgEditora != null ? "block" : "none");" />
                     <!-- Botão para remover a imagem -->
@@ -34,6 +34,7 @@
                             onclick="removeImage('imgEditoraInput', 'imgEditoraPreview', 'removeImageButton')">
                         X
                     </button>
+
                 </div>
             </div>
 
@@ -47,6 +48,7 @@
                 <textarea asp-for="InfoEditora" class="textbox">@Model.InfoEditora</textarea> <!-- Info preenchida -->
                 <span asp-validation-for="InfoEditora" class="text-danger"></span>
             </div>
+            <input type="hidden" id="ImgStatus" value="@Model.stateimage" />
             <div class="form-group">
                 <button type="button" class="btn_submit" onclick="history.back()">Voltar</button>
                 <input type="submit" value="Salvar Alterações" class="btn_submit" />
@@ -96,6 +98,12 @@
             preview.src = ''; // Remove o src da imagem
             preview.style.display = 'none'; // Esconde o preview
             button.style.display = 'none'; // Esconde o botão
+            if (statusInput != null) {
+                statusInput.value = 1; // Define o valor para 1, indicando que a imagem foi removida
+            }
         }
+
+
     </script>
 }
+

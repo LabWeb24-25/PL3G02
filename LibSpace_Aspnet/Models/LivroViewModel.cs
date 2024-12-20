@@ -37,7 +37,7 @@ namespace LibSpace.Models
         [Required(ErrorMessage = "O campo Data de Edição é obrigatório.")]
         [DataType(DataType.Date)]
         [Display(Name = "Data de Publicação")]
-        public DateTime DataEdicao { get; set; }
+        public DateOnly DataEdicao { get; set; }
 
         [Required(ErrorMessage = "O campo Número de Exemplares é obrigatório.")]
         [Range(0, int.MaxValue, ErrorMessage = "O Número de Exemplares deve ser um valor não negativo.")]
@@ -51,5 +51,7 @@ namespace LibSpace.Models
         [Required(ErrorMessage = "O campo Sinopse é obrigatório.")]
         [DataType(DataType.MultilineText)]
         public string Sinopse { get; set; } = string.Empty;
+
+        public int statusimg { get; set; }
     }
 }
