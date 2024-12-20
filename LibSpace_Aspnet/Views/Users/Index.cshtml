@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Identity
 @model LibSpace_Aspnet.Models.UsersViewModel
 @{
     ViewData["Title"] = "Gestão de Utilizadores";
@@ -162,6 +163,14 @@
                                     <i class="fas fa-unlock"></i> Desbloquear
                                 </button>
                             }
+                            else 
+                            {
+                                <button class="btn btn-light action-btn text-danger" 
+                                        onclick="showBlockModal('@user.Id')" 
+                                        title="Bloquear">
+                                    <i class="fas fa-ban"></i> Bloquear
+                                </button>
+                            }
                             
                             @if (Model.UserRoles[user.Id].Contains("Bibliotecario"))
                             {
@@ -175,19 +184,17 @@
                                 </form>
                             }
 
-                            <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;" id="promoteForm-@user.Id">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="userId" value="@user.Id" />
-                                <button type="button" class="btn btn-light action-btn" title="Promover" 
-                                        onclick="return confirm('Tem certeza que deseja promover o utilizador para administrador?')">
-                                    <i class="fas fa-star text-warning"></i> Promover
-                                </button>
-                            </form>
-                            <button class="btn btn-light action-btn text-danger" 
-                                    onclick="showBlockModal('@user.Id')" 
-                                    title="Bloquear">
-                                <i class="fas fa-ban"></i> Bloquear
-                            </button>
+                            @if (!Model.UserRoles[user.Id].Contains("Admin"))
+                            {
+                                <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;" id="promoteForm-@user.Id">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="button" class="btn btn-light action-btn" title="Promover" 
+                                            onclick="return confirm('Tem certeza que deseja promover o utilizador para administrador?')">
+                                        <i class="fas fa-star text-warning"></i> Promover
+                                    </button>
+                                </form>
+                            }
                         </div>
                     </div>
                 }

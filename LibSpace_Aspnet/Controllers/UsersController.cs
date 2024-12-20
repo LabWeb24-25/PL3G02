@@ -143,7 +143,7 @@ namespace YourNamespace.Controllers
                     "Você foi aceite como bibliotecário.");
                                 
 
-                TempData["Success"] = "Bibliotec��rio aprovado com sucesso!";
+                TempData["Success"] = "Bibliotecário aprovado com sucesso!";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -165,8 +165,22 @@ namespace YourNamespace.Controllers
                 return RedirectToAction(nameof(Index));
             }
             try {
-                await _userManager.SetLockoutEndDateAsync(await _userManager.FindByIdAsync(userId), null);
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Utilizador não encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
 
+                await _userManager.SetLockoutEndDateAsync(user, null);
+
+                var userEmail = await _userManager.GetEmailAsync(user);
+                await _emailSender.SendEmailAsync(
+                    userEmail,
+                    "Conta Desbloqueada",
+                    "A sua conta foi desbloqueada. Já pode aceder novamente à plataforma.");
+
+                TempData["Success"] = "Utilizador desbloqueado com sucesso.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
