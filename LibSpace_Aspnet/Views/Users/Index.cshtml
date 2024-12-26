@@ -29,10 +29,6 @@
 <div class="user-management-container">
     <div class="header-section">
         <h2 class="section-title">Gestão de Utilizadores</h2>
-        <button class="btn btn-primary add-user-btn">
-            <i class="fas fa-user-plus"></i>
-            Adicionar Utilizador
-        </button>
     </div>
 
     <div class="users-list-container mb-4">
@@ -50,6 +46,13 @@
                     <input type="text" class="search-input" placeholder="Procurar bibliotecário pendente..." 
                            onkeyup="searchUsers('pending-users', this.value)">
                 </div>
+                <form asp-action="Index" method="get" class="d-inline">
+                    <input type="hidden" name="isAscending" value="@(!Model.IsAscending)" />
+                    <button type="submit" class="btn btn-outline-secondary sort-btn">
+                        <i class="fas fa-sort-alpha-@(Model.IsAscending ? "down" : "up")"></i>
+                        Ordenar @(Model.IsAscending ? "Z-A" : "A-Z")
+                    </button>
+                </form>
             </div>
 
             <div class="users-list" id="pending-users">
@@ -114,11 +117,33 @@
                     <input type="text" class="search-input" placeholder="Procurar utilizador..." 
                            onkeyup="searchUsers('all-users', this.value)">
                 </div>
-                <button class="btn btn-outline-secondary sort-btn">
-                    <i class="fas fa-sort"></i>
-                    Ordenar
-                </button>
+                <form asp-action="Index" method="get" class="d-inline">
+                    <input type="hidden" name="selectedRole" value="@Model.SelectedRole" />
+                    <input type="hidden" name="isBlocked" value="@Model.IsBlocked" />
+                    <input type="hidden" name="isAscending" value="@(!Model.IsAscending)" />
+                    <button type="submit" class="btn btn-outline-secondary sort-btn">
+                        <i class="fas fa-sort-alpha-@(Model.IsAscending ? "down" : "up")"></i>
+                        Ordenar @(Model.IsAscending ? "Z-A" : "A-Z")
+                    </button>
+                </form>
             </div>
+
+            <form asp-action="Index" method="get" class="filters-form">
+                <div class="filters-container">
+                    <select asp-for="SelectedRole" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todos os Papéis</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Bibliotecario">Bibliotecário</option>
+                        <option value="Leitor">Leitor</option>
+                    </select>
+
+                    <select asp-for="IsBlocked" class="form-select" onchange="this.form.submit()">
+                        <option value="">Estado de Bloqueio</option>
+                        <option value="true">Bloqueados</option>
+                        <option value="false">Não Bloqueados</option>
+                    </select>
+                </div>
+            </form>
 
             <div class="users-list" id="all-users">
                 @foreach (var user in Model.AllUsers)
@@ -437,6 +462,40 @@
     padding: 0.5em 1em;
     border-radius: 1rem;
     font-weight: normal;
+}
+
+.filters-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filters-form select {
+    min-width: 150px;
+}
+
+.search-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-container {
+    flex: 1;
+    min-width: 200px;
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.sort-btn i {
+    font-size: 0.9em;
 }
 </style>
 

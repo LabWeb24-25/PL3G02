@@ -23,14 +23,40 @@ namespace YourNamespace.Controllers
 
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string selectedRole = null, bool? isBlocked = null, bool isAscending = true)
         {
             var pendingBibliotecarios = await _context.BibliotecarioPendentes
                 .Include(b => b.AspNetUser)
                 .Where(b => !b.IsApproved)
                 .ToListAsync();
 
-            var allUsers = await _userManager.Users.ToListAsync();
+            // Sort pending bibliotecarios
+            pendingBibliotecarios = isAscending 
+                ? pendingBibliotecarios.OrderBy(b => b.AspNetUser.UserName).ToList()
+                : pendingBibliotecarios.OrderByDescending(b => b.AspNetUser.UserName).ToList();
+
+            // Start with all users query
+            var usersQuery = _userManager.Users.AsQueryable();
+
+            // Filter by role if selected
+            if (!string.IsNullOrEmpty(selectedRole))
+            {
+                var usersInRole = await _userManager.GetUsersInRoleAsync(selectedRole);
+                usersQuery = usersQuery.Where(u => usersInRole.Contains(u));
+            }
+
+            // Filter by block status if selected
+            if (isBlocked.HasValue)
+            {
+                usersQuery = usersQuery.Where(u => u.LockoutEnd != null == isBlocked.Value);
+            }
+
+            // Apply sorting
+            usersQuery = isAscending 
+                ? usersQuery.OrderBy(u => u.UserName)
+                : usersQuery.OrderByDescending(u => u.UserName);
+
+            var allUsers = await usersQuery.ToListAsync();
 
             var userRoles = new Dictionary<string, List<string>>();
             foreach (var user in allUsers)
@@ -43,7 +69,10 @@ namespace YourNamespace.Controllers
             {
                 PendingBibliotecarios = pendingBibliotecarios,
                 AllUsers = allUsers,
-                UserRoles = userRoles
+                UserRoles = userRoles,
+                SelectedRole = selectedRole,
+                IsBlocked = isBlocked,
+                IsAscending = isAscending
             };
 
             return View(viewModel);
