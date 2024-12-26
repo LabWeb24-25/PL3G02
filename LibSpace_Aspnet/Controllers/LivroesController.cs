@@ -66,6 +66,82 @@ namespace LibSpace_Aspnet.Controllers
             return View(livros);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Createpais([FromBody] Pai pais)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+            }
+
+            _context.Pais.Add(pais);
+            await _context.SaveChangesAsync(); // Use SaveChangesAsync para operações assíncronas
+            var paises = await _context.Pais.ToListAsync(); // Obtenha a lista de países de forma assíncrona
+            return Json(new { id = pais.IdPais, nome = pais.NomePais, paises });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAutor(string nomeAutor, string? pseudonimo, DateOnly dataNascimento, string bibliografia)
+        {
+            if (string.IsNullOrWhiteSpace(nomeAutor))
+            {
+                return BadRequest(new { errors = new { NomeAutor = "O nome é obrigatório.", Pseudonimo = "O pseudônimo é obrigatório." } });
+            }
+
+            var autor = new Autor
+            {
+                NomeAutor = nomeAutor,
+                Pseudonimo = pseudonimo,
+                DataNascimento = dataNascimento,
+                Bibliografia = bibliografia,
+                IdLingua = 1,
+                FotoAutor = "autorsemfoto.jpeg"
+            };
+
+            _context.Add(autor);
+            await _context.SaveChangesAsync();
+
+            return Json(new { id = autor.IdAutor, nome = autor.NomeAutor });
+        }
+
+        public async Task<IActionResult> CreateEditora(string nomeEditora, string infoEditora)
+        {
+            if (string.IsNullOrWhiteSpace(nomeEditora))
+            {
+                return BadRequest(new { errors = new { NomeEditora = "O nome é obrigatório." } });
+            }
+
+            var editora = new Editora
+            {
+                NomeEditora = nomeEditora,
+                InfoEditora = infoEditora,
+                ImgEditora = "editorasemfoto.png"
+            };
+
+            _context.Add(editora);
+            await _context.SaveChangesAsync();
+
+            return Json(new { id = editora.IdEditora, nome = editora.NomeEditora });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult CreateGenero([FromBody] string nomeGenero)
+        {
+            if (string.IsNullOrWhiteSpace(nomeGenero) || nomeGenero.Length > 20)
+            {
+                return Json(new { errors = "Nome do Gênero é obrigatório e deve ter no máximo 20 caracteres." });
+            }
+
+            var genero = new Genero { NomeGeneros = nomeGenero };
+
+            _context.Generos.Add(genero);
+            _context.SaveChanges(); // Salva as alterações no banco
+
+            // Retorna o gênero recém-criado
+            return Json(new { id = genero.IdGeneros, nome = genero.NomeGeneros });
+        }
+
 
 
 
@@ -569,7 +645,7 @@ namespace LibSpace_Aspnet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = _livro.IdLivro });
             }
             ViewData["IdAutor"] = new SelectList(_context.Autors, "IdAutor", "NomeAutor", livro.IdAutor);
             ViewData["IdEditora"] = new SelectList(_context.Editoras, "IdEditora", "NomeEditora", livro.IdEditora);

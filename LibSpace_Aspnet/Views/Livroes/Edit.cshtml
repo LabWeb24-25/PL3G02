@@ -58,7 +58,9 @@
                 <select asp-for="IdAutor" class="form-control" asp-items="ViewBag.IdAutor"></select>
                 <span asp-validation-for="IdAutor" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Livro_Create" asp-controller="Autors" asp-route-returnUrl="/Livros/Create" class="btn_rend">Criar Autor</a>
+                <button type="button" class="btn btn-link btn_rend" data-bs-toggle="modal" data-bs-target="#createAutorModal">
+                    Criar Autor
+                </button>
             </div>
 
             <!-- Campo Editora com dropdown e link para criar nova editora -->
@@ -67,7 +69,9 @@
                 <select asp-for="IdEditora" class="form-control" asp-items="ViewBag.IdEditora"></select>
                 <span asp-validation-for="IdEditora" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Livro_Create" asp-controller="Editoras" class="btn_rend">Criar Editora</a>
+                <button type="button" class="btn btn-link btn_rend" data-bs-toggle="modal" data-bs-target="#createEditoraModal">
+                    Criar Editora
+                </button>
             </div>
         </div>
 
@@ -78,7 +82,9 @@
                 <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
                 <span asp-validation-for="IdLingua" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Livro_Create" asp-controller="Pais" class="btn_rend">Criar País</a>
+                <button type="button" class="btn btn-link btn_rend" data-bs-toggle="modal" data-bs-target="#createPaisModal">
+                    Criar País
+                </button>
 
             </div>
             <div class="form-group">
@@ -113,17 +119,180 @@
                 <select asp-for="IdGeneros" class="form-control" asp-items="ViewBag.IdGeneros"></select>
                 <span asp-validation-for="IdGeneros" class="text-danger"></span>
                 <label class="control-label">Caso não exista:</label>
-                <a asp-action="Livro_Create" asp-controller="Generos" class="btn_rend">Criar Genero</a>
-
+                <button type="button" class="btn btn-primary btn_rend" data-bs-toggle="modal" data-bs-target="#createGeneroModal">
+                    Criar Gênero
+                </button>
             </div>
         </div>
 
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
-            <input type="submit" value="Adicionar Livro" class="btn btn-primary" />
+            <input type="submit" value="Editar Livro" class="btn btn-primary" />
         </div>
     </form>
 </div>
+<!--PopUp País-->
+<div class="modal fade" id="createPaisModal" tabindex="-1" style="z-index: 1060;" aria-labelledby="createPaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPaisModalLabel">Criar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPaisForm">
+                    <div class="form-group">
+                        <label for="NomePais" class="control-label">Nome do País</label>
+                        <input type="text" id="NomePais" name="NomePais" class="form-control" />
+                        <span class="text-danger" id="nomePaisValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitPaisForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Pop Up do Pop Up Autor Pais-->
+<div class="modal fade" id="createPaisAutorModal" tabindex="-1" style="z-index: 1060;" aria-labelledby="createPaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPaisModalLabel">Criar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPaisForm">
+                    <div class="form-group">
+                        <label for="NomePais" class="control-label">Nome do País</label>
+                        <input type="text" id="NomePais" name="NomePais" class="form-control" />
+                        <span class="text-danger" id="nomePaisValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" onclick="submitPaisAutorForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- POP UP Editora -->
+<div class="modal fade" id="createEditoraModal" aria-labelledby="createEditoraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createEditoraModalLabel">Adicionar Editora</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createEditoraForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="NomeEditora" class="control-label textform_color">Nome</label>
+                        <input type="text" id="NomeEditora" name="NomeEditora" class="form-control" />
+                        <span class="text-danger" id="nomeEditoraValidation"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="InfoEditora" class="control-label textform_color">Sobre a Editora</label>
+                        <textarea id="InfoEditora" name="InfoEditora" class="textbox"></textarea>
+                        <span class="text-danger" id="infoEditoraValidation"></span>
+                    </div>
+                    <div class="form-group">
+                        <br />
+                        <p style="color: red; font-weight: bold;">AVISO:</p>
+                        <p class="form-control">Toda a informação sobre a editora deverá ser considerada <span style="color: red; font-weight: bold; text-decoration: underline;">provisória</span>.</p>
+                        <br />
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitEditoraForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- POP UP de Autor -->
+<div class="modal fade" id="createAutorModal" tabindex="-1" aria-labelledby="createAutorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createAutorModalLabel">Adicionar Autor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createAutorForm" enctype="multipart/form-data">
+                    <!-- Nome do Autor -->
+                    <div class="form-group">
+                        <label for="NomeAutor" class="control-label">Nome do Autor <span class="text-danger">*</span></label>
+                        <input type="text" id="NomeAutor" name="NomeAutor" class="form-control" />
+                        <span class="text-danger" id="nomeAutorValidation"></span>
+                    </div>
+
+                    <!-- Pseudônimo -->
+                    <div class="form-group">
+                        <label for="Pseudonimo" class="control-label">Pseudônimo</label>
+                        <input type="text" id="Pseudonimo" name="Pseudonimo" class="form-control" />
+                        <span class="text-danger" id="pseudonimoValidation"></span>
+                    </div>
+
+                    <!-- Data de Nascimento -->
+                    <div class="form-group">
+                        <label for="DataNascimento" class="control-label">Data de Nascimento <span class="text-danger">*</span></label>
+                        <input type="date" id="DataNascimento" name="DataNascimento" class="form-control" />
+                        <span class="text-danger" id="dataNascimentoValidation"></span>
+                    </div>
+
+                    <!-- Bibliografia -->
+                    <div class="form-group">
+                        <label for="Bibliografia" class="control-label">Bibliografia <span class="text-danger">*</span></label>
+                        <textarea id="Bibliografia" name="Bibliografia" class="form-control"></textarea>
+                        <span class="text-danger" id="bibliografiaValidation"></span>
+                    </div>
+                    <div class="form-group">
+                        <br />
+                        <p style="color: red; font-weight: bold;">AVISO:</p>
+                        <p class="form-control">Toda a informação sobre o autor deverá ser considerada <span style="color: red; font-weight: bold; text-decoration: underline;">provisória</span>.</p>
+                        <br />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitAutorForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- PopUp Gênero -->
+<div class="modal fade" id="createGeneroModal" tabindex="-1" style="z-index: 1060;" aria-labelledby="createGeneroModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createGeneroModalLabel">Criar Gênero</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createGeneroForm">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="NomeGenero" class="control-label">Nome do Gênero</label>
+                        <input type="text" id="NomeGenero" name="NomeGenero" class="form-control" />
+                        <span class="text-danger" id="nomeGeneroValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitGeneroForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Styles {
     <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
@@ -135,42 +304,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        function previewImage(event, previewId) {
-            const input = event.target;
-            const preview = document.getElementById(previewId);
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block'; // Exibe a imagem no preview
-                    document.getElementById('removeImageButton').style.display = 'block';
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-                document.getElementById('removeImageButton').style.display = 'none';
-            }
-        }
-
-        function removeImage(inputId, previewId, buttonId) {
-            const input = document.getElementById(inputId);
-            const preview = document.getElementById(previewId);
-            const button = document.getElementById(buttonId);
-
-            input.value = ''; // Limpa o input
-            preview.src = ''; // Remove o src da imagem
-            preview.style.display = 'none'; // Esconde o preview
-            button.style.display = 'none'; // Esconde o botão
-            if (statusInput != null) {
-                statusInput.value = 1; // Define o valor para 1, indicando que a imagem foi removida
-            }
-        }
-
-
-    </script>
+    <script src="/js/scriptsLivros.js"></script>
 }

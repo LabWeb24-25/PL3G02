@@ -20,6 +20,11 @@
 
   <ItemGroup>
     <Content Remove="Views\Livroes\View.cshtml" />
+    <Content Remove="wwwroot\js\scriptsLivros.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\scriptsLivros.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +50,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\img\logo.png" />
+    <None Include="wwwroot\js\scriptsLivros.js" />
   </ItemGroup>
 
   <ItemGroup>

@@ -51,6 +51,10 @@
             <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
             <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
             <span asp-validation-for="IdLingua" class="text-danger"></span>
+            <label class="control-label">Caso não exista:</label>
+            <button type="button" class="btn btn-link btn_rend" data-bs-toggle="modal" data-bs-target="#createPaisModal">
+                Criar País
+            </button>
         </div>
 
         <!-- Seção Upload de Foto do Autor com Pré-visualização -->
@@ -88,6 +92,30 @@
         </div>
     </form>
 </div>
+<!--Pop Up país-->
+<div class="modal fade" id="createPaisModal" tabindex="-1" style="z-index: 1060;" aria-labelledby="createPaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPaisModalLabel">Criar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPaisForm">
+                    <div class="form-group">
+                        <label for="NomePais" class="control-label">Nome do País</label>
+                        <input type="text" id="NomePais" name="NomePais" class="form-control" />
+                        <span class="text-danger" id="nomePaisValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitPaisForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Styles {
     <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
@@ -100,43 +128,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        function previewImage(event, previewId) {
-            const input = event.target;
-            const preview = document.getElementById(previewId);
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block'; // Exibe a imagem no preview
-                    document.getElementById('removeImageButton').style.display = 'block';
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-                document.getElementById('removeImageButton').style.display = 'none';
-            }
-        }
-
-        function removeImage(inputId, previewId, buttonId) {
-            const input = document.getElementById(inputId);
-            const preview = document.getElementById(previewId);
-            const button = document.getElementById(buttonId);
-
-            input.value = ''; // Limpa o input
-            preview.src = ''; // Remove o src da imagem
-            preview.style.display = 'none'; // Esconde o preview
-            button.style.display = 'none'; // Esconde o botão
-            if (statusInput != null) {
-                statusInput.value = 1; // Define o valor para 1, indicando que a imagem foi removida
-            }
-        }
-
-
-    </script>
+    <script src="/js/scriptsAutor.js"></script>
 }
 

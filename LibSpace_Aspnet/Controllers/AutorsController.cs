@@ -51,6 +51,21 @@ namespace LibSpace_Aspnet.Controllers
             return View(autor);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> Createpais([FromBody] Pai pais)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+            }
+
+            _context.Pais.Add(pais);
+            await _context.SaveChangesAsync(); // Use SaveChangesAsync para operações assíncronas
+            var paises = await _context.Pais.ToListAsync(); // Obtenha a lista de países de forma assíncrona
+            return Json(new { id = pais.IdPais, nome = pais.NomePais, paises });
+        }
+
         public IActionResult Livro_Create()
         {
             if (!User.Identity.IsAuthenticated)
@@ -197,7 +212,7 @@ namespace LibSpace_Aspnet.Controllers
                 _context.Add(autor);
                 await _context.SaveChangesAsync();
                 var previousUrl = Request.Headers["Referer"].ToString();
-                return Redirect(previousUrl);
+                return RedirectToAction(nameof(Details), new { id = autor.IdAutor });
             }
 
 
@@ -309,7 +324,7 @@ namespace LibSpace_Aspnet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = _autor.IdAutor });
             }
             return View(autor);
         }

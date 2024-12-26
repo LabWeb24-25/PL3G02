@@ -50,6 +50,10 @@
             <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
             <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
             <span asp-validation-for="IdLingua" class="text-danger"></span>
+            <label class="control-label">Caso não exista:</label>
+            <button type="button" class="btn btn-link btn_rend" data-bs-toggle="modal" data-bs-target="#createPaisModal">
+                Criar País
+            </button>
         </div>
 
         <!-- Seção Upload de Foto do Autor com Pré-visualização -->
@@ -75,6 +79,32 @@
     </form>
 </div>
 
+<!--Pop Up país-->
+<div class="modal fade" id="createPaisModal" tabindex="-1" style="z-index: 1060;" aria-labelledby="createPaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPaisModalLabel">Criar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPaisForm">
+                    <div class="form-group">
+                        <label for="NomePais" class="control-label">Nome do País</label>
+                        <input type="text" id="NomePais" name="NomePais" class="form-control" />
+                        <span class="text-danger" id="nomePaisValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitPaisForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Styles {
     <!-- Font Awesome for the remove button icon (optional if you use text "X") -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -85,4 +115,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="/js/scriptsAutor.js"></script>
 }
