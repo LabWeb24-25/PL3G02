@@ -197,6 +197,19 @@
                                 </button>
                             }
                             
+                            @if (!Model.UserRoles[user.Id].Contains("Admin"))
+                            {
+                                <form asp-action="DeleteUser" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-danger action-btn" 
+                                            onclick="return confirm('Tem certeza que deseja eliminar este utilizador? Esta ação não pode ser desfeita.')"
+                                            title="Eliminar">
+                                        <i class="fas fa-times"></i> Eliminar
+                                    </button>
+                                </form>
+                            }
+
                             @if (Model.UserRoles[user.Id].Contains("Bibliotecario"))
                             {
                                 <form asp-action="RevokeBibliotecarioRole" method="post" style="display: inline;">

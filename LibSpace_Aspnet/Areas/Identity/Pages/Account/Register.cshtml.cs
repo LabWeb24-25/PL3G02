@@ -192,9 +192,6 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                         };
                         _dbContext.BibliotecarioPendentes.Add(bibliotecarioPendente);
                         await _dbContext.SaveChangesAsync();
-
-                        // Opcional: atribui um papel padrão
-                        await _userManager.AddToRoleAsync(user, "Leitor");
                     }
                     else
                     {

@@ -156,8 +156,7 @@ namespace YourNamespace.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Remove Leitor role and add Bibliotecario role
-                await _userManager.RemoveFromRoleAsync(user, "Leitor");
+                // Just add Bibliotecario role
                 await _userManager.AddToRoleAsync(user, "Bibliotecario");
 
                 // Remove from pending table
@@ -455,6 +454,67 @@ namespace YourNamespace.Controllers
                 Console.Error.WriteLine($"Stack trace: {ex.StackTrace}");
                 
                 return StatusCode(500, "Erro ao carregar detalhes do utilizador");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "ID do utilizador inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Utilizador não encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Check if user is admin
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    TempData["Error"] = "Não é possível eliminar um administrador.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var userEmail = await _userManager.GetEmailAsync(user);
+
+                // Delete profile first due to foreign key constraint
+                var perfil = await _context.Perfils.SingleOrDefaultAsync(p => p.AspNetUserId == userId);
+                if (perfil != null)
+                {
+                    _context.Perfils.Remove(perfil);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Delete the user
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    await _emailSender.SendEmailAsync(
+                        userEmail,
+                        "Conta Eliminada",
+                        "A sua conta foi eliminada do sistema.");
+
+                    TempData["Success"] = "Utilizador eliminado com sucesso.";
+                }
+                else
+                {
+                    TempData["Error"] = "Erro ao eliminar o utilizador.";
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Erro ao processar o pedido.";
+                return RedirectToAction(nameof(Index));
             }
         }
 
