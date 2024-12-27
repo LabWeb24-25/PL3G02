@@ -304,6 +304,14 @@ body {
             margin-left: auto;
         }
     }
+
+/* caixas de texto css: */
+.tooltip .tooltip-inner {
+    background-color: #064d3bb9; 
+    color: white; 
+    border-radius: 8px; 
+    font-size: 0.7rem; 
+}
 /* ora bem isto daqui foi tirado do developer tools do google, lá funcionou entao basicamente, NAO MEXER */
     .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
     border-top-right-radius: 8px;

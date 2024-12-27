@@ -30,9 +30,14 @@
                 <!-- Anúncios -->
                 <div class="row mb-5">
                     <div class="col-12">
-                        <div class="card announcements-container">
-                            <div class="card-body">
-                                <h1>Announcements</h1>
+						<div class="announcements-container">
+                            <div class="card-body announcement-image-container">
+                                <div class="announcement-carousel">
+                                    @foreach (var image in ViewBag.AnnouncementImages)
+                                    {
+                                        <img src="~/img/announcements/@image" class="announcement-image" alt="Announcement" style="display: none;" />
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,14 +105,6 @@
 <style>
     .home-page .container-fluid {
         padding: 2rem;
-    }
-
-    .home-page .announcements-container {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1rem;
-        min-height: 200px;
     }
 
     .home-page .featured-title {
@@ -205,6 +202,7 @@
     }
 
     .card-img-top {
+        background: #f6f6f6;
         width: 100%;
         height: auto;
         object-fit: contain;
@@ -277,7 +275,6 @@
     }
 
     .home-page .main-content {
-        margin-left: 50px;
         flex: 1;
         padding: 2rem;
     }
@@ -323,11 +320,6 @@
         padding: 0;
     }
 
-    .home-page .announcements-container {
-        margin: 0 0 2rem 0;
-        width: 100%;
-    }
-
     .book-carousel .col {
         max-width: 300px;
         min-width: 200px;
@@ -335,6 +327,36 @@
 
     .book-card {
         max-width: 100%;
+    }
+
+    .announcement-image-container {
+        width: 100%;
+        padding: 0;
+        position: relative;
+        padding-top: 21.89%; /* This maintains the 1855:406 ratio (406/1855 ≈ 0.2189) */
+    }
+
+    .announcement-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .announcement-image.active {
+        opacity: 1;
+    }
+
+    .announcements-container {
+        padding: 1rem 1rem 0 1rem;
+    }
+
+    .announcements-container h1 {
+        margin-bottom: 1rem;
     }
 </style>
 
@@ -383,5 +405,28 @@
                 }
             });
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.announcement-carousel img');
+        let currentImageIndex = 0;
+
+        function showImage(index) {
+            images.forEach(img => {
+                img.style.display = 'block';  // Keep all images displayed
+                img.classList.remove('active');
+            });
+            images[index].classList.add('active');
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        if (images.length > 0) {
+            showImage(0);
+            setInterval(nextImage, 5000); // em milissegundos, ideal acho que é 30000(15s) decidam-se
+        }
     });
 </script>
