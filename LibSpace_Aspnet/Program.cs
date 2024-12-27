@@ -33,7 +33,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.AccessDeniedPath = "/Users/Notauthorized";
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
 // Configurar a autenticação externa (Google)
