@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "LibSpace";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LibSpace</title>
+    <link rel="stylesheet" href="~/css/amalia.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="text-container">
+                <h1>Good Evening, LibSpace.</h1>
+                <p class="subtitle">How can I help you today?</p>
+            </div>
+            
+            <div class="input-container">
+                <input type="text" 
+                       placeholder="Understand the universe." 
+                       class="main-input"
+                       autocomplete="off"
+                       spellcheck="false">
+                <button class="send-button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

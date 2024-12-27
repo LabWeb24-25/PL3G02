@@ -1,0 +1,147 @@
+:root {
+    --background: #1a1c1e;
+    --text: rgba(255, 255, 255, 0.9);
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --input-background: rgba(255, 255, 255, 0.05);
+    --input-glow: rgba(255, 255, 255, 0.1);
+    --button-background: rgba(255, 255, 255, 0.1);
+    --button-hover: rgba(255, 255, 255, 0.15);
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    top: -15vh;
+}
+
+.text-container {
+    margin-bottom: -20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.main-input {
+    width: 100%;
+    padding: 16px;
+    padding-right: 48px;
+    background: var(--input-background);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.main-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px var(--input-glow);
+}
+
+.send-button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+}
+
+.send-button:hover {
+    background: var(--button-background);
+}
+
+.send-button svg {
+    transition: transform 0.2s ease;
+}
+
+.send-button:hover svg {
+    transform: translateX(2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .content {
+        top: -10vh;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Smooth animation for input focus */
+.main-input:focus {
+    transform: translateY(-1px);
+}
+
+/* Subtle hover effect for the entire container */
+.input-container:hover .main-input {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Add glow effect on hover */
+.input-container:hover .main-input {
+    box-shadow: 0 0 15px var(--input-glow);
+} 
