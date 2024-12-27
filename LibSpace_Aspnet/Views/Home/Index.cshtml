@@ -13,12 +13,12 @@
                     <h3>Categories</h3>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Em Destaque</a>
+                            <a class="nav-link" href="#featured">Em Destaque</a>
                         </li>
                         @foreach (var genero in ViewBag.Generos)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="#">@genero.NomeGeneros</a>
+                                <a class="nav-link" href="#genre-@genero.IdGeneros">@genero.NomeGeneros</a>
                             </li>
                         }
                     </ul>
@@ -38,8 +38,8 @@
                     </div>
                 </div>
 
-                <!-- Livros -->
-                <div class="row">
+                <!-- Featured Books -->
+                <div class="row" id="featured">
                     <div class="col-12">
                         <h2 class="featured-title">Em Destaque</h2>
                         <div class="d-flex justify-content-between align-items-center">
@@ -64,6 +64,34 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Genre Sections -->
+                @foreach (var genero in ViewBag.Generos)
+                {
+                    <div class="row mt-5" id="genre-@genero.IdGeneros">
+                        <div class="col-12">
+                            <h2 class="featured-title">@genero.NomeGeneros</h2>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
+                                    @foreach (var book in Model.Where(b => b.IdGenerosNavigation?.IdGeneros == genero.IdGeneros))
+                                    {
+                                        <div class="col">
+                                            <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
+                                                <div class="card book-card">
+                                                    <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
+                                                    <div class="card-body text-center">
+                                                        <h5 class="book-title">@book.TituloLivros</h5>
+                                                        <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -331,6 +359,29 @@
                 const nextPage = parseInt(nextBtn.getAttribute('data-page'));
                 navigatePage(nextPage);
             }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+        
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const headerOffset = 70;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
     });
 </script>
