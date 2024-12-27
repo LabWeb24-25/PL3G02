@@ -1,46 +1,68 @@
 ﻿@using LibSpace_Aspnet.Extensions
 @model IEnumerable<LibSpace_Aspnet.Models.Livro>
-
 @{
     ViewData["Title"] = "Página Principal";
 }
 
-<div class="home-page">
-    <div class="container-fluid">
-        <!-- Anúncios -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="card announcements-container">
-                    <div class="card-body">
-                        <h1>Announcements</h1>
-                    </div>
+<div class="container-fluid px-0">
+    <div class="home-page">
+        <div class="d-flex">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <h3>Categories</h3>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Em Destaque</a>
+                        </li>
+                        @foreach (var genero in ViewBag.Generos)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">@genero.NomeGeneros</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <!-- Livros -->
-        <div class="row">
-            <div class="col-12">
-                <h2 class="featured-title">Em Destaque</h2>
-                <div class="d-flex justify-content-between align-items-center">
-                    <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
-                   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
-                        @foreach (var book in Model)
-                        {
-                            <div class="col">
-                                <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
-                                    <div class="card book-card">
-                                        <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
-                                        <div class="card-body text-center">
-                                            <h5 class="book-title">@book.TituloLivros</h5>
-                                            <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
-                                        </div>
-                                    </div>
-                                </a>
+            <!-- Main Content -->
+            <div class="container-fluid main-content">
+                <!-- Anúncios -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="card announcements-container">
+                            <div class="card-body">
+                                <h1>Announcements</h1>
                             </div>
-                        }
+                        </div>
                     </div>
-                    <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
+                </div>
+
+                <!-- Livros -->
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="featured-title">Em Destaque</h2>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
+                           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
+                                @foreach (var book in Model)
+                                {
+                                    <div class="col">
+                                        <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
+                                            <div class="card book-card">
+                                                <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
+                                                <div class="card-body text-center">
+                                                    <h5 class="book-title">@book.TituloLivros</h5>
+                                                    <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                            <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,6 +209,104 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .home-page .sidebar {
+        width: 250px;
+        min-height: calc(100vh - 50px);
+        background-color: #fff;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        position: fixed;
+        top: 50px;
+        left: 0;
+        height: 100%;
+        z-index: 100;
+    }
+
+    .home-page .sidebar-content {
+        position: sticky;
+        top: 70px;
+    }
+
+    .home-page .sidebar h3 {
+        color: #004d40;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #004d40;
+    }
+
+    .home-page .sidebar .nav-link {
+        color: #666;
+        padding: 0.5rem 0;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .home-page .sidebar .nav-link:hover {
+        color: #004d40;
+        padding-left: 0.5rem;
+    }
+
+    .home-page .main-content {
+        margin-left: 50px;
+        flex: 1;
+        padding: 2rem;
+    }
+    
+    @@media (max-width: 768px) {
+        .home-page .d-flex {
+            flex-direction: column;
+            margin-left: 0;
+        }
+        
+        .home-page .sidebar {
+            position: relative;
+            width: 100%;
+            top: 0;
+            left: 0;
+            min-height: auto;
+            border-right: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .home-page .sidebar-content {
+            position: relative;
+            top: 0;
+        }
+        
+        .home-page .main-content {
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        .book-carousel .col {
+            max-width: none;
+        }
+    }
+
+    .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .home-page .d-flex {
+        margin: 0;
+        padding: 0;
+    }
+
+    .home-page .announcements-container {
+        margin: 0 0 2rem 0;
+        width: 100%;
+    }
+
+    .book-carousel .col {
+        max-width: 300px;
+        min-width: 200px;
+    }
+
+    .book-card {
+        max-width: 100%;
     }
 </style>
 

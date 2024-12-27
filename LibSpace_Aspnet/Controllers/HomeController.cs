@@ -11,7 +11,7 @@ namespace LibSpace_Aspnet.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private const int PageSize = 5; // Nº LIVROS POR SECCÇÃO AQUIII <-----------------
+        private const int PageSize = 5; // Nï¿½ LIVROS POR SECCï¿½ï¿½O AQUIII <-----------------
 
         public HomeController(ApplicationDbContext context)
         {
@@ -29,6 +29,7 @@ namespace LibSpace_Aspnet.Controllers
                 .Take(PageSize)
                 .ToList();
 
+            ViewBag.Generos = _context.Generos.ToList();
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             
