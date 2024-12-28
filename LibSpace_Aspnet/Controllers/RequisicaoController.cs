@@ -23,15 +23,15 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Requisicao
         public async Task<IActionResult> Index()
         {
-            //if (!User.Identity.IsAuthenticated)
-            //{
-            //    TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-            //    return Redirect("/Identity/Account/Login");
-            //}
-            //if (!User.IsInRole("Bibliotecario"))
-            //{
-            //    return Redirect("/Users/Notauthorized");
-            //}
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
             var Requisita = await _context.Requisita
                 .Select(req => new RequisitaViewModel
                 {
@@ -99,7 +99,7 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return Json(new { success = false, message = "Utilizador não autenticado." });
             }
-            if (!User.IsInRole("Leitor"))
+            if (!User.IsInRole("Bibliotecario"))
             {
                 return Json(new { success = false, message = "Fuunção exclusiva a Bibliotecários" });
             }
@@ -156,7 +156,7 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return Json(new { success = false, message = "Utilizador não autenticado." });
             }
-            if (!User.IsInRole("Leitor"))
+            if (!User.IsInRole("Bibliotecario"))
             {
                 return Json(new { success = false, message = "Fuunção exclusiva a Bibliotecários" });
             }
