@@ -4,60 +4,46 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<div class="form-container">
+    <h4 class="form-title">Eliminar Autor</h4>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Autor</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeAutor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeAutor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Pseudonimo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Pseudonimo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataFalecimento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataFalecimento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FotoAutor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FotoAutor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bibliografia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bibliografia)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdLinguaNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdLinguaNavigation.IdPais)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdAutor" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <div class="alert alert-danger">
+        <h5>Tem a certeza que deseja eliminar este autor?</h5>
+    </div>
+
+    <div class="form-content">
+        <div class="form-group form-group-info">
+            <div>
+                <p class="form-label">Nome Completo:</p>
+                <p>@Html.DisplayFor(model => model.NomeAutor)</p>
+                <p class="form-label">Pseudónimo:</p>
+                <p>@Html.DisplayFor(model => model.Pseudonimo)</p>
+                <p class="form-label">País de Origem:</p>
+                <p>@Html.DisplayFor(model => model.IdLinguaNavigation.NomePais)</p>
+                <p class="form-label">Data de Nascimento:</p>
+                <p>@Html.DisplayFor(model => model.DataNascimento)</p>
+                <p class="form-label">Data de Falecimento:</p>
+                <p>@Html.DisplayFor(model => model.DataFalecimento)</p>
+                <p class="form-label">Bibliografia:</p>
+                <p>@Html.Raw(Model.Bibliografia?.Replace("\n", "<br />"))</p>
+                @if (!string.IsNullOrEmpty(Model.FotoAutor))
+                {
+                    <p class="form-label">Foto:</p>
+                    <img src="@Url.Content("~/Foto_Autor/" + Model.FotoAutor)" alt="Foto de @Model.NomeAutor" style="max-width: 200px; display: block;" />
+                }
+            </div>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdAutor" />
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+                <input type="submit" value="Eliminar" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/create_design_autor_delete.css" />
+}

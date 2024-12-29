@@ -1,0 +1,14 @@
+﻿/* Importando estilos base do create_design_editora_details.css */
+@import url("create_design_editora_details.css");
+
+/* Estilos específicos para a página de Edição da Editora */
+.form-container {
+    max-width: 70%; /* Ajusta a largura máxima do formulário */
+}
+
+.form-row {
+    grid-template-columns: 1fr; /* Força uma coluna */
+}
+
+.required {
+    color: red;

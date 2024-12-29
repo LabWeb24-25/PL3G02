@@ -1,0 +1,20 @@
+﻿/* Importando estilos base do create_design_editora_details.css */
+@import url("create_design_editora_details.css");
+
+/* Estilos específicos para a página de Delete da Editora */
+.form-container {
+    max-width: 70%; /* Ajusta a largura máxima do formulário */
+}
+
+.form-row {
+    grid-template-columns: 1fr; /* Força uma coluna */
+}
+
+.alert-danger {
+    background-color: #fdd; /* Fundo vermelho claro */
+    border: 1px solid #faa; /* Borda vermelha mais escura */
+    color: #a00; /* Texto vermelho escuro */
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}

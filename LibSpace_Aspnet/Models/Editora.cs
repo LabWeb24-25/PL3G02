@@ -24,7 +24,7 @@ public partial class Editora
     [Column("Img_Editora")]
     [StringLength(300)]
     [Unicode(false)]
-    public string ImgEditora { get; set; } = null!;
+    public string? ImgEditora { get; set; } = null!;
 
     [InverseProperty("IdEditoraNavigation")]
     public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();

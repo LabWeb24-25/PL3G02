@@ -4,41 +4,63 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="form-container">
+    <h4 class="form-title">Editar Editora</h4>
+    <form asp-action="Edit" class="form-content" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="IdEditora" />
 
-<h4>Editora</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdEditora" />
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="NomeEditora" class="control-label"></label>
+                <label asp-for="NomeEditora" class="form-label">Nome <span class="required">*</span></label>
                 <input asp-for="NomeEditora" class="form-control" />
                 <span asp-validation-for="NomeEditora" class="text-danger"></span>
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="InfoEditora" class="control-label"></label>
-                <input asp-for="InfoEditora" class="form-control" />
+                <label asp-for="InfoEditora" class="form-label">Sobre a Editora</label>
+                <textarea asp-for="InfoEditora" class="form-control textarea"></textarea>
                 <span asp-validation-for="InfoEditora" class="text-danger"></span>
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
-                <label asp-for="ImgEditora" class="control-label"></label>
-                <input asp-for="ImgEditora" class="form-control" />
+                <label class="form-label">Imagem Atual</label>
+                @if (!string.IsNullOrEmpty(Model.ImgEditora))
+                {
+                    <img src="~/Editora_IMG/@Model.ImgEditora" alt="Imagem da Editora" style="width: 150px; height: auto; margin-bottom: 10px;" />
+                }
+                else
+                {
+                    <p>Nenhuma imagem disponível.</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="ImgEditora" class="form-label">Mudar foto editora <span class="required">*</span></label>
+                <input type="file" asp-for="ImgEditora" class="form-control-file" accept=".jpg, .jpeg, .png" />
                 <span asp-validation-for="ImgEditora" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/create_design_editora_edit.css" />
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

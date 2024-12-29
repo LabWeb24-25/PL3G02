@@ -1,0 +1,126 @@
+﻿/* Importando estilos base do create_design_livro.css */
+/* Estilo geral do formulário */
+.form-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Título do formulário */
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #006400;
+}
+
+/* Conteúdo do formulário */
+.form-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(auto-fit, minmax(100px, auto));
+    grid-gap: 20px;
+}
+
+/* Campos de entrada */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #006400;
+}
+
+.form-control {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.textarea {
+    height: 100px;
+    resize: none;
+}
+
+.form-control-file {
+    font-size: 16px;
+}
+
+/* Organização dos campos */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+}
+
+    .form-row .form-group {
+        width: 100%;
+    }
+
+/* Ações do formulário */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #006400;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #000;
+}
+
+/* Mensagens de erro de validação */
+.text-danger {
+    color: #ff0000;
+}
+
+/* Links de criação rápida */
+.btn_rend {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 6px 12px;
+    background-color: #006400;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+    .btn_rend:hover {
+        background-color: #004d00;
+    }
+
+/* Imagem de pré-visualização */
+img {
+    border-radius: 4px;
+}
+
+/* Ajustes específicos para a página de Editora */
+.form-container {
+    max-width: 70%; /* Ajusta a largura máxima do formulário */
+}
+
+.form-row {
+    grid-template-columns: 1fr; /* Força uma coluna */
+}
