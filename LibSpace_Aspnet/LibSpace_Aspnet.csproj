@@ -23,6 +23,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Views\Users\Index.txt" />
+    <None Remove="Views\Users\_UserDetailsPartial.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\Users\Index.txt" />
+    <Content Include="Views\Users\_UserDetailsPartial.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
@@ -35,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\LivrosRequisitados\" />
     <Folder Include="wwwroot\images\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
