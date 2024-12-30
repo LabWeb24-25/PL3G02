@@ -25,10 +25,10 @@
                 <td>@preRequisita.NomeLeitor</td>
                 <td>@preRequisita.EstadoLevantamento</td>
                 <td>
-                    <a href="javascript:void(0);" class="btn-approve" data-url="@Url.Action("AceitarReq", new { id = preRequisita.IdReserva })">
+                    <a href="javascript:void(0);" class="btn-approve" data-url="@Url.Action("AceitarReq", new { idprereq = preRequisita.IdReserva })">
                         Aprovar Requisição
                     </a> |
-                    <a href="javascript:void(0);" class="btn-reject" data-url="@Url.Action("RejeitarReq", new { id = preRequisita.IdReserva })">
+                    <a href="javascript:void(0);" class="btn-reject" data-url="@Url.Action("RejeitarReq", new { idprereq = preRequisita.IdReserva })">
                         Rejeitar Requisição
                     </a>
                 </td>
@@ -101,7 +101,7 @@
                     <td>@requisita.NomeLeitor</td>
                     <td>@requisita.DataRequisicao.ToString("d")</td>
                     <td>@requisita.DataPrevEntrega.ToString("d")</td>
-                    <td>@requisita.DataEntrega.ToString("d")</td>
+                    <td>@requisita.DataEntrega?.ToString("d") ?? "N/A"</td>
                     <td>@requisita.NomeBibliotecarioRecetor ?? "N/A"</td>
                     <td>@requisita.NomeBibliotecarioRemetente ?? "N/A"</td>
                 </tr>

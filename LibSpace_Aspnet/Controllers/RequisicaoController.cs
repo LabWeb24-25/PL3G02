@@ -133,9 +133,10 @@ namespace LibSpace_Aspnet.Controllers
                 IdLivro = prerequisita.Idlivro,
                 DataRequisicao = DateTime.Now,
                 DataPrevEntrega = DateOnly.FromDateTime(DateTime.Now.AddDays(15)),
+                DataEntrega = null
             };
 
-            
+
             try
             {
                 _context.Requisita.Add(requisita);
@@ -171,9 +172,9 @@ namespace LibSpace_Aspnet.Controllers
             livro.NumExemplares = livro.NumExemplares + 1;
             prerequisita.EstadoLevantamento = -1;
 
-            return Json(new { success = true, message = "Livro Requisitado" });
-            
+            await _context.SaveChangesAsync();
 
+            return Json(new { success = true, message = "Requisição rejeitada com sucesso." });
         }
         [HttpPost]
         public async Task<IActionResult> FinalizarReq([FromBody] RequisitaViewModel requisita)
