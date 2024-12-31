@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -20,16 +20,6 @@
 
   <ItemGroup>
     <Content Remove="Views\Livroes\View.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Views\Users\Index.txt" />
-    <None Remove="Views\Users\_UserDetailsPartial.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Views\Users\Index.txt" />
-    <Content Include="Views\Users\_UserDetailsPartial.txt" />
   </ItemGroup>
 
   <ItemGroup>
