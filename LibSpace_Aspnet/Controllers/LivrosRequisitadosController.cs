@@ -61,7 +61,7 @@ namespace LibSpace_Aspnet.Controllers
                           Livro = l,
                           DataRequisicao = r.DataRequisicao,
                           DataPrevEntrega = r.DataPrevEntrega,
-                          DataEntrega = r.DataEntrega,
+                          DataEntrega = r.DataEntrega.Value,
                           BibliotecarioNome = u1.UserName,
                           BibliotecarioRemetenteNome = u2.UserName
                       }).ToListAsync();
