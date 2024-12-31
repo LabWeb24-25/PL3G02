@@ -21,13 +21,14 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterGoogleModel> _logger;
         private readonly ApplicationDbContext _dbContext;
-
+        private readonly RoleManager<IdentityRole> _roleManager;
         public RegisterGoogleModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterGoogleModel> logger,
-            ApplicationDbContext dbContext)
+            ApplicationDbContext dbContext,
+             RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -35,6 +36,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _dbContext = dbContext;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -79,11 +81,25 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 
             [EmailAddress]
             [Display(Name = "Email")]
+
+
             public string Email { get; set; } // Este campo será preenchido automaticamente
+
+            [Required]
+            [Display(Name = "Role")]
+            public string Role { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null, string email = null)
         {
+            // Obter todas as roles
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            // Filtrar a função "Administrador"
+            var filteredRoles = roles.Where(r => r.Name != "Admin").ToList();
+
+            // Passar as roles filtradas para a ViewBag
+            ViewData["Roles"] = filteredRoles;
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -124,6 +140,8 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 
                     // Update phone number
                     await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+
+                    await _userManager.AddToRoleAsync(user, Input.Role);
 
                     // Create or get CodigoPostal
                     var codigoPostal = await _dbContext.CodigoPostals
@@ -190,6 +208,7 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                 }
             }
 
+            ViewData["Roles"] = _roleManager.Roles.ToList();
             return Page();
         }
 

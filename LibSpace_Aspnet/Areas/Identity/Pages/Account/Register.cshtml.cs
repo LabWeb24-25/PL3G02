@@ -151,7 +151,15 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            ViewData["Roles"] = _roleManager.Roles.ToList();
+            // Obter todas as roles
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            // Filtrar a função "Administrador"
+            var filteredRoles = roles.Where(r => r.Name != "Admin").ToList();
+
+            // Passar as roles filtradas para a ViewBag
+            ViewData["Roles"] = filteredRoles;
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
