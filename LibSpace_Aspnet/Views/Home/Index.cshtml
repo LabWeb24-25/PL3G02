@@ -70,13 +70,14 @@
                     </div>
                 </div>
 
-                <!-- Genre Sections -->
+                <!-- Géneros -->
                 @foreach (var genero in ViewBag.Generos)
                 {
                     <div class="row mt-5" id="genre-@genero.IdGeneros">
                         <div class="col-12">
                             <h2 class="featured-title">@genero.NomeGeneros</h2>
                             <div class="d-flex justify-content-between align-items-center">
+                                <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
                                     @foreach (var book in Model.Where(b => b.IdGenerosNavigation?.IdGeneros == genero.IdGeneros))
                                     {
@@ -93,6 +94,7 @@
                                         </div>
                                     }
                                 </div>
+                                <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
                             </div>
                         </div>
                     </div>
