@@ -13,9 +13,10 @@ namespace LibSpace_Aspnet.Models
         [Required(ErrorMessage = "O campo Infomação de Editora é obrigatório.")]
         public string? InfoEditora { get; set; }
 
-        [Required(ErrorMessage = "Selecione uma imagem para a capa.")]
         [DataType(DataType.Upload)]
         [Display(Name = "Capa do Livro")]
         public IFormFile? ImgEditora { get; set; }
+
+        public int stateimage { get; set; }
     }
 }

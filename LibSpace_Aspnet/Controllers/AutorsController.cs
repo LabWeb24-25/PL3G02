@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
 using Microsoft.AspNetCore.Hosting;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -50,6 +51,21 @@ namespace LibSpace_Aspnet.Controllers
             return View(autor);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> Createpais([FromBody] Pai pais)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+            }
+
+            _context.Pais.Add(pais);
+            await _context.SaveChangesAsync(); // Use SaveChangesAsync para operações assíncronas
+            var paises = await _context.Pais.ToListAsync(); // Obtenha a lista de países de forma assíncrona
+            return Json(new { id = pais.IdPais, nome = pais.NomePais, paises });
+        }
+
         public IActionResult Livro_Create()
         {
             if (!User.Identity.IsAuthenticated)
@@ -76,25 +92,31 @@ namespace LibSpace_Aspnet.Controllers
             {
                 string? uniqueFileName = null;
 
-
-                // Validate the image format
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
-
-                if (!allowedExtensions.Contains(fileExtension))
+                if (viewModel.FotoAutor != null)
                 {
-                    ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+                    // Validate the image format
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
 
-                    return View(viewModel);
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+
+                        return View(viewModel);
+                    }
+
+                    // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
+                    uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
+                    var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                    using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                    {
+                        await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    }
                 }
-
-                // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
-                uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
-                var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
-
-                using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                else
                 {
-                    await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    uniqueFileName = "autorsemfoto.jpeg";
                 }
 
 
@@ -102,12 +124,10 @@ namespace LibSpace_Aspnet.Controllers
                 var autor = new Autor
                 {
                     NomeAutor = viewModel.NomeAutor,
-                    DataNascimento = DateOnly.FromDateTime(viewModel.DataNascimento),
+                    DataNascimento = viewModel.DataNascimento,
                     Pseudonimo = viewModel.Pseudonimo,
                     // Handle nullable DateTime for DataFalecimento
-                    DataFalecimento = viewModel.DataFalecimento.HasValue
-                    ? DateOnly.FromDateTime(viewModel.DataFalecimento.Value)
-                    : null,
+                    DataFalecimento = viewModel.DataFalecimento,
                     Bibliografia = viewModel.Bibliografia,
                     IdLingua = viewModel.IdLingua,
                     FotoAutor = uniqueFileName // Save the file name in the database
@@ -149,25 +169,31 @@ namespace LibSpace_Aspnet.Controllers
             {
                 string? uniqueFileName = null;
 
-
-                // Validate the image format
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
-
-                if (!allowedExtensions.Contains(fileExtension))
+                if (viewModel.FotoAutor == null)
                 {
-                    ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
-
-                    return View(viewModel);
+                    uniqueFileName = "autorsemfoto.jpeg";
                 }
-
-                // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
-                uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
-                var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
-
-                using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                else
                 {
-                    await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    // Validate the image format
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+
+                        return View(viewModel);
+                    }
+
+                    // Generate a unique file name to prevent overwriting, poder ter que adicionar aqui um id unico
+                    uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
+                    var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                    using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                    {
+                        await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    }
                 }
                 
 
@@ -175,12 +201,9 @@ namespace LibSpace_Aspnet.Controllers
                 var autor = new Autor
                 {
                     NomeAutor = viewModel.NomeAutor,
-                    DataNascimento = DateOnly.FromDateTime(viewModel.DataNascimento),
+                    DataNascimento = viewModel.DataNascimento,
                     Pseudonimo = viewModel.Pseudonimo,
-                    // Handle nullable DateTime for DataFalecimento
-                    DataFalecimento = viewModel.DataFalecimento.HasValue
-                    ? DateOnly.FromDateTime(viewModel.DataFalecimento.Value)
-                    : null,
+                    DataFalecimento = viewModel.DataFalecimento,
                     Bibliografia = viewModel.Bibliografia,
                     IdLingua = viewModel.IdLingua,
                     FotoAutor = uniqueFileName // Save the file name in the database
@@ -189,7 +212,7 @@ namespace LibSpace_Aspnet.Controllers
                 _context.Add(autor);
                 await _context.SaveChangesAsync();
                 var previousUrl = Request.Headers["Referer"].ToString();
-                return Redirect(previousUrl);
+                return RedirectToAction(nameof(Details), new { id = autor.IdAutor });
             }
 
 
@@ -205,7 +228,6 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-
             if (!User.Identity.IsAuthenticated)
             {
                 TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
@@ -221,8 +243,23 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais", autor.IdLingua);
-            return View(autor);
+            var _autor = new AutorViewModel
+            {
+                NomeAutor = autor.NomeAutor,
+                Pseudonimo = autor.Pseudonimo,
+                DataNascimento = autor.DataNascimento,
+                DataFalecimento = autor.DataFalecimento,
+                Bibliografia = autor.Bibliografia,
+            };
+            ViewBag.IdAutor = autor.IdAutor;
+            ViewData["IdLingua"] = new SelectList(
+                await _context.Pais.ToListAsync(),
+                "IdPais",
+                "NomePais",
+                autor.IdLingua
+            );
+            ViewBag.FotoAutor = "~/Foto_Autor/" + autor.FotoAutor;
+            return View(_autor);
         }
 
         // POST: Autors/Edit/5
@@ -230,23 +267,55 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAutor,NomeAutor,DataNascimento,Pseudonimo,DataFalecimento,FotoAutor,Bibliografia,IdLingua")] Autor autor)
+        public async Task<IActionResult> Edit(int id, [Bind("NomeAutor,DataNascimento,Pseudonimo,DataFalecimento,FotoAutor,Bibliografia,IdLingua, statusimage")] AutorViewModel autor)
         {
-            if (id != autor.IdAutor)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
+                var _autor = await _context.Autors.FindAsync(id);
+                if (autor.FotoAutor == null)
+                {
+                    if (autor.statusimg == 1 && _autor.FotoAutor != "autorasemfoto.jpeg")
+                    {
+                        var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", _autor.FotoAutor);
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+
+                    }
+                    _autor.FotoAutor = "autorsemfoto.jpeg"; // ou definir como o valor padrão
+                }
+                else
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(autor.FotoAutor.FileName).ToLower();
+
+                    // Save the image to a folder
+                    var coverFileName = Path.GetFileName(autor.FotoAutor.FileName);
+                    _autor.FotoAutor = coverFileName;
+                    var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", coverFileName);
+
+                    using (var stream = new FileStream(coverPath, FileMode.Create))
+                    {
+                        await autor.FotoAutor.CopyToAsync(stream);
+                    }
+                }
+                _autor.NomeAutor = autor.NomeAutor;
+                _autor.DataNascimento = autor.DataNascimento;
+                _autor.Pseudonimo = autor.Pseudonimo;
+                _autor.DataFalecimento = autor.DataFalecimento;
+                _autor.Bibliografia = autor.Bibliografia;
+                _autor.IdLingua = autor.IdLingua;
+
+
                 try
                 {
-                    _context.Update(autor);
+                    _context.Update(_autor);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AutorExists(autor.IdAutor))
+                    if (!AutorExists(_autor.IdAutor))
                     {
                         return NotFound();
                     }
@@ -255,9 +324,8 @@ namespace LibSpace_Aspnet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = _autor.IdAutor });
             }
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "IdPais", autor.IdLingua);
             return View(autor);
         }
 

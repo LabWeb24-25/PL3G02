@@ -31,7 +31,7 @@ public partial class Requisitum
     public DateOnly DataPrevEntrega { get; set; }
 
     [Column("Data_Entrega", TypeName = "datetime")]
-    public DateTime DataEntrega { get; set; }
+    public DateTime? DataEntrega { get; set; }
 
     [ForeignKey("IdLivro")]
     [InverseProperty("Requisita")]

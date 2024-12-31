@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
+using System.Security.Claims;
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -22,152 +23,202 @@ namespace LibSpace_Aspnet.Controllers
         // GET: Requisicao
         public async Task<IActionResult> Index()
         {
-            var requisitas = await _context.Requisita.ToListAsync();
-
-            var prerequisitas = await _context.PreRequisita.ToListAsync();
-
-            var viewModel = new RequisitaViewModel
+            if (!User.Identity.IsAuthenticated)
             {
-                Requisita = requisitas,
-                PreRequisita = prerequisitas
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Users/Notauthorized");
+            }
+            var Requisita = await _context.Requisita
+                .Select(req => new RequisitaViewModel
+                {
+                    IdLivro = req.IdLivro,
+                    IdLeitor = req.IdLeitor,
+                    IdBiblioRecetor = req.IdBibliotecarioRecetor,
+                    IdBiblioRemetente = req.IdBibliotecarioRemetente,
+                    NomeLivro = _context.Livros
+                        .Where(l => l.IdLivro == req.IdLivro)
+                        .Select(l => l.TituloLivros)
+                        .FirstOrDefault(),
+                    NomeLeitor = _context.Perfils
+                        .Where(lec => lec.IdPerfil == req.IdLeitor)
+                        .Select(lec => lec.NomePerfil)
+                        .FirstOrDefault(),
+                    DataRequisicao = req.DataRequisicao,
+                    DataPrevEntrega = req.DataPrevEntrega,
+                    DataEntrega = req.DataEntrega,
+                    NomeBibliotecarioRecetor = _context.Perfils
+                        .Where(b => b.IdPerfil == req.IdBibliotecarioRecetor)
+                        .Select(b => b.NomePerfil)
+                        .FirstOrDefault(),
+                    NomeBibliotecarioRemetente = req.IdBibliotecarioRemetente.HasValue
+                        ? _context.Perfils
+                            .Where(b => b.IdPerfil == req.IdBibliotecarioRemetente.Value)
+                            .Select(b => b.NomePerfil)
+                            .FirstOrDefault()
+                        : "N/A"  // Se nulo, exibir "N/A"
+                })
+                .ToListAsync();
+
+
+            var PreRequisita = _context.PreRequisita
+                    .Select(pre => new PreRequisitaViewModel
+                    {
+                        IdReserva = pre.Idreserva,
+                        NomeLivro = _context.Livros
+                            .Where(l => l.IdLivro == pre.Idlivro)
+                            .Select(l => l.TituloLivros)
+                            .FirstOrDefault(),
+                        NomeLeitor = _context.Perfils
+                            .Where(leitor => leitor.IdPerfil == pre.Idleitor)
+                            .Select(leitor => leitor.NomePerfil)
+                            .FirstOrDefault(),
+                        EstadoLevantamento = pre.EstadoLevantamento
+                    })
+                    .ToList();
+
+
+
+            var viewModel = new RequisitaView
+            {
+                Requisita = Requisita,
+                PreRequisita = PreRequisita
             };
 
             return View(viewModel);
         }
 
-        // GET: Requisicao/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var requisitum = await _context.Requisita
-                .Include(r => r.IdLivroNavigation)
-                .FirstOrDefaultAsync(m => m.IdLeitor == id);
-            if (requisitum == null)
-            {
-                return NotFound();
-            }
-
-            return View(requisitum);
-        }
-
-        // GET: Requisicao/Create
-        public IActionResult Create()
-        {
-            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro");
-            return View();
-        }
-
-        // POST: Requisicao/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdLeitor,IdBibliotecarioRecetor,IdBibliotecarioRemetente,IdLivro,DataRequisicao,DataPrevEntrega,DataEntrega")] Requisitum requisitum)
+        public async Task<IActionResult> AceitarReq(int idprereq)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.IsAuthenticated)
             {
-                _context.Add(requisitum);
+                return Json(new { success = false, message = "Utilizador não autenticado." });
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Json(new { success = false, message = "Fuunção exclusiva a Bibliotecários" });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            // Converte o Guid para string para facilitar a manipulação e visualização
+            var userId = userIdClaim.Value;
+
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
+
+            var prerequisita = await _context.PreRequisita.FindAsync(idprereq);
+            if (prerequisita == null)
+            {
+                return Json(new { success = false, message = "Erro" });
+            }
+
+            prerequisita.EstadoLevantamento = 1;
+
+            var requisita = new Requisitum
+            {
+                IdLeitor = prerequisita.Idleitor,
+                IdBibliotecarioRecetor = perfil.IdPerfil,
+                IdLivro = prerequisita.Idlivro,
+                DataRequisicao = DateTime.Now,
+                DataPrevEntrega = DateOnly.FromDateTime(DateTime.Now.AddDays(15)),
+                DataEntrega = null
+            };
+
+
+            try
+            {
+                _context.Requisita.Add(requisita);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Livro Requisitado" });
             }
-            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro", requisitum.IdLivro);
-            return View(requisitum);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao Requisitar: {ex.Message}" });
+            }
         }
 
-        // GET: Requisicao/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var requisitum = await _context.Requisita.FindAsync(id);
-            if (requisitum == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro", requisitum.IdLivro);
-            return View(requisitum);
-        }
-
-        // POST: Requisicao/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdLeitor,IdBibliotecarioRecetor,IdBibliotecarioRemetente,IdLivro,DataRequisicao,DataPrevEntrega,DataEntrega")] Requisitum requisitum)
+        public async Task<IActionResult> RejeitarReq(int idprereq)
         {
-            if (id != requisitum.IdLeitor)
+            if (!User.Identity.IsAuthenticated)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Utilizador não autenticado." });
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Json(new { success = false, message = "Fuunção exclusiva a Bibliotecários" });
             }
 
-            if (ModelState.IsValid)
+            var prerequisita = await _context.PreRequisita.FindAsync(idprereq);
+            if (prerequisita == null)
             {
-                try
-                {
-                    _context.Update(requisitum);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RequisitumExists(requisitum.IdLeitor))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdLivro"] = new SelectList(_context.Livros, "IdLivro", "IdLivro", requisitum.IdLivro);
-            return View(requisitum);
-        }
-
-        // GET: Requisicao/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                return Json(new { success = false, message = "Erro" });
             }
 
-            var requisitum = await _context.Requisita
-                .Include(r => r.IdLivroNavigation)
-                .FirstOrDefaultAsync(m => m.IdLeitor == id);
-            if (requisitum == null)
-            {
-                return NotFound();
-            }
-
-            return View(requisitum);
-        }
-
-        // POST: Requisicao/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var requisitum = await _context.Requisita.FindAsync(id);
-            if (requisitum != null)
-            {
-                _context.Requisita.Remove(requisitum);
-            }
+            var livro = await _context.Livros.FindAsync(prerequisita.Idlivro);
+            livro.NumExemplares = livro.NumExemplares + 1;
+            prerequisita.EstadoLevantamento = -1;
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Json(new { success = true, message = "Requisição rejeitada com sucesso." });
+        }
+        [HttpPost]
+        public async Task<IActionResult> FinalizarReq(int idrequisicao)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Json(new { success = false, message = "Utilizador não autenticado." });
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Json(new { success = false, message = "Função exclusiva a Bibliotecários" });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userIdClaim.Value);
+
+            var requisicao = await _context.Requisita
+                .FirstOrDefaultAsync(r => r.IdLivro == idrequisicao);
+
+            if (requisicao == null)
+            {
+                return Json(new { success = false, message = "Requisição não encontrada." });
+            }
+
+            requisicao.DataEntrega = DateTime.Now;
+            requisicao.IdBibliotecarioRemetente = perfil.IdPerfil;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Requisição finalizada com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao finalizar requisição: {ex.Message}" });
+            }
         }
 
-        private bool RequisitumExists(int id)
-        {
-            return _context.Requisita.Any(e => e.IdLeitor == id);
-        }
     }
 }
+
