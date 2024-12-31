@@ -1,0 +1,378 @@
+@model LivrosRequisitadosViewModel
+@{
+    ViewData["Title"] = "Livros Requisitados";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="user-management-container">
+    <div class="header-section">
+        <h2 class="section-title">Meus Livros</h2>
+    </div>
+
+    <div class="users-list-container mb-4">
+        <div class="list-header" onclick="toggleSection('prerequisitados-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Livros Pré-Requisitados
+            </h3>
+        </div>
+        
+        <div id="prerequisitados-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar livro..." 
+                           onkeyup="searchBooks('prerequisitados-books', this.value)">
+                </div>
+            </div>
+
+            <div class="books-list" id="prerequisitados-books">
+                @if (!Model.PreRequisitados.Any())
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Não existem livros pré-requisitados no momento.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var livro in Model.PreRequisitados)
+                    {
+                        <div class="book-item">
+                            <div class="book-info">
+                                <div class="book-cover">
+                                    <img src="~/Cover/@livro.CapaImg" alt="Capa do livro" />
+                                </div>
+                                <div class="book-details">
+                                    <div class="book-title">@livro.TituloLivros</div>
+                                </div>
+                            </div>
+                            <div class="book-actions">
+                                <button class="btn btn-danger action-btn" title="Cancelar">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="users-list-container mb-4">
+        <div class="list-header" onclick="toggleSection('requisitados-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Livros Requisitados
+            </h3>
+        </div>
+        
+        <div id="requisitados-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar livro..." 
+                           onkeyup="searchBooks('requisitados-books', this.value)">
+                </div>
+            </div>
+
+            <div class="books-list" id="requisitados-books">
+                @if (!Model.Requisitados.Any())
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Não existem livros requisitados no momento.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var req in Model.Requisitados)
+                    {
+                        <div class="book-item">
+                            <div class="book-info">
+                                <div class="book-cover">
+                                    <img src="~/Cover/@req.Livro.CapaImg" alt="Capa do livro" />
+                                </div>
+                                <div class="book-details">
+                                    <div class="book-title">@req.Livro.TituloLivros</div>
+                                    <div class="book-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-check"></i>
+                                            Requisitado em: @req.DataRequisicao.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-times"></i>
+                                            Entregar até: @req.DataPrevEntrega.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-user-tie"></i>
+                                            Bibliotecário: @req.BibliotecarioNome
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="users-list-container mb-4">
+        <div class="list-header" onclick="toggleSection('entregues-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Livros Entregues
+            </h3>
+        </div>
+        
+        <div id="entregues-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar livro..." 
+                           onkeyup="searchBooks('entregues-books', this.value)">
+                </div>
+            </div>
+
+            <div class="books-list" id="entregues-books">
+                @if (!Model.Entregues.Any())
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Não existem livros entregues no momento.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var ent in Model.Entregues)
+                    {
+                        <div class="book-item">
+                            <div class="book-info">
+                                <div class="book-cover">
+                                    <img src="~/Cover/@ent.Livro.CapaImg" alt="Capa do livro" />
+                                </div>
+                                <div class="book-details">
+                                    <div class="book-title">@ent.Livro.TituloLivros</div>
+                                    <div class="book-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-check"></i>
+                                            Requisitado em: @ent.DataRequisicao.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-times"></i>
+                                            Data prevista: @ent.DataPrevEntrega.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-alt text-success"></i>
+                                            Entregue em: @ent.DataEntrega.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-user-tie"></i>
+                                            Bibliotecário recetor: @ent.BibliotecarioNome
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-user-check"></i>
+                                            Bibliotecário remetente: @ent.BibliotecarioRemetenteNome
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.book-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+}
+
+.book-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.book-cover {
+    width: 80px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 0.25rem;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.book-details {
+    flex: 1;
+}
+
+.book-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.book-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.list-header {
+    cursor: pointer;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.list-header:hover {
+    background-color: #f8f9fa;
+}
+
+.section-toggle {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.section-toggle.collapsed {
+    transform: rotate(-90deg);
+}
+
+.section-content {
+    transition: all 0.3s ease-out;
+    overflow: hidden;
+    opacity: 1;
+    max-height: 2000px;
+}
+
+.section-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.search-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-container {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.book-meta {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.meta-item i {
+    width: 16px;
+}
+</style>
+
+<script>
+function toggleSection(sectionId) {
+    const content = document.getElementById(sectionId);
+    const icon = content.previousElementSibling.querySelector('.section-toggle');
+    
+    if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        icon.classList.remove('collapsed');
+        content.style.maxHeight = content.scrollHeight + 'px';
+    } else {
+        content.classList.add('collapsed');
+        icon.classList.add('collapsed');
+        content.style.maxHeight = '0';
+    }
+}
+
+function searchBooks(containerId, searchText) {
+    const container = document.getElementById(containerId);
+    const items = container.getElementsByClassName('book-item');
+    
+    searchText = searchText.toLowerCase();
+    
+    Array.from(items).forEach(item => {
+        const bookTitle = item.querySelector('.book-title').textContent.toLowerCase();
+        
+        if (bookTitle.includes(searchText)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.getElementsByClassName('section-content');
+    Array.from(sections).forEach(section => {
+        section.classList.remove('collapsed');
+        section.style.maxHeight = section.scrollHeight + 'px';
+    });
+});
+</script>

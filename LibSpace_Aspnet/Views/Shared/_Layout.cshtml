@@ -108,6 +108,12 @@
                         <a href="~/Ajuda" class="icon-link">
                             <img src="~/img/icons/ico_ajuda.png" alt="ico_ajuda.png" class="icon-img" />
                         </a>
+                        @if (User.IsInRole("Leitor"))
+                        {
+                            <a href="~/LivrosRequisitados" class="icon-link">
+                                <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
