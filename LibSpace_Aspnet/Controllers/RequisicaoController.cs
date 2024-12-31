@@ -177,41 +177,45 @@ namespace LibSpace_Aspnet.Controllers
             return Json(new { success = true, message = "Requisição rejeitada com sucesso." });
         }
         [HttpPost]
-        public async Task<IActionResult> FinalizarReq([FromBody] RequisitaViewModel requisita)
+        public async Task<IActionResult> FinalizarReq(int idrequisicao)
         {
-            // Validação dos dados recebidos
-            if (requisita == null || string.IsNullOrWhiteSpace(requisita.NomeLivro))
+            if (!User.Identity.IsAuthenticated)
             {
-                return Json(new { success = false, message = "Dados inválidos ou incompletos." });
+                return Json(new { success = false, message = "Utilizador não autenticado." });
             }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Json(new { success = false, message = "Função exclusiva a Bibliotecários" });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userIdClaim.Value);
+
+            var requisicao = await _context.Requisita
+                .FirstOrDefaultAsync(r => r.IdLivro == idrequisicao);
+
+            if (requisicao == null)
+            {
+                return Json(new { success = false, message = "Requisição não encontrada." });
+            }
+
+            requisicao.DataEntrega = DateTime.Now;
+            requisicao.IdBibliotecarioRemetente = perfil.IdPerfil;
 
             try
             {
-                // Busca o registro no banco de dados com base no nome do livro
-                var _requisita = await _context.Requisita
-                    .Include(r => r.IdLivroNavigation) // Certifica-se de incluir a navegação para o título do livro
-                    .FirstOrDefaultAsync(r => r.IdLivro == requisita.IdLivro && r.IdBibliotecarioRecetor==requisita.IdBiblioRecetor && r.IdBibliotecarioRemetente == requisita.IdBiblioRemetente && r.DataRequisicao==r.DataRequisicao);
-
-                
-                if (_requisita == null)
-                {
-                    return Json(new { success = false, message = "Requisição não encontrada para o livro especificado." });
-                }
-
-                // Realize as alterações necessárias no registro (_requisita)
-                // Exemplo: Atualizar a data de entrega ou estado da requisição
-                _requisita.DataEntrega = DateTime.Now;
-                _context.Requisita.Update(_requisita);
                 await _context.SaveChangesAsync();
-
                 return Json(new { success = true, message = "Requisição finalizada com sucesso." });
             }
             catch (Exception ex)
             {
-                // Log da exceção (opcional, mas recomendado para depuração)
-                // _logger.LogError(ex, "Erro ao finalizar requisição.");
-
-                return Json(new { success = false, message = "Ocorreu um erro ao finalizar a requisição. Por favor, tente novamente mais tarde." });
+                return Json(new { success = false, message = $"Erro ao finalizar requisição: {ex.Message}" });
             }
         }
 
