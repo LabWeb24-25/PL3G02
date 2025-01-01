@@ -16,7 +16,7 @@ public partial class Autor
     [Column("Nome_Autor")]
     [StringLength(120)]
     [Unicode(false)]
-    public string NomeAutor { get; set; } = null!;
+    public string NomeAutor { get; set; }
 
     [Column("Data_Nascimento")]
     public DateOnly DataNascimento { get; set; }
@@ -31,17 +31,17 @@ public partial class Autor
     [Column("Foto_Autor")]
     [StringLength(250)]
     [Unicode(false)]
-    public string? FotoAutor { get; set; } = null!;
+    public string? FotoAutor { get; set; }
 
     [Column(TypeName = "text")]
-    public string Bibliografia { get; set; } = null!;
+    public string Bibliografia { get; set; }
 
     [Column("Id_Lingua")]
     public int IdLingua { get; set; }
 
     [ForeignKey("IdLingua")]
     [InverseProperty("Autors")]
-    public virtual Pai IdLinguaNavigation { get; set; } = null!;
+    public virtual Pai IdLinguaNavigation { get; set; }
 
     [InverseProperty("IdAutorNavigation")]
     public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();

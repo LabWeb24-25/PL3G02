@@ -32,7 +32,8 @@ namespace LibSpace_Aspnet.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Autors/Details/5
+        //// GET: Autors/Details/5
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)] // A cache dura 1 minuto
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -75,7 +76,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
@@ -152,7 +153,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
@@ -235,7 +236,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
 
             var autor = await _context.Autors.FindAsync(id);
@@ -374,7 +375,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
 
             var autor = await _context.Autors

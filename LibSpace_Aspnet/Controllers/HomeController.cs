@@ -22,6 +22,7 @@ namespace LibSpace_Aspnet.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+
         public IActionResult Index(int page = 1)
         {
             var totalBooks = _context.Livros.Count();

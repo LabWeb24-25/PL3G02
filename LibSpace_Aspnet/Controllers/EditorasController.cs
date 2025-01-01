@@ -30,6 +30,8 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Editoras/Details/5
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)] // A cache dura 1 minuto
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,8 +57,8 @@ namespace LibSpace_Aspnet.Controllers
                 return Redirect("/Identity/Account/Login");
             }
             if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
+            {   
+                return Redirect("/Acess/Notauthorized");
             }
             return View();
         }
@@ -108,7 +110,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             return View();
         }
@@ -165,7 +167,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
 
             var editora = await _context.Editoras.FindAsync(id);

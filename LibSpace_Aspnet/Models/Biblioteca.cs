@@ -23,6 +23,11 @@ public partial class Biblioteca
     [Unicode(false)]
     public string EndCodPostal { get; set; } = null!;
 
+    [Column("End_Localidade")]
+    [StringLength(40)]
+    [Unicode(false)]
+    public string EndLocalidade { get; set; } = null!;
+
     [Column("Nome_Biblioteca")]
     [StringLength(100)]
     [Unicode(false)]
@@ -38,8 +43,4 @@ public partial class Biblioteca
 
     [Column(TypeName = "text")]
     public string Horario { get; set; } = null!;
-
-    [ForeignKey("EndCodPostal")]
-    [InverseProperty("Bibliotecas")]
-    public virtual CodigoPostal EndCodPostalNavigation { get; set; } = null!;
 }

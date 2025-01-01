@@ -4,51 +4,51 @@
     ViewData["Title"] = "Sobre";
 }
 
-<h1>Sobre</h1>
+<div class="form-container details-container">
+    <h4 class="form-title">Detalhes da Biblioteca</h4>
+    <div class="form-content">
+        <div class="form-row form-row-details">
+            <div class="form-group form-group-info">
+                <div>
 
-<div>
-    <h4>Biblioteca</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndMorada)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndMorada)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeBiblioteca)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeBiblioteca)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Horario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Horario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndCodPostalNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndCodPostalNavigation.EndCodPostal)
-        </dd>
-    </dl>
+
+                    [StringLength(125)]
+                    [Unicode(false)]
+                    public string Email { get; set; } = null!;
+
+                    [StringLength(9)]
+                    [Unicode(false)]
+                    public string Telefone { get; set; } = null!;
+
+                    [Column(TypeName = "text")]
+                    public string Horario { get; set; } = null!;
+                    <p class="form-label">Nome:</p>
+                    <p>@Html.DisplayFor(model => model.NomeBiblioteca)</p>
+                    <p class="form-label">Morada:</p>
+                    <p>@Html.DisplayFor(model => model.EndMorada)</p>
+                    <p class="form-label">Codigo Postal:</p>
+                    <p>@Html.DisplayFor(model => model.EndCodPostal)</p>
+                    <p class="form-label">Localidade:</p>
+                    <p>@Html.DisplayFor(model => model.EndLocalidade)</p>
+                    <p class="form-label">Email:</p>
+                    <p>@Html.DisplayFor(model => model.Email)</p>
+                    <p class="form-label">Telefone:</p>
+                    <p>@Html.DisplayFor(model => model.Telefone)</p>
+                    <p class="form-label">Horario:</p>
+                    <p>@Html.Raw(Model.Horario?.Replace("\n", "<br />"))</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            @if (User.IsInRole("Admin"))
+                {
+            <a asp-action="Edit" asp-route-id="@Model.IdBiblioteca" class="btn btn-primary btn-edit">Editar</a>
+                }
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdBiblioteca">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/create_design_autor_details.css" />
+}
