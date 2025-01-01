@@ -1,0 +1,206 @@
+﻿/* Estilo geral do formulário */
+.form-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Título do formulário */
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #006400;
+}
+
+/* Conteúdo do formulário */
+.form-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(auto-fit, minmax(100px, auto));
+    grid-gap: 20px;
+}
+
+/* Campos de entrada */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #006400;
+}
+
+.form-control {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.textarea {
+    height: 100px;
+    resize: none;
+}
+
+.form-control-file {
+    font-size: 16px;
+}
+
+/* Organização dos campos */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+}
+
+    .form-row .form-group {
+        width: 100%;
+    }
+
+/* Ações do formulário */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #006400;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #000;
+}
+
+/* Mensagens de erro de validação */
+.text-danger {
+    color: #ff0000;
+}
+
+/* Links de criação rápida */
+.btn_rend {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 6px 12px;
+    background-color: #006400;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+    .btn_rend:hover {
+        background-color: #004d00;
+    }
+
+/* Imagem de pré-visualização */
+img {
+    border-radius: 4px;
+}
+
+/* Estilos para os rótulos (Nome, Sobre a Editora) */
+.info-label {
+    font-weight: bold;
+    margin-right: 5px; /* Espaço entre o rótulo e o valor */
+}
+
+/* Estilos específicos para a página de Detalhes da Editora */
+.details-container {
+    position: relative; /* Permite posicionar elementos filhos de forma absoluta */
+    min-height: 300px;
+    padding-bottom: 60px;
+}
+
+    .details-container .form-row {
+        grid-template-columns: 1fr 2fr; /* Imagem menor, informações maiores */
+        align-items: flex-start; /* Alinha os itens ao topo */
+    }
+
+    .details-container p {
+        margin-bottom: 10px; /* Espaçamento entre as linhas de informação */
+    }
+
+.form-group-image {
+    text-align: center; /* Centraliza a imagem */
+}
+
+.form-group-info {
+    display: flex;
+    flex-direction: column; /* Alinha o texto verticalmente */
+    align-self: flex-start;
+    justify-content: space-between;
+}
+
+.edit-delete-buttons {
+    display: flex; /* Alinha os botões horizontalmente */
+    gap: 10px; /* Espaço entre os botões */
+}
+
+.btn-edit {
+    background-color: #007bff; /* Cor azul (como em muitos sites) */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 4px; /* Cantos arredondados */
+    transition: background-color 0.3s ease; /* Transição suave */
+}
+
+    .btn-edit:hover {
+        background-color: #0056b3; /* Um pouco mais escuro ao passar o mouse */
+    }
+
+.btn-delete {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 4px; /* Cantos arredondados */
+    transition: background-color 0.3s ease; /* Transição suave */
+}
+
+    .btn-delete:hover {
+        background-color: #c82333; /* Um pouco mais escuro ao passar o mouse */
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 4px; /* Cantos arredondados */
+    transition: background-color 0.3s ease; /* Transição suave */
+    width: fit-content;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }

@@ -265,52 +265,77 @@ namespace LibSpace_Aspnet.Controllers
         // POST: Autors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Autors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("NomeAutor,DataNascimento,Pseudonimo,DataFalecimento,FotoAutor,Bibliografia,IdLingua, statusimage")] AutorViewModel autor)
+        public async Task<IActionResult> Edit(int id, [Bind("IdAutor,NomeAutor,DataNascimento,Pseudonimo,DataFalecimento,Bibliografia,IdLingua")] Autor autor, IFormFile NewPhoto, string OldPhoto)
         {
+            if (id != autor.IdAutor)
+            {
+                return NotFound();
+            }
+
+            // Validação de Data: Garantir que DataNascimento não seja a data padrão (obrigatória)
+            if (autor.DataNascimento == default)
+            {
+                ModelState.AddModelError("DataNascimento", "A data de nascimento é obrigatória.");
+            }
+
+            // (DataFalecimento é opcional)
+
             if (ModelState.IsValid)
             {
-                var _autor = await _context.Autors.FindAsync(id);
-                if (autor.FotoAutor == null)
-                {
-                    if (autor.statusimg == 1 && _autor.FotoAutor != "autorasemfoto.jpeg")
-                    {
-                        var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", _autor.FotoAutor);
-                        if (System.IO.File.Exists(imagePath))
-                        {
-                            System.IO.File.Delete(imagePath);
-                        }
-
-                    }
-                    _autor.FotoAutor = "autorsemfoto.jpeg"; // ou definir como o valor padrão
-                }
-                else
-                {
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                    var fileExtension = Path.GetExtension(autor.FotoAutor.FileName).ToLower();
-
-                    // Save the image to a folder
-                    var coverFileName = Path.GetFileName(autor.FotoAutor.FileName);
-                    _autor.FotoAutor = coverFileName;
-                    var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", coverFileName);
-
-                    using (var stream = new FileStream(coverPath, FileMode.Create))
-                    {
-                        await autor.FotoAutor.CopyToAsync(stream);
-                    }
-                }
-                _autor.NomeAutor = autor.NomeAutor;
-                _autor.DataNascimento = autor.DataNascimento;
-                _autor.Pseudonimo = autor.Pseudonimo;
-                _autor.DataFalecimento = autor.DataFalecimento;
-                _autor.Bibliografia = autor.Bibliografia;
-                _autor.IdLingua = autor.IdLingua;
-
-
                 try
                 {
-                    _context.Update(_autor);
+                    // --- Prioridade para atualizar a foto ---
+                    if (NewPhoto != null)
+                    {
+                        // Validar o formato da imagem
+                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                        var fileExtension = Path.GetExtension(NewPhoto.FileName).ToLower();
+
+                        if (!allowedExtensions.Contains(fileExtension))
+                        {
+                            ModelState.AddModelError("NewPhoto", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+                            // Restaurar a foto antiga no modelo para que seja exibida novamente
+                            autor.FotoAutor = OldPhoto;
+                            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", autor.IdLingua);
+                            return View(autor);
+                        }
+
+                        // Gerar um nome único para o novo arquivo
+                        string uniqueFileName = Path.GetFileName(NewPhoto.FileName);
+                        var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                        // Salvar o novo arquivo
+                        using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                        {
+                            await NewPhoto.CopyToAsync(fileStream);
+                        }
+
+                        // Atualizar o nome da foto no objeto autor
+                        autor.FotoAutor = uniqueFileName;
+
+                        // Excluir a foto antiga, se existir
+                        if (!string.IsNullOrEmpty(OldPhoto))
+                        {
+                            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", OldPhoto);
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Se nenhuma nova foto for carregada, manter a foto antiga
+                        autor.FotoAutor = OldPhoto;
+                    }
+
+                    // --- Fim da lógica de atualização da foto ---
+
+                    // Atualizar os outros campos do autor (incluindo as datas)
+                    _context.Update(autor); // Certifique-se de que esta linha está presente
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -326,6 +351,11 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 return RedirectToAction(nameof(Details), new { id = _autor.IdAutor });
             }
+
+            // Se o ModelState não for válido, retornar para a view com os erros
+            // Restaurar a foto antiga se houve erro na validação da nova foto
+            autor.FotoAutor = OldPhoto;
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", autor.IdLingua);
             return View(autor);
         }
 

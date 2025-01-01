@@ -189,46 +189,67 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("NomeEditora,InfoEditora,ImgEditora, stateimage")] EditoraViewModel editoraview)
-        { 
+        public async Task<IActionResult> Edit(int id, [Bind("IdEditora,NomeEditora,InfoEditora,ImgEditora")] Editora editora, IFormFile? ImgEditora)
+        {
+            if (id != editora.IdEditora)
+            {
+                return NotFound();
+            }
+
+            var editoraToUpdate = await _context.Editoras.FindAsync(id);
+            if (editoraToUpdate == null)
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
-                var editora = await _context.Editoras.FindAsync(id);
-                if (editoraview.ImgEditora == null)
-                {
-                    if(editoraview.stateimage == 1 && editora.ImgEditora != "editorasemfoto.png")
-                    {
-                        var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", editora.ImgEditora);
-                        if (System.IO.File.Exists(imagePath))
-                        {
-                            System.IO.File.Delete(imagePath);
-                        }
-                       
-                    }
-                    editora.ImgEditora = "editorasemfoto.png"; // ou definir como o valor padrão
-                }
-                else
-                {
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                    var fileExtension = Path.GetExtension(editoraview.ImgEditora.FileName).ToLower();
-
-                    // Save the image to a folder
-                    var coverFileName = Path.GetFileName(editoraview.ImgEditora.FileName);
-                    editora.ImgEditora = coverFileName;
-                    var coverPath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", coverFileName);
-
-                    using (var stream = new FileStream(coverPath, FileMode.Create))
-                    {
-                        await editoraview.ImgEditora.CopyToAsync(stream);
-                    }
-                }
-                editora.NomeEditora = editoraview.NomeEditora;
-                editora.InfoEditora = editoraview.InfoEditora;
                 try
                 {
-                    _context.Update(editora);
+                    // Atualiza os campos de texto
+                    editoraToUpdate.NomeEditora = editora.NomeEditora;
+                    editoraToUpdate.InfoEditora = editora.InfoEditora;
+
+                    // Verifica se um novo arquivo de imagem foi enviado
+                    if (ImgEditora != null)
+                    {
+                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                        var extension = Path.GetExtension(ImgEditora.FileName).ToLower();
+
+                        if (!allowedExtensions.Contains(extension))
+                        {
+                            ModelState.AddModelError(nameof(ImgEditora), "Formato inválido. Apenas JPG, JPEG ou PNG são permitidos.");
+                            return View(editora);
+                        }
+
+                        // Apaga a imagem antiga SE EXISTIR
+                        if (!string.IsNullOrEmpty(editoraToUpdate.ImgEditora))
+                        {
+                            string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", editoraToUpdate.ImgEditora);
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+                        }
+
+                        // Salva a nova imagem
+                        string newFileName = Guid.NewGuid() + extension;
+                        string newFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", newFileName);
+                        using (var stream = new FileStream(newFilePath, FileMode.Create))
+                        {
+                            await ImgEditora.CopyToAsync(stream);
+                        }
+
+                        // Atualiza o caminho da nova imagem
+                        editoraToUpdate.ImgEditora = newFileName;
+                    }
+                    // Se ImgEditora for null, não faz nada, mantendo a imagem antiga.
+
+                    // Salva as alterações
+                    _context.Update(editoraToUpdate);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -241,10 +262,15 @@ namespace LibSpace_Aspnet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(editoraview);
+
+            return View(editora);
         }
+
+
+
+
+
 
         // GET: Editoras/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -287,6 +313,9 @@ namespace LibSpace_Aspnet.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        
+    
 
         private bool EditoraExists(int id)
         {

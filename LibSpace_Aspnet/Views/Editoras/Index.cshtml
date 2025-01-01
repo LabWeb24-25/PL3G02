@@ -37,9 +37,10 @@
                 <img src="@Url.Content("~/Editora_IMG/" + item.ImgEditora)" alt="Imagem de @item.NomeEditora" width="100" height="100" />
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdEditora">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdEditora">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdEditora">Delete</a>
+               
+                <a asp-action="Details" asp-route-id="@item.IdEditora">Details</a>
+               
+
             </td>
         </tr>
 }

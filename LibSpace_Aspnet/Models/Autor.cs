@@ -31,7 +31,7 @@ public partial class Autor
     [Column("Foto_Autor")]
     [StringLength(250)]
     [Unicode(false)]
-    public string FotoAutor { get; set; } = null!;
+    public string? FotoAutor { get; set; } = null!;
 
     [Column(TypeName = "text")]
     public string Bibliografia { get; set; } = null!;

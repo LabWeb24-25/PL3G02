@@ -1,0 +1,25 @@
+﻿/* Importando estilos base do create_design_editora_details.css */
+@import url("create_design_editora_details.css");
+
+/* Estilos específicos para a página de Detalhes do Autor */
+
+.form-group-info > div {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto;
+}
+
+.form-group-info div p:first-of-type,
+.form-group-info div p:nth-of-type(2) {
+    align-self: center;
+}
+
+.form-group-info div p:nth-of-type(2n+2) {
+    display: inline;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+}
+
+.form-group-info div p:nth-of-type(2n+1) {
+    margin-bottom: 10px;
+}
