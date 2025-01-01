@@ -5,17 +5,21 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
+using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace LibSpace_Aspnet.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private const int PageSize = 5; // Nº LIVROS POR SECCÇÃO AQUIII <-----------------
+        private const int PageSize = 5; // Nï¿½ LIVROS POR SECCï¿½ï¿½O AQUIII <-----------------
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index(int page = 1)
@@ -29,8 +33,16 @@ namespace LibSpace_Aspnet.Controllers
                 .Take(PageSize)
                 .ToList();
 
+            ViewBag.Generos = _context.Generos.ToList();
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
+            
+            var announcementsPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "announcements");
+            var imageFiles = Directory.GetFiles(announcementsPath)
+                .Select(Path.GetFileName)
+                .ToList();
+            
+            ViewBag.AnnouncementImages = imageFiles;
             
             return View(featuredBooks);
         }

@@ -33,3 +33,33 @@ function removeImage(inputId, previewId, buttonId) {
     preview.style.display = "none"; // Hide the preview
     removeButton.style.display = "none"; // Hide the remove button
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutForm = document.getElementById('logoutForm');
+    if (logoutForm) {
+        logoutForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const response = await fetch(logoutForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(new FormData(logoutForm))
+                });
+
+                if (response.ok) {
+                    // Clear any client-side storage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    
+                    // Redirect to home page
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        });
+    }
+});

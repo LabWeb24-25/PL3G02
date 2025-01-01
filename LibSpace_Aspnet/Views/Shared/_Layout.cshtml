@@ -18,25 +18,24 @@
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div class="navbar-content">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Página Principal">
                         <img src="~/img/logo.png" alt="Logo" class="navbar-logo" />
                     </a>
                     
                     <div class="search-section">
                         <div class="input-group">
                             <input type="text" class="custom-search-bar" placeholder="Search" aria-label="Search" aria-describedby="button-search">
-                            <button class="" type="button" id="button-search">
+                            <button class="" type="button" id="button-search" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Procurar">
                                 <img src="~/img/icons/ico_search.png" alt="Search Icon" class="icon-img-search" />
                             </button>
                         </div>
                     </div>
-
                     <div class="icon-container">
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("Admin"))
                             {
-                                <a href="~/" class="icon-link">
+                                <a href="~/" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Gerir Contas">
                                     <img src="~/img/icons/ico_gestao_contas.png" alt="ico_gestao_contas.png" class="icon-img" />
                                 </a>
                             }
@@ -44,7 +43,9 @@
                             {
                                 <div class="dropdown">
                                     <a href="#" class="icon-link" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="~/img/icons/ico_add_book.png" alt="ico_add_book.png" class="icon-img" />
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Adicionar">
+                                            <img src="~/img/icons/ico_add_book.png" alt="ico_add_book.png" class="icon-img" />
+                                        </span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
@@ -62,50 +63,54 @@
                             }
                             <div class="dropdown">
                                 <a href="#" class="icon-link" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
+                                    <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Perfil">
+                                        <img src="~/img/icons/ico_user.png" alt="ico_user.png" class="icon-img" />
+                                    </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="@Url.Action("Perfil", "Users")">
-                                            <i class="fas fa-user"></i> Profile
+                                        <a class="dropdown-item" href="~/Identity/Account/Manage">
+                                            <i class="fas fa-user"></i> Perfil
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                             <i class="fas fa-sign-out-alt"></i> Logout
-                                        </a>
+                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm">
+                                            <button type="submit" class="btn btn-link" style="padding: 0">
+                                                <i class="fas fa-sign-out-alt"></i> Logout
+                                            </button>
+                                        </form>
                                     </li>
                                 </ul>
                             </div>
                         }
                         else
                         {
-                            <a href="/login" class="icon-link">
+                            <a href="/login" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Login">
                                 <img src="~/img/icons/ico_login.png" alt="ico_login.png" class="icon-img" />
                             </a>
                         }
                         @if (User.IsInRole("Admin")) // MUDAR AQUI O INDICE DE REQUISICAO para BIBLIOTEACARIO
                         {
-                            <a href="~/Requisicao" class="icon-link">
+                            <a href="~/Requisicao" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Gerir Requisições">
                                 <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
                             </a>
                         }
                         else if (User.IsInRole("Bibliotecario"))
-                        { // MUDAR AQUI O INDICE DE REQUISICAO para BIBLIOTEACARIO
-                            <a href="~/Requisicao" class="icon-link">
+                        {
+                            <a href="~/Requisicao" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Gerir Requisições">
                                 <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
                             </a>
                         }
                         else
-                        { // MUDAR AQUI O INDICE DE REQUISICAO para BIBLIOTEACARIO
-                            <a href="~/Requisicao" class="icon-link">
+                        {
+                            <a href="~/Requisicao" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Minhas Requisições">
                                 <img src="~/img/icons/ico_book.png" alt="ico_book.png" class="icon-img" />
                             </a>
-                            <a href="~/Favoritos" class="icon-link">
+                            <a href="~/Favoritos" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Favoritos">
                                 <img src="~/img/icons/ico_wishlist.png" alt="ico_wishlist.png" class="icon-img" />
                             </a>
                         }
-                        <a href="~/Ajuda" class="icon-link">
+                        <a href="~/Ajuda" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ajuda">
                             <img src="~/img/icons/ico_ajuda.png" alt="ico_ajuda.png" class="icon-img" />
                         </a>
                         @if (User.IsInRole("Leitor"))
@@ -186,6 +191,33 @@
                 redirectToIndex(query);
             }
 
+        });
+    </script>
+    <script>
+        // Para mostrar descrição on-hover
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+    <script>
+        // Get all dropdowns that have tooltips
+        const dropdownsWithTooltips = document.querySelectorAll('.dropdown [data-bs-toggle="tooltip"]');
+        
+        dropdownsWithTooltips.forEach(element => {
+            const tooltip = bootstrap.Tooltip.getInstance(element);
+            const dropdownParent = element.closest('.dropdown');
+            
+            // Hide tooltip when dropdown is shown
+            dropdownParent.addEventListener('show.bs.dropdown', () => {
+                tooltip.hide();
+                tooltip.disable();
+            });
+            
+            // Re-enable tooltip when dropdown is hidden
+            dropdownParent.addEventListener('hidden.bs.dropdown', () => {
+                tooltip.enable();
+            });
         });
     </script>
 </body>

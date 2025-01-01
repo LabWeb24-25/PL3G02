@@ -136,5 +136,22 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
+        public async Task<IActionResult> OnPostLogoutAsync()
+        {
+            // Clear the existing external cookie
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            
+            // Clear the existing application cookie
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            
+            // Clear all authentication cookies
+            await _signInManager.SignOutAsync();
+            
+            // Clear session
+            HttpContext.Session.Clear();
+            
+            return RedirectToPage("/Index");
+        }
     }
 }
