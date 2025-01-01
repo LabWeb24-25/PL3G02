@@ -47,25 +47,8 @@
                 <div class="row" id="featured">
                     <div class="col-12">
                         <h2 class="featured-title">Em Destaque</h2>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
-                           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
-                                @foreach (var book in Model)
-                                {
-                                    <div class="col">
-                                        <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
-                                            <div class="card book-card">
-                                                <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
-                                                <div class="card-body text-center">
-                                                    <h5 class="book-title">@book.TituloLivros</h5>
-                                                    <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                            <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
+                        <div id="featured-carousel">
+                            @await Html.PartialAsync("_BookCarousel", Model)
                         </div>
                     </div>
                 </div>
@@ -76,25 +59,13 @@
                     <div class="row mt-5" id="genre-@genero.IdGeneros">
                         <div class="col-12">
                             <h2 class="featured-title">@genero.NomeGeneros</h2>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
-                                    @foreach (var book in Model.Where(b => b.IdGenerosNavigation?.IdGeneros == genero.IdGeneros))
-                                    {
-                                        <div class="col">
-                                            <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
-                                                <div class="card book-card">
-                                                    <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
-                                                    <div class="card-body text-center">
-                                                        <h5 class="book-title">@book.TituloLivros</h5>
-                                                        <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
-                                <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
+                            <div id="genre-carousel-@genero.IdGeneros">
+                                @{
+                                    var genreBooks = Model.Where(b => b.IdGenerosNavigation?.IdGeneros == genero.IdGeneros);
+                                    ViewBag.CurrentSection = $"genre-{genero.IdGeneros}";
+                                    ViewBag.CurrentGenreId = genero.IdGeneros;
+                                }
+                                @await Html.PartialAsync("_BookCarousel", genreBooks)
                             </div>
                         </div>
                     </div>
@@ -594,26 +565,39 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const prevBtn = document.querySelector('.btn-prev');
-        const nextBtn = document.querySelector('.btn-next');
+        function loadBooks(page, section, genreId) {
+            const url = new URL(window.location.origin + '/');
+            url.searchParams.set('page', page);
+            url.searchParams.set('section', section);
+            if (genreId) url.searchParams.set('genreId', genreId);
 
-        function navigatePage(page) {
-            window.location.href = `/?page=${page}`;
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const carouselId = genreId ? `genre-carousel-${genreId}` : 'featured-carousel';
+                document.getElementById(carouselId).innerHTML = html;
+                attachButtonListeners();
+            });
         }
 
-        prevBtn.addEventListener('click', () => {
-            if (!prevBtn.hasAttribute('disabled')) {
-                const prevPage = parseInt(prevBtn.getAttribute('data-page'));
-                navigatePage(prevPage);
-            }
-        });
+        function attachButtonListeners() {
+            document.querySelectorAll('.btn-nav').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.hasAttribute('disabled')) {
+                        const page = parseInt(this.getAttribute('data-page'));
+                        const section = this.getAttribute('data-section');
+                        const genreId = this.getAttribute('data-genre');
+                        loadBooks(page, section, genreId);
+                    }
+                });
+            });
+        }
 
-        nextBtn.addEventListener('click', () => {
-            if (!nextBtn.hasAttribute('disabled')) {
-                const nextPage = parseInt(nextBtn.getAttribute('data-page'));
-                navigatePage(nextPage);
-            }
-        });
+        attachButtonListeners();
     });
 
     document.addEventListener('DOMContentLoaded', function() {

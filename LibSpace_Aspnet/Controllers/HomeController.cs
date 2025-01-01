@@ -13,7 +13,7 @@ namespace LibSpace_Aspnet.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private const int PageSize = 2; // livros por linha AQUIII <-----------------
+        private const int PageSize = 14; // livros por linha AQUIII <-----------------
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public HomeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
@@ -22,13 +22,22 @@ namespace LibSpace_Aspnet.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index(int page = 1)
+        public IActionResult Index(int page = 1, string section = "featured", int? genreId = null)
         {
-            var totalBooks = _context.Livros.Count();
+            IQueryable<Livro> query = _context.Livros
+                .Include(l => l.IdAutorNavigation)
+                .Include(l => l.IdGenerosNavigation)
+                .Include(l => l.IdEditoraNavigation);
+            
+            if (genreId.HasValue)
+            {
+                query = query.Where(l => l.IdGeneros == genreId);
+            }
+            
+            var totalBooks = query.Count();
             var totalPages = (int)Math.Ceiling(totalBooks / (double)PageSize);
 
-            var featuredBooks = _context.Livros
-                .Include(l => l.IdAutorNavigation)
+            var books = query
                 .Skip((page - 1) * PageSize)
                 .Take(PageSize)
                 .ToList();
@@ -36,6 +45,13 @@ namespace LibSpace_Aspnet.Controllers
             ViewBag.Generos = _context.Generos.ToList();
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentSection = section;
+            ViewBag.CurrentGenreId = genreId;
+            
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_BookCarousel", books);
+            }
             
             var announcementsPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "announcements");
             var imageFiles = Directory.GetFiles(announcementsPath)
@@ -44,7 +60,7 @@ namespace LibSpace_Aspnet.Controllers
             
             ViewBag.AnnouncementImages = imageFiles;
             
-            return View(featuredBooks);
+            return View(books);
         }
 
         public async Task<IActionResult> Sobre()
