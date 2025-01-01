@@ -45,6 +45,8 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, Iden
 
     public virtual DbSet<Requisitum> Requisita { get; set; }
 
+    public virtual DbSet<BibliotecarioPendente> BibliotecarioPendentes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("name=ApplicationDbContext");
 
@@ -165,6 +167,14 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, Iden
             entity.HasOne(d => d.IdLivroNavigation).WithMany(p => p.Requisita)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Requisita__ID_Li__7C4F7684");
+        });
+
+        modelBuilder.Entity<BibliotecarioPendente>(entity =>
+        {
+            entity.HasOne(b => b.AspNetUser)
+                .WithMany()
+                .HasForeignKey(b => b.AspNetUserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         OnModelCreatingPartial(modelBuilder);
