@@ -141,7 +141,28 @@ namespace LibSpace_Aspnet.Areas.Identity.Pages.Account
                     // Update phone number
                     await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
 
-                    await _userManager.AddToRoleAsync(user, Input.Role);
+
+                    //Mudar aqui
+                    if (Input.Role == "Bibliotecario")
+                    {
+                        // Se o papel for "bibliotecario", não atribui imediatamente
+                        // Adiciona o utilizador à tabela de bibliotecários pendentes
+                        var bibliotecarioPendente = new BibliotecarioPendente
+                        {
+                            AspNetUserId = user.Id,
+                            ApplicationDate = DateTime.Now,
+                            IsApproved = false
+                        };
+                        _dbContext.BibliotecarioPendentes.Add(bibliotecarioPendente);
+                        await _dbContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // Atribui o papel selecionado normalmente
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+
+
 
                     // Create or get CodigoPostal
                     var codigoPostal = await _dbContext.CodigoPostals
