@@ -228,7 +228,7 @@
                                 <form asp-action="PromoteUsertoAdmin" asp-controller="Users" method="post" style="display: inline;" id="promoteForm-@user.Id">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="userId" value="@user.Id" />
-                                    <button type="button" class="btn btn-light action-btn" title="Promover" 
+                                    <button type="submit" class="btn btn-light action-btn" title="Promover" 
                                             onclick="return confirm('Tem certeza que deseja promover o utilizador para administrador?')">
                                         <i class="fas fa-star text-warning"></i> Promover
                                     </button>
