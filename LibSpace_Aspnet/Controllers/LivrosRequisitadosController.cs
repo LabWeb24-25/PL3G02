@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LibSpace_Aspnet.Controllers
 {
-    [Authorize(Roles = "Leitor")]
     public class LivrosRequisitadosController : Controller
     {
         private readonly ApplicationDbContext _context;
