@@ -340,7 +340,7 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AutorExists(_autor.IdAutor))
+                    if (!AutorExists(autor.IdAutor))
                     {
                         return NotFound();
                     }
@@ -349,7 +349,7 @@ namespace LibSpace_Aspnet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Details), new { id = _autor.IdAutor });
+                return RedirectToAction(nameof(Index));
             }
 
             // Se o ModelState não for válido, retornar para a view com os erros
