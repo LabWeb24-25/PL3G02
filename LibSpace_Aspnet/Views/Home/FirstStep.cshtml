@@ -1,0 +1,52 @@
+﻿@model LibSpace_Aspnet.Models.Biblioteca
+
+@{
+    ViewData["Title"] = "Add Biblioteca";
+}
+
+<div class="container form-container">
+    <h4 class="form-title">Adicionar Informações da Biblioteca</h4>
+    <form asp-action="FirstStep">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NomeBiblioteca" class="control-label"></label>
+                <input asp-for="NomeBiblioteca" class="form-control" />
+                <span asp-validation-for="NomeBiblioteca" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndMorada" class="control-label"></label>
+                <input asp-for="EndMorada" class="form-control" />
+                <span asp-validation-for="EndMorada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndCodPostal" class="control-label"></label>
+                <input asp-for="EndCodPostal" class="form-control" />
+                <span asp-validation-for="EndCodPostal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndLocalidade" class="control-label"></label>
+                <input asp-for="EndLocalidade" class="form-control" />
+                <span asp-validation-for="EndLocalidade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefone" class="control-label"></label>
+                <input asp-for="Telefone" class="form-control" />
+                <span asp-validation-for="Telefone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Horario" class="control-label"></label>
+                <textarea asp-for="Horario" class="form-control textarea"></textarea>                
+                <span asp-validation-for="Horario" class="text-danger"></span>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+                <input type="submit" value="Criar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+

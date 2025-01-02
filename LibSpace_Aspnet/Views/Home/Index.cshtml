@@ -103,6 +103,30 @@
         </div>
     </div>
 </div>
+@if (ViewBag.requisicoesemfalta != null && ViewBag.requisicoesemfalta.Count > 0)
+{
+    <div id="popup-alert" class="popup-overlay hidden">
+        <div class="popup-content">
+            <h2>Requisições em Atraso</h2>
+            @if (User.IsInRole("Leitor"))
+            {
+                <p>Você tem as seguintes requisições em atraso:</p>
+            }
+            <ul id="popup-requisicoes">
+                @foreach (var requisicao in ViewBag.requisicoesemfalta)
+                {
+                    <li>
+                        <strong>Livro:</strong> @requisicao.NomeLivro<br>
+                        <strong>Leitor:</strong> @requisicao.NomeLeitor<br>
+                        <strong>Data Prevista de Entrega:</strong> @requisicao.DataPrevEntrega?.ToString("dd/MM/yyyy")
+                    </li>
+                }
+            </ul>
+            <button class="btn btn-primary" id="popup-close">Ok</button>
+        </div>
+    </div>
+}
+
 
 <style>
     .home-page .container-fluid {
@@ -360,6 +384,64 @@
     .announcements-container h1 {
         margin-bottom: 1rem;
     }
+
+
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .popup-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        text-align: center;
+    }
+
+        .popup-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px;
+        }
+
+        .popup-content li {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+            .popup-content li strong {
+                color: #004d40;
+            }
+
+        .popup-content button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .popup-content button:hover {
+                background-color: #0056b3;
+            }
 </style>
 
 <script>
@@ -431,4 +513,22 @@
             setInterval(nextImage, 5000); // em milissegundos, ideal acho que é 30000(15s) decidam-se
         }
     });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const popupAlert = document.getElementById('popup-alert');
+        const popupClose = document.getElementById('popup-close');
+
+        // Verificar se o pop-up existe e se há requisições em falta
+        if (popupAlert && @Html.Raw(ViewBag.requisicoesemfalta != null && ViewBag.requisicoesemfalta.Count > 0 ? "true" : "false")) {
+            // Remover a classe 'hidden' para mostrar o pop-up
+            popupAlert.classList.remove('hidden');
+
+            // Fechar o pop-up ao clicar no botão
+            popupClose.addEventListener('click', function () {
+                popupAlert.classList.add('hidden');
+            });
+        }
+    });
+
 </script>

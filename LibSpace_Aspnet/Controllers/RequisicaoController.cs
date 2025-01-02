@@ -139,6 +139,7 @@ namespace LibSpace_Aspnet.Controllers
 
             try
             {
+                _context.PreRequisita.Remove(prerequisita);
                 _context.Requisita.Add(requisita);
                 await _context.SaveChangesAsync();
 

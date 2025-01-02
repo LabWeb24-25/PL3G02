@@ -653,52 +653,55 @@ namespace LibSpace_Aspnet.Controllers
             return View(livro);
         }
 
-        // GET: Livroes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+    
+        public IActionResult Delete(int id)
         {
-            
-            if (id == null)
-            {
-                return NotFound();
-            }
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Acess/Notauthorized");
-            }
-            var livro = await _context.Livros
-                .Include(l => l.IdAutorNavigation)
-                .Include(l => l.IdEditoraNavigation)
-                .Include(l => l.IdGenerosNavigation)
-                .Include(l => l.IdLinguaNavigation)
-                .FirstOrDefaultAsync(m => m.IdLivro == id);
+            // Busca o livro pelo ID
+            var livro = _context.Livros.FirstOrDefault(l => l.IdLivro == id);
+
             if (livro == null)
             {
-                return NotFound();
+                // Retorna um erro se o livro não for encontrado
+                TempData["ErrorMessage"] = "Livro não encontrado.";
+                return RedirectToAction("Index");
             }
 
-            return View(livro);
-        }
+            var requisicoes = _context.Requisita
+                .Where(r => r.IdLivro == livro.IdLivro && r.DataEntrega == null)
+                .ToList();
 
-        // POST: Livroes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var livro = await _context.Livros.FindAsync(id);
-            if (livro != null)
+            if (requisicoes.Any())
+            {
+                TempData["ErrorMessage"] = "Existem requisições não finalizadas!";
+                return RedirectToAction(nameof(Details), new { id = livro.IdLivro });
+            }
+            var prerequisicoes = _context.PreRequisita
+                .Where(a => a.Idlivro == livro.IdLivro).ToList();
+
+            if (prerequisicoes != null)
+            {
+                _context.PreRequisita.RemoveRange(prerequisicoes);
+            }
+            try
             {
                 _context.Livros.Remove(livro);
+                _context.SaveChanges();
+
+                // Mensagem de sucesso
+                TempData["SuccessMessage"] = "Livro excluído com sucesso.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+
+                TempData["ErrorMessage"] = $"Erro ao excluir o livro: {ex.Message}";
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = livro.IdLivro });
         }
 
+
+      
         private bool LivroExists(int id)
         {
             return _context.Livros.Any(e => e.IdLivro == id);
