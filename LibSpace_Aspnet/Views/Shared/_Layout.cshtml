@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     @RenderSection("Styles", required: false)
     @await RenderSectionAsync("Scripts", required: false)
+    <link rel="stylesheet" href="~/css/SearchResult.css" />
 </head>
 <body>
     <header>
@@ -143,6 +144,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const searchBox = document.getElementById('searchBox');
             const buttonSearch = document.getElementById('button-search');
+            const resultsDiv = document.getElementById('resultsDiv');
+            let timeoutId;
             
             function performSearch() {
                 const query = searchBox.value.trim();
@@ -150,6 +153,49 @@
                     window.location.href = '/Livroes/Index?query=' + encodeURIComponent(query);
                 }
             }
+
+            function showSuggestions(query) {
+                if (query.length < 2) {
+                    resultsDiv.style.display = 'none';
+                    return;
+                }
+
+                fetch(`/Livroes/SearchSuggestions?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            resultsDiv.style.display = 'none';
+                            return;
+                        }
+
+                        resultsDiv.innerHTML = data.map(book => `
+                            <div class="search-result-item" onclick="window.location.href='/Livroes/Details/${book.id}'">
+                                <img src="/Cover/${book.cover}" class="mini-book-cover" alt="${book.title}">
+                                <div>
+                                    <div class="book-title">${book.title}</div>
+                                    <div class="book-author">${book.author}</div>
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        resultsDiv.style.display = 'block';
+                    });
+            }
+
+            // Search suggestions while typing
+            searchBox.addEventListener('input', function() {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    showSuggestions(this.value.trim());
+                }, 300);
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchBox.contains(e.target) && !resultsDiv.contains(e.target)) {
+                    resultsDiv.style.display = 'none';
+                }
+            });
 
             // Search when Enter key is pressed
             searchBox.addEventListener('keypress', function(e) {

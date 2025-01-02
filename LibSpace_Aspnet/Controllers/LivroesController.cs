@@ -708,5 +708,26 @@ namespace LibSpace_Aspnet.Controllers
         {
             return _context.Livros.Any(e => e.IdLivro == id);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchSuggestions(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+                return Json(new List<object>());
+
+            var suggestions = await _context.Livros
+                .Where(l => EF.Functions.Like(l.TituloLivros.ToLower(), $"%{query.ToLower()}%"))
+                .Take(5)
+                .Select(l => new
+                {
+                    id = l.IdLivro,
+                    title = l.TituloLivros,
+                    author = l.IdAutorNavigation.NomeAutor,
+                    cover = l.CapaImg
+                })
+                .ToListAsync();
+
+            return Json(suggestions);
+        }
     }
 }
