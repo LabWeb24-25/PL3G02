@@ -1,0 +1,18 @@
+@model IEnumerable<LibSpace_Aspnet.Models.Livro>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" id="booksContainer">
+    @foreach (var book in Model)
+    {
+        <div class="col">
+            <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
+                <div class="card book-card">
+                    <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
+                    <div class="card-body text-center">
+                        <h5 class="book-title">@book.TituloLivros</h5>
+                        <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

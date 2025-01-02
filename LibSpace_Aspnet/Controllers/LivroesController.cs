@@ -62,8 +62,13 @@ namespace LibSpace_Aspnet.Controllers
             ViewBag.Autores = await _context.Autors.ToListAsync();
             ViewBag.Editoras = await _context.Editoras.ToListAsync();
             ViewBag.Paises = await _context.Pais.ToListAsync();
+            
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_LivroesPartial", livros);
+            }
 
-            return View(livros);
+            return View("Index", livros);
         }
 
         [HttpPost]
