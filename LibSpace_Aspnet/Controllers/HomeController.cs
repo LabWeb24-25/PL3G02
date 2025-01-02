@@ -13,7 +13,7 @@ namespace LibSpace_Aspnet.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private const int PageSize = 7; // livros por linha AQUIII <-----------------
+        private const int PageSize = 6; // livros por linha AQUIII <-----------------
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public HomeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
