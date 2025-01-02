@@ -47,25 +47,14 @@
                 <div class="row" id="featured">
                     <div class="col-12">
                         <h2 class="featured-title">Em Destaque</h2>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
-                           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
-                                @foreach (var book in Model)
-                                {
-                                    <div class="col">
-                                        <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
-                                            <div class="card book-card">
-                                                <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
-                                                <div class="card-body text-center">
-                                                    <h5 class="book-title">@book.TituloLivros</h5>
-                                                    <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                            <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
+                        <div id="featured-carousel">
+                            @{
+                                ViewBag.CurrentPage = ViewBag.FeaturedCurrentPage;
+                                ViewBag.TotalPages = ViewBag.FeaturedTotalPages;
+                                ViewBag.CurrentSection = "featured";
+                                ViewBag.CurrentGenreId = null;
+                            }
+                            @await Html.PartialAsync("_BookCarousel", (IEnumerable<LibSpace_Aspnet.Models.Livro>)Model)
                         </div>
                     </div>
                 </div>
@@ -76,25 +65,15 @@
                     <div class="row mt-5" id="genre-@genero.IdGeneros">
                         <div class="col-12">
                             <h2 class="featured-title">@genero.NomeGeneros</h2>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <button class="btn btn-nav btn-prev" data-page="@(ViewBag.CurrentPage - 1)" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>&lt;</button>
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 book-carousel">
-                                    @foreach (var book in Model.Where(b => b.IdGenerosNavigation?.IdGeneros == genero.IdGeneros))
-                                    {
-                                        <div class="col">
-                                            <a href="@Url.Action("Details", "Livroes", new { id = book.IdLivro })" class="book-link">
-                                                <div class="card book-card">
-                                                    <img src="@Url.Content("~/Cover/" + book.CapaImg)" class="card-img-top" alt="@book.TituloLivros">
-                                                    <div class="card-body text-center">
-                                                        <h5 class="book-title">@book.TituloLivros</h5>
-                                                        <p class="book-author">@book.IdAutorNavigation?.NomeAutor</p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
-                                <button class="btn btn-nav btn-next" data-page="@(ViewBag.CurrentPage + 1)" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>&gt;</button>
+                            <div id="genre-carousel-@genero.IdGeneros">
+                                @{
+                                    var genreBooks = ViewBag.GenreBooks[genero.IdGeneros];
+                                    ViewBag.CurrentPage = 1; // Start each genre at page 1
+                                    ViewBag.TotalPages = ViewBag.GenrePages[genero.IdGeneros];
+                                    ViewBag.CurrentSection = $"genre-{genero.IdGeneros}";
+                                    ViewBag.CurrentGenreId = genero.IdGeneros;
+                                }
+                                @await Html.PartialAsync("_BookCarousel", (IEnumerable<LibSpace_Aspnet.Models.Livro>)genreBooks)
                             </div>
                         </div>
                     </div>
@@ -127,6 +106,12 @@
         margin: 0 1rem;
     }
 
+    .home-page .btn-nav {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
     .home-page .btn-nav:hover {
         background-color: #003d33;
         color: white;
@@ -140,6 +125,7 @@
 
     .home-page .book-card {
         height: 100%;
+        max-height: 350px;
         display: flex;
         flex-direction: column;
         border: none;
@@ -215,6 +201,9 @@
         flex: 0 1 auto;
         padding: 1rem;
         height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
     }
 
     .book-title {
@@ -279,37 +268,9 @@
     .home-page .main-content {
         flex: 1;
         padding: 2rem;
-    }
-    
-    @@media (max-width: 768px) {
-        .home-page .d-flex {
-            flex-direction: column;
-            margin-left: 0;
-        }
-        
-        .home-page .sidebar {
-            position: relative;
-            width: 100%;
-            top: 0;
-            left: 0;
-            min-height: auto;
-            border-right: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .home-page .sidebar-content {
-            position: relative;
-            top: 0;
-        }
-        
-        .home-page .main-content {
-            max-width: 100%;
-            padding: 1rem;
-        }
-
-        .book-carousel .col {
-            max-width: none;
-        }
+        margin-left: 250px;
+        margin-right: 0;
+        width: calc(100% - 250px);
     }
 
     .container-fluid {
@@ -320,11 +281,12 @@
     .home-page .d-flex {
         margin: 0;
         padding: 0;
+        position: relative;
     }
 
     .book-carousel .col {
-        max-width: 300px;
-        min-width: 200px;
+        max-width: 200px;
+        min-width: 150px;
     }
 
     .book-card {
@@ -335,7 +297,7 @@
         width: 100%;
         padding: 0;
         position: relative;
-        padding-top: 21.89%; /* This maintains the 1855:406 ratio (406/1855 ≈ 0.2189) */
+        padding-top: 21.89%; /* manter o 1855:406 ratio (406/1855 ≈ 0.2189), é default n perguntem */
     }
 
     .announcement-image {
@@ -343,8 +305,6 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
     }
@@ -360,30 +320,294 @@
     .announcements-container h1 {
         margin-bottom: 1rem;
     }
+
+    .container {
+        max-width: none !important;
+        padding: 0 !important;
+    }
+
+
+
+    .d-flex.justify-content-between {
+        position: relative;
+        width: 100%;
+    }
+
+    .book-carousel {
+        flex: 1;
+        overflow-x: visible;
+        margin: 0 2rem;
+    }
+
+
+    .home-page .btn-prev {
+        left: 0;
+    }
+
+    .home-page .btn-next {
+        right: 0;
+    }
+
+    .announcements-container {
+        width: 100%;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    .announcement-image-container {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+    @@media (max-width: 1200px) {
+        .book-carousel .col {
+            max-width: 180px;
+            min-width: 140px;
+        }
+        
+        .home-page .book-card {
+            max-height: 320px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .book-carousel .col {
+            max-width: 160px;
+            min-width: 130px;
+        }
+        
+        .home-page .book-card {
+            max-height: 300px;
+        }
+        .card-body {
+            padding: 0.75rem;
+        }
+
+        .announcement-image-container {
+            padding-top: 20%;
+        }
+        .home-page .book-title {
+            margin-bottom: 0.1rem;
+            -webkit-line-clamp: 1;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .home-page .d-flex {
+            flex-direction: column;
+            margin-left: 0;
+        }
+
+        .home-page .sidebar {
+            position: relative;
+            width: 100%;
+            top: 0;
+            left: 0;
+            min-height: auto;
+            border-right: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .home-page .sidebar-content {
+            position: relative;
+            top: 0;
+        }
+
+        .home-page .main-content {
+            margin-left: 0;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .book-carousel {
+            margin: 0 !important;
+            padding: 0 0.5rem;
+            justify-content: center;
+        }
+
+        .announcements-container {
+            padding: 0.5rem;
+        }
+
+        .announcement-image-container {
+            padding-top: 20%; 
+        }
+
+        .home-page .btn-nav {
+            width: 32px;
+            height: 32px;
+            margin: 0 0; /*margin: 0 0.5rem;*/
+            font-size: 0.9rem;
+            position: absolute;
+        }
+
+        .d-flex.justify-content-between {
+            padding: 0 0.5rem;
+        }
+        .book-carousel .col {
+            max-width: 140px;
+            min-width: 120px;
+        }
+        
+        .home-page .book-card {
+            max-height: 280px;
+        }
+        
+        .home-page .book-title {
+            font-size: 0.9rem;
+        }
+        
+        .home-page .book-author {
+            font-size: 0.8rem;
+        }
+        .card-body {
+            padding: 0.5rem;
+        }
+        
+        .home-page .book-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.1rem;
+        }
+        
+        .home-page .book-author {
+            font-size: 0.8rem;
+            margin-bottom: 0;
+        }
+
+        .announcements-container {
+            padding: 0.5rem;
+        }
+
+        .announcement-image-container {
+            padding-top: 20%; 
+        }
+
+        .book-carousel {
+            margin: 0 2.5rem;
+            padding: 0;
+        }
+
+        .home-page .btn-prev {
+            left: 0.5rem;
+        }
+
+        .home-page .btn-next {
+            right: 0.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .announcements-container {
+            padding: 0.25rem;
+        }
+
+        .announcement-image-container {
+            padding-top: 20%; 
+            border-radius: 4px;
+        }
+
+        .book-carousel {
+            margin: 0 2rem;
+        }
+
+        .home-page .btn-nav {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+        }
+
+        .home-page .btn-prev {
+            left: 0.25rem;
+        }
+
+        .home-page .btn-next {
+            right: 0.25rem;
+        }
+        .book-carousel .col {
+            max-width: 130px;
+            min-width: 110px;
+        }
+        
+        .home-page .book-card {
+            max-height: 260px;
+        }
+        .card-body {
+            padding: 0.4rem;
+        }
+
+        .home-page .main-content {
+            padding: 0.5rem;
+        }
+
+        .book-carousel {
+            padding: 0 0.25rem;
+        }
+
+        .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .featured-title {
+            padding-left: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .announcement-image-container {
+            padding-top: 20%; 
+        }
+
+        .announcements-container {
+            padding: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .home-page .btn-nav {
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+    }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const prevBtn = document.querySelector('.btn-prev');
-        const nextBtn = document.querySelector('.btn-next');
+        function loadBooks(page, section, genreId) {
+            const url = new URL(window.location.origin + '/');
+            url.searchParams.set('page', page);
+            url.searchParams.set('section', section);
+            if (genreId) url.searchParams.set('genreId', genreId);
 
-        function navigatePage(page) {
-            window.location.href = `/?page=${page}`;
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const carouselId = genreId ? `genre-carousel-${genreId}` : 'featured-carousel';
+                document.getElementById(carouselId).innerHTML = html;
+                attachButtonListeners();
+            });
         }
 
-        prevBtn.addEventListener('click', () => {
-            if (!prevBtn.hasAttribute('disabled')) {
-                const prevPage = parseInt(prevBtn.getAttribute('data-page'));
-                navigatePage(prevPage);
-            }
-        });
+        function attachButtonListeners() {
+            document.querySelectorAll('.btn-nav').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.hasAttribute('disabled')) {
+                        const page = parseInt(this.getAttribute('data-page'));
+                        const section = this.getAttribute('data-section');
+                        const genreId = this.getAttribute('data-genre');
+                        loadBooks(page, section, genreId);
+                    }
+                });
+            });
+        }
 
-        nextBtn.addEventListener('click', () => {
-            if (!nextBtn.hasAttribute('disabled')) {
-                const nextPage = parseInt(nextBtn.getAttribute('data-page'));
-                navigatePage(nextPage);
-            }
-        });
+        attachButtonListeners();
     });
 
     document.addEventListener('DOMContentLoaded', function() {
