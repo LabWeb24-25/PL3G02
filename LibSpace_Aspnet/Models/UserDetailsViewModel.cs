@@ -13,5 +13,7 @@ namespace LibSpace_Aspnet.Models
         public string DataNascimento { get; set; }
         public string Role { get; set; }
         public string ImgPerfil { get; set; }
+        public string? AdminApproverName { get; set; }
+        public DateTime? ApplicationDate { get; set; }
     }
 } 

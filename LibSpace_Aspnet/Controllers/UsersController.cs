@@ -410,7 +410,6 @@ namespace LibSpace_Aspnet.Controllers
 
             try 
             {
-                // Debug logging
                 Console.WriteLine($"Fetching details for userId: {userId}");
                 
                 var userProfile = await _context.Perfils
@@ -423,7 +422,6 @@ namespace LibSpace_Aspnet.Controllers
                     return NotFound();
                 }
 
-                // Get ALL roles for the user and log them
                 var roles = await _userManager.GetRolesAsync(user);
                 Console.WriteLine($"User roles found: {string.Join(", ", roles)}");
 
@@ -438,10 +436,20 @@ namespace LibSpace_Aspnet.Controllers
                     CodigoPostal = userProfile?.EndCodPostal ?? "Não disponível",
                     Localidade = userProfile?.EndCodPostalNavigation?.EndLocalidade ?? "Não disponível",
                     DataNascimento = userProfile?.DataNascimentoPerfil.ToString("dd/MM/yyyy") ?? "Não disponível",
-                    // Show all roles if user has multiple
                     Role = roles.Any() ? string.Join(", ", roles) : "Sem papel atribuído",
                     ImgPerfil = userProfile?.ImgPerfil
                 };
+
+                // Get bibliotecario approval info after viewModel is created
+                var bibliotecarioPendente = await _context.BibliotecarioPendentes
+                    .Include(b => b.AspNetUserIdAdminNavigation)
+                    .FirstOrDefaultAsync(b => b.AspNetUserId == userId && b.IsApproved);
+
+                if (bibliotecarioPendente != null)
+                {
+                    viewModel.AdminApproverName = bibliotecarioPendente.AspNetUserIdAdminNavigation?.UserName;
+                    viewModel.ApplicationDate = bibliotecarioPendente.ApplicationDate;
+                }
 
                 return PartialView("_UserDetailsPartial", viewModel);
             }

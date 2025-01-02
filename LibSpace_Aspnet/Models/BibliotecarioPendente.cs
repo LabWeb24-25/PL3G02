@@ -27,5 +27,8 @@ namespace LibSpace_Aspnet.Models
         [ForeignKey("AspNetUserId")]
         public virtual IdentityUser AspNetUser { get; set; } = null!;
 
+        [ForeignKey("AspNetUserIdAdmin")]
+        public virtual IdentityUser? AspNetUserIdAdminNavigation { get; set; }
+
     }
 }

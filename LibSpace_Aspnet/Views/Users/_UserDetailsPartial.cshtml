@@ -35,5 +35,21 @@
             <i class="fas fa-birthday-cake"></i>
             <span>@Model.DataNascimento</span>
         </div>
+
+        @if (Model.Role.Equals("Bibliotecario", StringComparison.OrdinalIgnoreCase) && 
+             Model.AdminApproverName != null && 
+             Model.ApplicationDate.HasValue)
+        {
+            <div class="bibliotecario-approval">
+                <div class="detail-item">
+                    <i class="fas fa-user-check"></i>
+                    <span>Aprovado por: @Model.AdminApproverName</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Aprovado em: @Model.ApplicationDate.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+            </div>
+        }
     </div>
 </div> 

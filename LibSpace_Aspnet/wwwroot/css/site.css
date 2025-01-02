@@ -31,19 +31,19 @@ body {
 
 .btn_group {
     display: flex;
-    justify-content: space-between; /* Espa�a os bot�es horizontalmente */
-    width: 100%; /* Faz os bot�es ocuparem toda a largura */
-    gap: 20px; /* Espa�amento entre os bot�es */
-    margin-top: 20px; /* Espa�amento superior */
+    justify-content: space-between; /* Espaça os botões horizontalmente */
+    width: 100%; /* Faz os botões ocuparem toda a largura */
+    gap: 20px; /* Espaçamento entre os botões */
+    margin-top: 20px; /* Espaçamento superior */
 }
 
 .btn_submit {
-    flex-grow: 1; /* Faz com que os bot�es se expandam igualmente */
+    flex-grow: 1; /* Faz com que os botões se expandam igualmente */
     background-color: #004d40;
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    padding: 15px 20px; /* Bot�es maiores */
+    padding: 15px 20px; /* Botões maiores */
     text-align: center;
     text-decoration: none;
     border: none;
@@ -65,13 +65,13 @@ body {
     align-items: center; /* Alinha os elementos horizontalmente */
     height: 100%; /* Faz com que o container ocupe toda a altura da tela */
     margin: auto; /* Centraliza horizontalmente */
-    width: 80%; /* Expande a largura para 80% da p�gina */
-    max-width: 100%; /* Permite ocupar at� 100% da largura */
+    width: 80%; /* Expande a largura para 80% da página */
+    max-width: 100%; /* Permite ocupar até 100% da largura */
     background-color: #ffffff; /* Fundo branco */
-    padding: 40px; /* Espa�amento interno maior */
+    padding: 40px; /* Espaçamento interno maior */
     border-radius: 10px; /* Bordas arredondadas */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
-    text-align: center; /* Centraliza texto dentro do formul�rio */
+    text-align: center; /* Centraliza texto dentro do formulário */
 }
 
 
@@ -83,49 +83,49 @@ body {
 .forms_center {
     display: flex;
     flex-direction: column; /* Organiza os elementos verticalmente */
-    align-items: stretch; /* Faz os elementos ocuparem toda a largura dispon�vel */
-    width: 100%; /* Garante que o conte�do dentro ocupe toda a largura */
-    max-width: 800px; /* Largura m�xima maior */
-    gap: 10px; /* Reduz o espa�amento vertical entre os elementos */
+    align-items: stretch; /* Faz os elementos ocuparem toda a largura disponível */
+    width: 100%; /* Garante que o conteúdo dentro ocupe toda a largura */
+    max-width: 800px; /* Largura máxima maior */
+    gap: 10px; /* Reduz o espaçamento vertical entre os elementos */
 }
 
 .caixatexto {
-    width: 100%; /* Faz com que a caixa de texto ocupe toda a largura do formul�rio */
-    padding: 10px; /* Reduz o espa�amento interno */
-    border: 1px solid #ccc; /* Borda padr�o */
+    width: 100%; /* Faz com que a caixa de texto ocupe toda a largura do formulário */
+    padding: 10px; /* Reduz o espaçamento interno */
+    border: 1px solid #ccc; /* Borda padrão */
     border-radius: 5px; /* Bordas arredondadas */
     font-size: 16px; /* Tamanho da fonte */
-    margin: 5px 0; /* Reduz o espa�amento vertical entre as caixas */
+    margin: 5px 0; /* Reduz o espaçamento vertical entre as caixas */
 }
 
 .caixatextopeq {
     height: 120px; /* Altura ajustada para caixa de texto menor */
-    resize: none; /* Desabilita redimensionamento para manter consist�ncia */
-    margin: 5px 0; /* Reduz o espa�amento vertical */
+    resize: none; /* Desabilita redimensionamento para manter consistência */
+    margin: 5px 0; /* Reduz o espaçamento vertical */
 }
 
 .textbox {
-    width: 100%; /* Preenche o espa�o dispon�vel */
+    width: 100%; /* Preenche o espaço disponível */
     height: 150px; /* Altura inicial */
-    padding: 10px; /* Espa�amento interno */
+    padding: 10px; /* Espaçamento interno */
     font-size: 16px; /* Tamanho da fonte */
     font-family: 'Roboto', sans-serif; /* Define a fonte */
-    line-height: 1.5; /* Melhora o espa�amento entre linhas */
+    line-height: 1.5; /* Melhora o espaçamento entre linhas */
     border: 1px solid #ccc; /* Borda leve */
     border-radius: 5px; /* Bordas arredondadas */
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra interna */
     resize: vertical; /* Permite redimensionar verticalmente */
-    overflow-y: auto; /* Exibe a barra de rolagem vertical quando necess�rio */
-    outline: none; /* Remove contorno padr�o do navegador */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Transi��o suave para foco */
-    text-align: left; /* Alinhamento � esquerda */
+    overflow-y: auto; /* Exibe a barra de rolagem vertical quando necessário */
+    outline: none; /* Remove contorno padrão do navegador */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Transição suave para foco */
+    text-align: left; /* Alinhamento à esquerda */
     vertical-align: top; /* Garante que o texto comece no topo */
 }
 
 .textbox:focus {
     border-color: #034C39; /* Cor da borda ao focar */
     box-shadow: 0 0 5px rgba(3, 76, 57, 0.5); /* Sombra ao focar */
-    outline: none; /* Remove o contorno padr�o do navegador */
+    outline: none; /* Remove o contorno padrão do navegador */
 }
 
 .navbar {
@@ -318,4 +318,10 @@ body {
 }
 .card-img, .card-img-bottom, .card-img-top {
     height: 266.666666667px;
+}
+
+.bibliotecario-approval {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
 }
