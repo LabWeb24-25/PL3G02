@@ -21,7 +21,7 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Requisicao
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool isAscending = true, int? selectedStatus = null)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -32,7 +32,7 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return Redirect("/Users/Notauthorized");
             }
-            var Requisita = await _context.Requisita
+            var requisicoes = await _context.Requisita
                 .Select(req => new RequisitaViewModel
                 {
                     IdLivro = req.IdLivro,
@@ -61,36 +61,40 @@ namespace LibSpace_Aspnet.Controllers
                             .FirstOrDefault()
                         : "N/A"  // Se nulo, exibir "N/A"
                 })
+                .OrderBy(r => isAscending ? r.DataRequisicao : r.DataRequisicao)
                 .ToListAsync();
 
+            var preRequisicoes = await _context.PreRequisita
+                .Select(pre => new PreRequisitaViewModel
+                {
+                    IdReserva = pre.Idreserva,
+                    NomeLivro = _context.Livros
+                        .Where(l => l.IdLivro == pre.Idlivro)
+                        .Select(l => l.TituloLivros)
+                        .FirstOrDefault(),
+                    NomeLeitor = _context.Perfils
+                        .Where(leitor => leitor.IdPerfil == pre.Idleitor)
+                        .Select(leitor => leitor.NomePerfil)
+                        .FirstOrDefault(),
+                    EstadoLevantamento = pre.EstadoLevantamento
+                })
+                .OrderBy(p => isAscending ? p.NomeLivro : p.NomeLivro)
+                .ToListAsync();
 
-            var PreRequisita = _context.PreRequisita
-                    .Select(pre => new PreRequisitaViewModel
-                    {
-                        IdReserva = pre.Idreserva,
-                        NomeLivro = _context.Livros
-                            .Where(l => l.IdLivro == pre.Idlivro)
-                            .Select(l => l.TituloLivros)
-                            .FirstOrDefault(),
-                        NomeLeitor = _context.Perfils
-                            .Where(leitor => leitor.IdPerfil == pre.Idleitor)
-                            .Select(leitor => leitor.NomePerfil)
-                            .FirstOrDefault(),
-                        EstadoLevantamento = pre.EstadoLevantamento
-                    })
-                    .ToList();
-
-
+            if (selectedStatus.HasValue)
+            {
+                preRequisicoes = preRequisicoes.Where(p => p.EstadoLevantamento == selectedStatus.Value).ToList();
+            }
 
             var viewModel = new RequisitaView
             {
-                Requisita = Requisita,
-                PreRequisita = PreRequisita
+                Requisita = requisicoes,
+                PreRequisita = preRequisicoes,
+                SelectedStatus = selectedStatus
             };
 
             return View(viewModel);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AceitarReq(int idprereq)
@@ -117,7 +121,6 @@ namespace LibSpace_Aspnet.Controllers
             var perfil = await _context.Perfils
                 .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
 
-
             var prerequisita = await _context.PreRequisita.FindAsync(idprereq);
             if (prerequisita == null)
             {
@@ -135,7 +138,6 @@ namespace LibSpace_Aspnet.Controllers
                 DataPrevEntrega = DateOnly.FromDateTime(DateTime.Now.AddDays(15)),
                 DataEntrega = null
             };
-
 
             try
             {
@@ -219,6 +221,25 @@ namespace LibSpace_Aspnet.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRequisicaoDetails(int requisicaoId)
+        {
+            var requisicao = await _context.Requisita
+                .Select(req => new RequisitaViewModel
+                {
+                    IdLivro = req.IdLivro,
+                    IdLeitor = req.IdLeitor,
+                    // ... other properties ...
+                })
+                .FirstOrDefaultAsync(r => r.IdLivro == requisicaoId);
+
+            if (requisicao == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_RequisicaoPartial", requisicao);
+        }
     }
 }
 

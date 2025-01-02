@@ -47,13 +47,6 @@
                     <input type="text" class="search-input" placeholder="Procurar bibliotecário pendente..." 
                            onkeyup="searchUsers('pending-users', this.value)">
                 </div>
-                <form asp-action="Index" method="get" class="d-inline">
-                    <input type="hidden" name="isAscending" value="@(!Model.IsAscending)" />
-                    <button type="submit" class="btn btn-outline-secondary sort-btn">
-                        <i class="fas fa-sort-alpha-@(Model.IsAscending ? "down" : "up")"></i>
-                        Ordenar @(Model.IsAscending ? "Z-A" : "A-Z")
-                    </button>
-                </form>
             </div>
 
             <div class="users-list" id="pending-users">
@@ -118,15 +111,6 @@
                     <input type="text" class="search-input" placeholder="Procurar utilizador..." 
                            onkeyup="searchUsers('all-users', this.value)">
                 </div>
-                <form asp-action="Index" method="get" class="d-inline">
-                    <input type="hidden" name="selectedRole" value="@Model.SelectedRole" />
-                    <input type="hidden" name="isBlocked" value="@Model.IsBlocked" />
-                    <input type="hidden" name="isAscending" value="@(!Model.IsAscending)" />
-                    <button type="submit" class="btn btn-outline-secondary sort-btn">
-                        <i class="fas fa-sort-alpha-@(Model.IsAscending ? "down" : "up")"></i>
-                        Ordenar @(Model.IsAscending ? "Z-A" : "A-Z")
-                    </button>
-                </form>
             </div>
 
             <form asp-action="Index" method="get" class="filters-form">

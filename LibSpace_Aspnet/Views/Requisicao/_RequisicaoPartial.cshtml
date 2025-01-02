@@ -1,0 +1,40 @@
+@model RequisitaViewModel
+
+<div class="requisicao-details-container">
+    <div class="details-section">
+        <div class="detail-item">
+            <i class="fas fa-book"></i>
+            <span>@Model.NomeLivro</span>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-user"></i>
+            <span>@Model.NomeLeitor</span>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span>@Model.DataRequisicao.ToString("d")</span>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>@Model.DataPrevEntrega.ToString("d")</span>
+        </div>
+        @if (Model.DataEntrega.HasValue)
+        {
+            <div class="detail-item">
+                <i class="fas fa-calendar-times"></i>
+                <span>@Model.DataEntrega?.ToString("d")</span>
+            </div>
+        }
+        <div class="detail-item">
+            <i class="fas fa-user-tie"></i>
+            <span>@Model.NomeBibliotecarioRecetor</span>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.NomeBibliotecarioRemetente))
+        {
+            <div class="detail-item">
+                <i class="fas fa-user-check"></i>
+                <span>@Model.NomeBibliotecarioRemetente</span>
+            </div>
+        }
+    </div>
+</div> 

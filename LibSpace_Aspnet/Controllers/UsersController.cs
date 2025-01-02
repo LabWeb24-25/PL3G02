@@ -27,17 +27,13 @@ namespace LibSpace_Aspnet.Controllers
 
         }
 
-        public async Task<IActionResult> Index(string selectedRole = null, bool? isBlocked = null, bool isAscending = true)
+        public async Task<IActionResult> Index(string selectedRole = null, bool? isBlocked = null)
         {
             var pendingBibliotecarios = await _context.BibliotecarioPendentes
                 .Include(b => b.AspNetUser)
                 .Where(b => !b.IsApproved)
+                .OrderBy(b => b.AspNetUser.UserName)
                 .ToListAsync();
-
-            // Sort pending bibliotecarios
-            pendingBibliotecarios = isAscending 
-                ? pendingBibliotecarios.OrderBy(b => b.AspNetUser.UserName).ToList()
-                : pendingBibliotecarios.OrderByDescending(b => b.AspNetUser.UserName).ToList();
 
             // Start with all users query
             var usersQuery = _userManager.Users.AsQueryable();
@@ -55,10 +51,8 @@ namespace LibSpace_Aspnet.Controllers
                 usersQuery = usersQuery.Where(u => u.LockoutEnd != null == isBlocked.Value);
             }
 
-            // Apply sorting
-            usersQuery = isAscending 
-                ? usersQuery.OrderBy(u => u.UserName)
-                : usersQuery.OrderByDescending(u => u.UserName);
+            // Default ordering
+            usersQuery = usersQuery.OrderBy(u => u.UserName);
 
             var allUsers = await usersQuery.ToListAsync();
 
@@ -75,8 +69,7 @@ namespace LibSpace_Aspnet.Controllers
                 AllUsers = allUsers,
                 UserRoles = userRoles,
                 SelectedRole = selectedRole,
-                IsBlocked = isBlocked,
-                IsAscending = isAscending
+                IsBlocked = isBlocked
             };
 
             return View(viewModel);

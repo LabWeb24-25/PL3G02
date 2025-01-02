@@ -4,221 +4,604 @@
     ViewData["Title"] = "Requisições e Pré-Requisições";
 }
 
-<h1>Requisições e Pré-Requisições</h1>
+<div class="requisicao-management-container">
+    <div class="header-section">
+        <h2 class="section-title">Gestão de Requisições</h2>
+    </div>
 
-<!-- Tabela para exibir Pré-Requisições -->
-<h2>Pré-Requisições</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Título do Livro</th>
-            <th>Nome do Leitor</th>
-            <th>Estado de Levantamento</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var preRequisita in Model.PreRequisita)
-        {
-            <tr>
-                <td>@preRequisita.NomeLivro</td>
-                <td>@preRequisita.NomeLeitor</td>
-                <td>@preRequisita.EstadoLevantamento</td>
-                <td>
-                    <a href="javascript:void(0);" class="btn-approve" data-url="@Url.Action("AceitarReq", new { idprereq = preRequisita.IdReserva })">
-                        Aprovar Requisição
-                    </a> |
-                    <a href="javascript:void(0);" class="btn-reject" data-url="@Url.Action("RejeitarReq", new { idprereq = preRequisita.IdReserva })">
-                        Rejeitar Requisição
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <!-- Pre-Requisições Section -->
+    <div class="requisicoes-list-container mb-4">
+        <div class="list-header" onclick="toggleSection('pre-requisicoes-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Pré-Requisições Pendentes
+            </h3>
+        </div>
+        
+        <div id="pre-requisicoes-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar pré-requisição..." 
+                           onkeyup="searchRequisicoes('pre-requisicoes-table', this.value)">
+                </div>
+                <form asp-action="Index" method="get" class="d-inline">
+                    <select class="form-select filter-select" 
+                            name="selectedStatus" 
+                            onchange="this.form.submit()">
+                        <option value="">Todos os Estados</option>
+                        @{
+                            var options = new[]
+                            {
+                                new { Value = 0, Text = "Não Levantado" },
+                                new { Value = 1, Text = "Levantado" },
+                                new { Value = -1, Text = "Levantamento Negado" }
+                            };
 
-<h2>Requisitados</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Título do Livro</th>
-            <th>Nome do Leitor</th>
-            <th>Data da Requisição</th>
-            <th>Data Prevista de Entrega</th>
-            <th>Data de Entrega</th>
-            <th>Bibliotecário Remetente</th>
-            <th>Bibliotecário Recetor</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var requisita in Model.Requisita)
-        {
-            if (requisita.DataEntrega == null)
+                            foreach (var option in options)
+                            {
+                                <option value="@option.Value" selected="@(Model.SelectedStatus == option.Value)">
+                                    @option.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </form>
+            </div>
+
+            @if (!Model.PreRequisita.Any())
             {
-                <tr>
-                    <td>@requisita.NomeLivro</td>
-                    <td>@requisita.NomeLeitor</td>
-                    <td>@requisita.DataRequisicao.ToString("d")</td>
-                    <td>@requisita.DataPrevEntrega.ToString("d")</td>
-                    <td>N/A</td>
-                    <td>@requisita.NomeBibliotecarioRecetor ?? "N/A"</td>
-                    <td>N/A</td>
-                    <td>
-                        <a href="javascript:void(0);" 
-                           class="btn-finalizar" 
-                           data-url="@Url.Action("FinalizarReq", new { idrequisicao = requisita.IdLivro })">
-                            Finalizar Requisição
-                        </a>
-                    </td>
-                </tr>
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Não existem pré-requisições pendentes no momento.</p>
+                </div>
             }
-        }
-    </tbody>
-</table>
-
-<h2>Entregues</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Título do Livro</th>
-            <th>Nome do Leitor</th>
-            <th>Data da Requisição</th>
-            <th>Data Prevista de Entrega</th>
-            <th>Data de Entrega</th>
-            <th>Bibliotecário Recetor</th>
-            <th>Bibliotecário Remetente</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var requisita in Model.Requisita)
-        {
-            if (requisita.DataEntrega != null)
+            else 
             {
-                <tr>
-                    <td>@requisita.NomeLivro</td>
-                    <td>@requisita.NomeLeitor</td>
-                    <td>@requisita.DataRequisicao.ToString("d")</td>
-                    <td>@requisita.DataPrevEntrega.ToString("d")</td>
-                    <td>@requisita.DataEntrega?.ToString("d") ?? "N/A"</td>
-                    <td>@requisita.NomeBibliotecarioRecetor ?? "N/A"</td>
-                    <td>@requisita.NomeBibliotecarioRemetente ?? "N/A"</td>
-                </tr>
+                <table id="pre-requisicoes-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Título do Livro</th>
+                            <th>Nome do Leitor</th>
+                            <th>Estado</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var preRequisita in Model.PreRequisita)
+                        {
+                            <tr class="requisicao-row" data-status="@preRequisita.EstadoLevantamento">
+                                <td>@preRequisita.NomeLivro</td>
+                                <td>@preRequisita.NomeLeitor</td>
+                                <td>
+                                    @{
+                                        var statusText = preRequisita.EstadoLevantamento switch
+                                        {
+                                            0 => "Não Levantado",
+                                            1 => "Levantado",
+                                            -1 => "Levantamento Negado",
+                                            _ => "Desconhecido"
+                                        };
+                                        var statusClass = preRequisita.EstadoLevantamento switch
+                                        {
+                                            0 => "status-pending",
+                                            1 => "status-approved",
+                                            -1 => "status-rejected",
+                                            _ => "status-unknown"
+                                        };
+                                    }
+                                    <span class="status-badge @statusClass">@statusText</span>
+                                </td>
+                                <td>
+                                    @if (preRequisita.EstadoLevantamento == 0)
+                                    {
+                                        <button class="btn btn-success btn-sm btn-approve" 
+                                                data-url="@Url.Action("AceitarReq", new { idprereq = preRequisita.IdReserva })">
+                                            <i class="fas fa-check"></i> Aprovar
+                                        </button>
+                                        <button class="btn btn-danger btn-sm btn-reject" 
+                                                data-url="@Url.Action("RejeitarReq", new { idprereq = preRequisita.IdReserva })">
+                                            <i class="fas fa-times"></i> Rejeitar
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
-        }
-    </tbody>
-</table>
+        </div>
+    </div>
 
-<div id="confirmModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <p id="modalMessage"></p>
-        <div class="modal-buttons">
-            <button id="confirmBtn" class="btn btn-success">Confirmar</button>
-            <button id="cancelBtn" class="btn btn-danger">Cancelar</button>
+    <!-- Requisições Ativas Section -->
+    <div class="requisicoes-list-container mb-4">
+        <div class="list-header" onclick="toggleSection('requisicoes-ativas-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Requisições Ativas
+            </h3>
+        </div>
+        
+        <div id="requisicoes-ativas-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar requisição ativa..." 
+                           onkeyup="searchRequisicoes('requisicoes-ativas-table', this.value)">
+                </div>
+            </div>
+
+            @if (!Model.Requisita.Where(r => r.DataEntrega == null).Any())
+            {
+                <div class="empty-state">
+                    <i class="fas fa-book"></i>
+                    <p>Não existem requisições ativas no momento.</p>
+                </div>
+            }
+            else 
+            {
+                <table id="requisicoes-ativas-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Título do Livro</th>
+                            <th>Nome do Leitor</th>
+                            <th>Data Requisição</th>
+                            <th>Data Prevista</th>
+                            <th>Bibliotecário</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var requisita in Model.Requisita.Where(r => r.DataEntrega == null))
+                        {
+                            <tr class="requisicao-row">
+                                <td>@requisita.NomeLivro</td>
+                                <td>@requisita.NomeLeitor</td>
+                                <td>@requisita.DataRequisicao.ToString("d")</td>
+                                <td @(requisita.DataPrevEntrega < DateOnly.FromDateTime(DateTime.Now) ? "class=text-danger" : "")>
+                                    @requisita.DataPrevEntrega.ToString("d")
+                                </td>
+                                <td>@requisita.NomeBibliotecarioRecetor</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm btn-finalizar" 
+                                            data-url="@Url.Action("FinalizarReq", new { idrequisicao = requisita.IdLivro })">
+                                        <i class="fas fa-check-circle"></i> Finalizar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <!-- Histórico Section -->
+    <div class="requisicoes-list-container">
+        <div class="list-header" onclick="toggleSection('historico-list')">
+            <h3 class="list-title">
+                <i class="fas fa-chevron-down section-toggle"></i>
+                Histórico de Requisições
+            </h3>
+        </div>
+        
+        <div id="historico-list" class="section-content">
+            <div class="search-section mb-3">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Procurar no histórico..." 
+                           onkeyup="searchRequisicoes('historico-table', this.value)">
+                </div>
+            </div>
+
+            @if (!Model.Requisita.Where(r => r.DataEntrega != null).Any())
+            {
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>Não existem requisições no histórico.</p>
+                </div>
+            }
+            else 
+            {
+                <table id="historico-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Título do Livro</th>
+                            <th>Nome do Leitor</th>
+                            <th>Data Requisição</th>
+                            <th>Data Prevista</th>
+                            <th>Data Entrega</th>
+                            <th>Bibliotecário Recetor</th>
+                            <th>Bibliotecário Remetente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var requisita in Model.Requisita.Where(r => r.DataEntrega != null))
+                        {
+                            <tr class="requisicao-row">
+                                <td>@requisita.NomeLivro</td>
+                                <td>@requisita.NomeLeitor</td>
+                                <td>@requisita.DataRequisicao.ToString("d")</td>
+                                <td>@requisita.DataPrevEntrega.ToString("d")</td>
+                                <td>@requisita.DataEntrega?.ToString("d")</td>
+                                <td>@requisita.NomeBibliotecarioRecetor</td>
+                                <td>@requisita.NomeBibliotecarioRemetente</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
         </div>
     </div>
 </div>
 
-<div id="infoModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <p id="infoMessage"></p>
-        <div class="modal-buttons">
-            <button class="btn btn-primary" id="okBtn">OK</button>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("_ModalPartial")
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        let currentUrl = '';
-
-        function showModal(message, callback) {
-            $("#modalMessage").text(message);
-            $("#confirmModal").fadeIn();
-
-            $("#confirmBtn").off().click(function() {
-                $("#confirmModal").fadeOut();
-                callback(true);
-            });
-
-            $("#cancelBtn").off().click(function() {
-                $("#confirmModal").fadeOut();
-                callback(false);
-            });
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .list-header {
+            cursor: pointer;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
         }
 
-        function showInfoModal(message) {
-            $("#infoMessage").text(message);
-            $("#infoModal").fadeIn();
+        .list-header:hover {
+            background-color: #f8f9fa;
+        }
+
+        .section-toggle {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .section-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            transition: all 0.3s ease-out;
+            overflow: hidden;
+            opacity: 1;
+            max-height: 2000px;
+        }
+
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 35px;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        /* Table styling */
+        .table {
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table thead th {
+            border-top: none;
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .requisicao-row td {
+            vertical-align: middle;
+        }
+
+        /* Button styling */
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+            margin: 0 2px;
+        }
+
+        .btn i {
+            margin-right: 4px;
+        }
+
+        /* Container styling */
+        .requisicao-management-container {
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .requisicoes-list-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.75rem;
+            margin-bottom: 0;
+        }
+
+        /* Modal styling */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .modal-buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-buttons .btn {
+            min-width: 100px;
+            padding: 8px 16px;
+        }
+
+        /* Status badge styling */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-unknown {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        /* Filter styling */
+        .status-filter {
+            min-width: 150px;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .status-filter:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        /* Filter select styling */
+        .filter-select {
+            width: auto;
+            min-width: 120px;
+            padding: 8px 24px 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
+            height: 38px;
+        }
+
+        .filter-select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        .search-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-container {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            background: #fff;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #adb5bd;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 1rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let currentUrl = '';
+
+            function showModal(message, callback) {
+                $("#modalMessage").text(message);
+                $("#confirmModal").fadeIn();
+
+                $("#confirmBtn").off().click(function() {
+                    $("#confirmModal").fadeOut();
+                    callback(true);
+                });
+
+                $("#cancelBtn").off().click(function() {
+                    $("#confirmModal").fadeOut();
+                    callback(false);
+                });
+            }
+
+            function showInfoModal(message) {
+                $("#infoMessage").text(message);
+                $("#infoModal").fadeIn();
+                
+                $("#okBtn").off().click(function() {
+                    $("#infoModal").fadeOut();
+                    location.reload();
+                });
+            }
+
+            function handleAction(url, confirmMessage) {
+                currentUrl = url;
+                showModal(confirmMessage, function(confirmed) {
+                    if (confirmed) {
+                        $.post(url)
+                            .done(function(response) {
+                                showInfoModal(response.message);
+                            })
+                            .fail(function() {
+                                showInfoModal("Ocorreu um erro. Por favor, tente novamente.");
+                            });
+                    }
+                });
+            }
+
+            $(".btn-approve").click(function () {
+                handleAction($(this).data('url'), "Tem certeza que deseja aprovar esta requisição?");
+            });
+
+            $(".btn-reject").click(function () {
+                handleAction($(this).data('url'), "Tem certeza que deseja rejeitar esta requisição?");
+            });
+
+            $(".btn-finalizar").click(function () {
+                handleAction($(this).data('url'), "Tem certeza que deseja finalizar esta requisição?");
+            });
+
+            // Initialize sections as expanded
+            document.addEventListener('DOMContentLoaded', () => {
+                const sections = document.getElementsByClassName('section-content');
+                Array.from(sections).forEach(section => {
+                    section.classList.remove('collapsed');
+                    section.style.maxHeight = section.scrollHeight + 'px';
+                });
+            });
+
+            function filterByStatus(status, tableId) {
+                const table = document.getElementById(tableId);
+                const rows = table.getElementsByClassName('requisicao-row');
+                
+                Array.from(rows).forEach(row => {
+                    if (!status || row.dataset.status === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const icon = content.previousElementSibling.querySelector('.section-toggle');
             
-            $("#okBtn").off().click(function() {
-                $("#infoModal").fadeOut();
-                location.reload();
-            });
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.classList.remove('collapsed');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.add('collapsed');
+                content.style.maxHeight = '0';
+            }
         }
 
-        function handleAction(url, confirmMessage) {
-            currentUrl = url;
-            showModal(confirmMessage, function(confirmed) {
-                if (confirmed) {
-                    $.post(url)
-                        .done(function(response) {
-                            showInfoModal(response.message);
-                        })
-                        .fail(function() {
-                            showInfoModal("Ocorreu um erro. Por favor, tente novamente.");
-                        });
-                }
+        function searchRequisicoes(tableId, searchText) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByClassName('requisicao-row');
+            
+            searchText = searchText.toLowerCase();
+            
+            Array.from(rows).forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchText) ? '' : 'none';
             });
         }
-
-        $(".btn-approve").click(function () {
-            handleAction($(this).data('url'), "Tem certeza que deseja aprovar esta requisição?");
-        });
-
-        $(".btn-reject").click(function () {
-            handleAction($(this).data('url'), "Tem certeza que deseja rejeitar esta requisição?");
-        });
-
-        $(".btn-finalizar").click(function () {
-            handleAction($(this).data('url'), "Tem certeza que deseja finalizar esta requisição?");
-        });
-    });
-</script>
-
-<style>
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 5px;
-        width: 400px;
-        max-width: 90%;
-        text-align: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin: 0 20px;
-    }
-
-    .modal-buttons .btn {
-        min-width: 100px;
-        padding: 8px 16px;
-    }
-
-    #modalMessage {
-        margin-bottom: 15px;
-        font-size: 16px;
-    }
-</style>
+    </script>
+}
