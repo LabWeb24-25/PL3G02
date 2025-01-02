@@ -35,6 +35,9 @@ namespace LibSpace_Aspnet.Controllers
                 .OrderBy(b => b.AspNetUser.UserName)
                 .ToListAsync();
 
+            // Filter out any entries with null AspNetUser
+            pendingBibliotecarios = pendingBibliotecarios.Where(b => b.AspNetUser != null).ToList();
+
             // Start with all users query
             var usersQuery = _userManager.Users.AsQueryable();
 
@@ -153,20 +156,19 @@ namespace LibSpace_Aspnet.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Just add Bibliotecario role
+                // Add Bibliotecario role
                 await _userManager.AddToRoleAsync(user, "Bibliotecario");
 
-                // Remove from pending table
-                _context.BibliotecarioPendentes.Remove(pendingBibliotecario);
+                // Update pending record with admin info and approval
+                pendingBibliotecario.IsApproved = true;
+                pendingBibliotecario.AspNetUserIdAdmin = _userManager.GetUserId(User);
                 await _context.SaveChangesAsync();
 
                 var userEmail = await _userManager.GetEmailAsync(user);
-
                 await _emailSender.SendEmailAsync(
                     userEmail,
                     "Pedido Aceite",
                     "Você foi aceite como bibliotecário.");
-                                
 
                 TempData["Success"] = "Bibliotecário aprovado com sucesso!";
                 return RedirectToAction(nameof(Index));
