@@ -48,7 +48,13 @@
                     <div class="col-12">
                         <h2 class="featured-title">Em Destaque</h2>
                         <div id="featured-carousel">
-                            @await Html.PartialAsync("_BookCarousel", Model)
+                            @{
+                                ViewBag.CurrentPage = ViewBag.FeaturedCurrentPage;
+                                ViewBag.TotalPages = ViewBag.FeaturedTotalPages;
+                                ViewBag.CurrentSection = "featured";
+                                ViewBag.CurrentGenreId = null;
+                            }
+                            @await Html.PartialAsync("_BookCarousel", (IEnumerable<LibSpace_Aspnet.Models.Livro>)Model)
                         </div>
                     </div>
                 </div>
@@ -61,11 +67,13 @@
                             <h2 class="featured-title">@genero.NomeGeneros</h2>
                             <div id="genre-carousel-@genero.IdGeneros">
                                 @{
-                                    var genreBooks = Model.Where(b => b.IdGenerosNavigation?.IdGeneros == genero.IdGeneros);
+                                    var genreBooks = ViewBag.GenreBooks[genero.IdGeneros];
+                                    ViewBag.CurrentPage = 1; // Start each genre at page 1
+                                    ViewBag.TotalPages = ViewBag.GenrePages[genero.IdGeneros];
                                     ViewBag.CurrentSection = $"genre-{genero.IdGeneros}";
                                     ViewBag.CurrentGenreId = genero.IdGeneros;
                                 }
-                                @await Html.PartialAsync("_BookCarousel", genreBooks)
+                                @await Html.PartialAsync("_BookCarousel", (IEnumerable<LibSpace_Aspnet.Models.Livro>)genreBooks)
                             </div>
                         </div>
                     </div>
