@@ -11,7 +11,7 @@
             <div class="form-group form-group-image">
                 @if (!string.IsNullOrEmpty(Model.FotoAutor))
                 {
-                    <img src="@Url.Content("~/Foto_Autor/" + Model.FotoAutor)" alt="Imagem de @Model.NomeAutor" class="imgdetails" />
+                    <img src="@Url.Content("~/Foto_Autor/" + Model.FotoAutor)" alt="Imagem de @Model.NomeAutor" class="author-image" />
                 }
             </div>
             <div class="form-group form-group-info">
@@ -33,17 +33,59 @@
         </div>
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
-            @if (User.IsInRole("Bibliotecario"))
-            {
-                <div class="edit-delete-buttons">
-                    <a asp-action="Edit" asp-route-id="@Model.IdAutor" class="btn btn-primary btn-edit">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@Model.IdAutor" class="btn btn-danger btn-delete">Eliminar</a>
-                </div>
-            }
         </div>
     </div>
 </div>
 
 @section Styles {
     <link rel="stylesheet" href="~/css/create_design_autor_details.css" />
+    <style>
+        .author-image {
+            width: 100%;
+            height: 266.666666667px;
+            object-fit: cover;
+            aspect-ratio: 3/4;
+            background: #f6f6f6;
+            border-radius: 4px;
+        }
+
+        .form-group-image {
+            max-width: 200px;
+            margin-right: 2rem;
+        }
+
+        .details-container .form-row {
+            grid-template-columns: 1fr 3fr;
+        }
+
+        @@media (max-width: 1200px) {
+            .author-image {
+                height: 240px;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .author-image {
+                height: 220px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .author-image {
+                height: 200px;
+            }
+            .form-group-image {
+                margin-right: 1rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .author-image {
+                height: 180px;
+            }
+            .form-group-image {
+                margin: 0 auto 1rem auto;
+            }
+        }
+    </style>
 }

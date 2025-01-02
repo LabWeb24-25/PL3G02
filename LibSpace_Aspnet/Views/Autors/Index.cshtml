@@ -1,71 +1,242 @@
 ﻿@model IEnumerable<LibSpace_Aspnet.Models.Autor>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Autores";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+    <div class="authors-page">
+        <div class="header-section">
+            <h2 class="section-title">Autores</h2>
+            <button id="sortButton" class="btn btn-light btn-primary" onclick="toggleSort()">
+                <i class="fas fa-sort-alpha-down"></i> A-Z
+            </button>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeAutor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataNascimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pseudonimo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataFalecimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FotoAutor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bibliografia)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdLinguaNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeAutor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataNascimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pseudonimo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataFalecimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FotoAutor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bibliografia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdLinguaNavigation.IdPais)
-            </td>
-            <td>
-       
-                <a asp-action="Details" asp-route-id="@item.IdAutor">Details</a> 
-               
-            </td>
-        </tr>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" id="authorsContainer">
+            @foreach (var author in Model)
+            {
+                <div class="col" data-author-name="@author.NomeAutor">
+                    <a href="@Url.Action("Details", "Autors", new { id = author.IdAutor })" class="author-link">
+                        <div class="card author-card">
+                            <img src="@Url.Content("~/Foto_Autor/" + author.FotoAutor)" class="card-img-top" alt="@author.NomeAutor">
+                            <div class="card-body text-center">
+                                <h5 class="author-name">
+                                    @if (!string.IsNullOrEmpty(author.Pseudonimo))
+                                    {
+                                        @author.Pseudonimo
+                                    }
+                                    else
+                                    {
+                                        @author.NomeAutor
+                                    }
+                                </h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let isAscending = true;
+
+        function toggleSort() {
+            const container = document.getElementById('authorsContainer');
+            const authors = Array.from(container.children);
+            const button = document.getElementById('sortButton');
+            
+            // Toggle sort direction
+            isAscending = !isAscending;
+            
+            // Update button text and icon
+            button.innerHTML = isAscending ? 
+                '<i class="fas fa-sort-alpha-down"></i> A-Z' : 
+                '<i class="fas fa-sort-alpha-up"></i> Z-A';
+
+            // Sort the authors
+            authors.sort((a, b) => {
+                const nameA = a.dataset.authorName.toLowerCase();
+                const nameB = b.dataset.authorName.toLowerCase();
+                return isAscending ? 
+                    nameA.localeCompare(nameB) : 
+                    nameB.localeCompare(nameA);
+            });
+
+            // Reappend the sorted authors
+            authors.forEach(author => container.appendChild(author));
+        }
+    </script>
 }
-    </tbody>
-</table>
+
+<style>
+    .authors-page {
+        padding: 2rem;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        color: #004d40;
+        margin: 0;
+    }
+
+    .author-card {
+        height: 100%;
+        max-height: 350px;
+        display: flex;
+        flex-direction: column;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .author-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 266.666666667px;
+        object-fit: cover;
+        aspect-ratio: 3/4;
+        background: #f6f6f6;
+    }
+
+    @@media (max-width: 1200px) {
+        .card-img-top {
+            height: 240px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .card-img-top {
+            height: 220px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .card-img-top {
+            height: 200px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .card-img-top {
+            height: 180px;
+        }
+    }
+
+    .author-name {
+        color: #004d40;
+        font-size: 1.1rem;
+        margin-bottom: 0.2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 15ch;
+        margin: 0 auto;
+    }
+
+    .author-pseudonym {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .author-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .author-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    @@media (max-width: 1200px) {
+        .author-card {
+            max-height: 320px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .author-card {
+            max-height: 300px;
+        }
+        .card-body {
+            padding: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .authors-page {
+            padding: 1rem;
+        }
+        .author-card {
+            max-height: 280px;
+        }
+        .author-name {
+            font-size: 0.9rem;
+        }
+        .author-pseudonym {
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .authors-page {
+            padding: 0.5rem;
+        }
+        .author-card {
+            max-height: 260px;
+        }
+        .card-body {
+            padding: 0.5rem;
+        }
+    }
+
+    #sortButton {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+        border-color: #064d3b;
+    }
+
+    #sortButton:hover,
+    #sortButton:focus,
+    #sortButton:active {
+        border-color: #053d2f;
+    }
+
+    #sortButton:focus {
+        box-shadow: 0 0 0 0.25rem rgba(6, 77, 59, 0.25) !important;
+    }
+
+    #sortButton i {
+        font-size: 0.9em;
+    }
+
+    .card-body {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

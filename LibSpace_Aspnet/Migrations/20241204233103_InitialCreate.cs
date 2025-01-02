@@ -126,7 +126,7 @@ namespace LibSpace_Aspnet.Migrations
                     AspNetUserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     ApplicationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    AspNetUserIdAdmin = table.Column<string>(type: "nvarchar(450)") //adicionado à mão PODE DAR MERDA AQUI
+                    AspNetUserIdAdmin = table.Column<string>(type: "nvarchar(450)", nullable: true) //adicionado à mão PODE DAR MERDA AQUI
                 },
                 constraints: table =>
                 {
