@@ -50,7 +50,7 @@
             </div>
 
             <div class="users-list" id="pending-users">
-                @if (!Model.PendingBibliotecarios.Any())
+                @if (!Model.PendingBibliotecarios.Any(b => !b.IsApproved))
                 {
                     <div class="empty-state">
                         <i class="fas fa-info-circle"></i>
@@ -59,7 +59,7 @@
                 }
                 else
                 {
-                    @foreach (var pending in Model.PendingBibliotecarios)
+                    @foreach (var pending in Model.PendingBibliotecarios.Where(b => !b.IsApproved && b.AspNetUser != null))
                     {
                         <div class="user-item">
                             <div class="user-info">
@@ -67,28 +67,33 @@
                                     <i class="fas fa-user-clock"></i>
                                 </div>
                                 <div class="user-details">
-                                    <div class="user-name">@pending.AspNetUser.UserName</div>
-                                    <div class="user-email">@pending.AspNetUser.Email</div>
-                                    <div class="user-pending-date">Pendente desde: @pending.ApplicationDate.ToShortDateString()</div>
+                                    <div class="user-name">@(pending.AspNetUser?.UserName ?? "N/A")</div>
+                                    <div class="user-email">@(pending.AspNetUser?.Email ?? "N/A")</div>
+                                    <div class="user-pending-date">
+                                        Pendente desde: @(pending.ApplicationDate != default ? pending.ApplicationDate.ToShortDateString() : "N/A")
+                                    </div>
                                 </div>
                             </div>
-                            <div class="user-actions">
-                                <form asp-action="ApproveBibliotecario" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="userId" value="@pending.AspNetUserId" />
-                                    <button type="submit" class="btn btn-success action-btn" title="Aprovar">
-                                        <i class="fas fa-check"></i> Aprovar
-                                    </button>
-                                </form>
-                                
-                                <form asp-action="RejectBibliotecario" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="userId" value="@pending.AspNetUserId" />
-                                    <button type="submit" class="btn btn-danger action-btn" title="Rejeitar">
-                                        <i class="fas fa-times"></i> Rejeitar
-                                    </button>
-                                </form>
-                            </div>
+                            @if (!string.IsNullOrEmpty(pending.AspNetUserId))
+                            {
+                                <div class="user-actions">
+                                    <form asp-action="ApproveBibliotecario" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId" value="@pending.AspNetUserId" />
+                                        <button type="submit" class="btn btn-success action-btn" title="Aprovar">
+                                            <i class="fas fa-check"></i> Aprovar
+                                        </button>
+                                    </form>
+                                    
+                                    <form asp-action="RejectBibliotecario" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId" value="@pending.AspNetUserId" />
+                                        <button type="submit" class="btn btn-danger action-btn" title="Rejeitar">
+                                            <i class="fas fa-times"></i> Rejeitar
+                                        </button>
+                                    </form>
+                                </div>
+                            }
                         </div>
                     }
                 }

@@ -16,6 +16,10 @@ namespace LibSpace_Aspnet.Models
         public string AspNetUserId { get; set; } = null!;
 
         [Required]
+        [StringLength(450)]
+        public string? AspNetUserIdAdmin { get; set; } = null!;
+
+        [Required]
         public DateTime ApplicationDate { get; set; } = DateTime.Now;
 
         [Required]
