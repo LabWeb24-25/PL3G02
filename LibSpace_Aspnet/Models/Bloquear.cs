@@ -21,4 +21,17 @@ public partial class Bloquear
 
     [Column("Data_Bloqueio")]
     public DateOnly DataBloqueio { get; set; }
+
+    [Column("Data_Fim_Bloqueio")]
+    public DateOnly DataFimBloqueio { get; set; }
+
+    [Column("Estado_Bloqueio")]
+    public bool EstadoBloqueio { get; set; }
+
+    //Allow Nulls
+    [Column("ID_Admin_Desbloqueio")]
+    public string? IdAdminDesbloqueio { get; set; }
+
+    [Column("Data_Desbloqueio_Manual")]
+    public DateOnly? DataDesbloqueioManual { get; set; }
 }

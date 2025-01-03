@@ -201,6 +201,16 @@ namespace LibSpace_Aspnet.Controllers
 
                 await _userManager.SetLockoutEndDateAsync(user, null);
 
+                //Get the block record from the table, with the same user id and the estado bloqueio true
+                var blockRecord = await _context.Bloquears.FirstOrDefaultAsync(b => b.IdUser == userId && b.EstadoBloqueio == true);
+                if (blockRecord != null)
+                {
+                    blockRecord.EstadoBloqueio = false;
+                    blockRecord.IdAdminDesbloqueio = _userManager.GetUserId(User);
+                    blockRecord.DataDesbloqueioManual = DateOnly.FromDateTime(DateTime.Now);
+                    await _context.SaveChangesAsync();
+                }
+
                 var userEmail = await _userManager.GetEmailAsync(user);
                 await _emailSender.SendEmailAsync(
                     userEmail,
@@ -253,7 +263,11 @@ namespace LibSpace_Aspnet.Controllers
                     IdAdmin = adminId,
                     IdUser = userId,
                     MotivoBloquear = blockReason,
-                    DataBloqueio = DateOnly.FromDateTime(DateTime.Now)
+                    DataBloqueio = DateOnly.FromDateTime(DateTime.Now),
+                    DataFimBloqueio = DateOnly.FromDateTime(blockUntil.Value),
+                    EstadoBloqueio = true,
+                    IdAdminDesbloqueio = null,
+                    DataDesbloqueioManual = null
                 };
 
                 _context.Bloquears.Add(blockRecord);
