@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Requisições e Pré-Requisições";
+    @Html.AntiForgeryToken()
 }
 
 <div class="requisicao-management-container">
@@ -498,9 +499,99 @@
 }
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            let currentUrl = '';
+            // Initialize sections as expanded
+            const sections = document.getElementsByClassName('section-content');
+            Array.from(sections).forEach(section => {
+                section.classList.remove('collapsed');
+                section.style.maxHeight = section.scrollHeight + 'px';
+            });
+
+            // Handle approve button clicks
+            $(".btn-approve").click(function (e) {
+                e.preventDefault(); // Prevent default button behavior
+                const url = $(this).data('url');
+                showModal("Tem certeza que deseja aprovar esta requisição?", function(confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    showInfoModal(response.message);
+                                } else {
+                                    showInfoModal("Erro: " + response.message);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                                showInfoModal("Ocorreu um erro ao processar a requisição.");
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Handle reject button clicks
+            $(".btn-reject").click(function (e) {
+                e.preventDefault();
+                const url = $(this).data('url');
+                showModal("Tem certeza que deseja rejeitar esta requisição?", function(confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    showInfoModal(response.message);
+                                } else {
+                                    showInfoModal("Erro: " + response.message);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                                showInfoModal("Ocorreu um erro ao processar a requisição.");
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Handle finalize button clicks
+            $(".btn-finalizar").click(function (e) {
+                e.preventDefault();
+                const url = $(this).data('url');
+                showModal("Tem certeza que deseja finalizar esta requisição?", function(confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    showInfoModal(response.message);
+                                } else {
+                                    showInfoModal("Erro: " + response.message);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                                showInfoModal("Ocorreu um erro ao processar a requisição.");
+                            }
+                        });
+                    }
+                });
+            });
 
             function showModal(message, callback) {
                 $("#modalMessage").text(message);
@@ -523,85 +614,37 @@
                 
                 $("#okBtn").off().click(function() {
                     $("#infoModal").fadeOut();
-                    location.reload();
+                    location.reload(); // Reload the page to show updated state
                 });
             }
 
-            function handleAction(url, confirmMessage) {
-                currentUrl = url;
-                showModal(confirmMessage, function(confirmed) {
-                    if (confirmed) {
-                        $.post(url)
-                            .done(function(response) {
-                                showInfoModal(response.message);
-                            })
-                            .fail(function() {
-                                showInfoModal("Ocorreu um erro. Por favor, tente novamente.");
-                            });
-                    }
-                });
-            }
+            // Move these functions inside document.ready
+            window.toggleSection = function(sectionId) {
+                const content = document.getElementById(sectionId);
+                const icon = content.previousElementSibling.querySelector('.section-toggle');
+                
+                if (content.classList.contains('collapsed')) {
+                    content.classList.remove('collapsed');
+                    icon.classList.remove('collapsed');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    content.classList.add('collapsed');
+                    icon.classList.add('collapsed');
+                    content.style.maxHeight = '0';
+                }
+            };
 
-            $(".btn-approve").click(function () {
-                handleAction($(this).data('url'), "Tem certeza que deseja aprovar esta requisição?");
-            });
-
-            $(".btn-reject").click(function () {
-                handleAction($(this).data('url'), "Tem certeza que deseja rejeitar esta requisição?");
-            });
-
-            $(".btn-finalizar").click(function () {
-                handleAction($(this).data('url'), "Tem certeza que deseja finalizar esta requisição?");
-            });
-
-            // Initialize sections as expanded
-            document.addEventListener('DOMContentLoaded', () => {
-                const sections = document.getElementsByClassName('section-content');
-                Array.from(sections).forEach(section => {
-                    section.classList.remove('collapsed');
-                    section.style.maxHeight = section.scrollHeight + 'px';
-                });
-            });
-
-            function filterByStatus(status, tableId) {
+            window.searchRequisicoes = function(tableId, searchText) {
                 const table = document.getElementById(tableId);
                 const rows = table.getElementsByClassName('requisicao-row');
                 
+                searchText = searchText.toLowerCase();
+                
                 Array.from(rows).forEach(row => {
-                    if (!status || row.dataset.status === status) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchText) ? '' : 'none';
                 });
-            }
+            };
         });
-
-        function toggleSection(sectionId) {
-            const content = document.getElementById(sectionId);
-            const icon = content.previousElementSibling.querySelector('.section-toggle');
-            
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                icon.classList.remove('collapsed');
-                content.style.maxHeight = content.scrollHeight + 'px';
-            } else {
-                content.classList.add('collapsed');
-                icon.classList.add('collapsed');
-                content.style.maxHeight = '0';
-            }
-        }
-
-        function searchRequisicoes(tableId, searchText) {
-            const table = document.getElementById(tableId);
-            const rows = table.getElementsByClassName('requisicao-row');
-            
-            searchText = searchText.toLowerCase();
-            
-            Array.from(rows).forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchText) ? '' : 'none';
-            });
-        }
     </script>
 }

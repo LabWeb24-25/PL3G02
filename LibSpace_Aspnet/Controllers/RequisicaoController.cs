@@ -97,6 +97,7 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AceitarReq(int idprereq)
         {
             if (!User.Identity.IsAuthenticated)
@@ -153,6 +154,7 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejeitarReq(int idprereq)
         {
             if (!User.Identity.IsAuthenticated)
@@ -179,6 +181,7 @@ namespace LibSpace_Aspnet.Controllers
             return Json(new { success = true, message = "Requisição rejeitada com sucesso." });
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> FinalizarReq(int idrequisicao)
         {
             if (!User.Identity.IsAuthenticated)

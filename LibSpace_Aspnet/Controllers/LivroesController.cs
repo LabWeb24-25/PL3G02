@@ -689,5 +689,50 @@ namespace LibSpace_Aspnet.Controllers
         {
             return _context.Livros.Any(e => e.IdLivro == id);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelarPreRequisicao(int idLivro)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Json(new { success = false, message = "Usuário não autenticado." });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Json(new { success = false, message = "Não foi possível identificar o usuário." });
+            }
+
+            var userId = userIdClaim.Value;
+            var perfil = await _context.Perfils
+                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
+
+            var preRequisicao = await _context.PreRequisita
+                .FirstOrDefaultAsync(pr => pr.Idlivro == idLivro && pr.Idleitor == perfil.IdPerfil);
+
+            if (preRequisicao == null)
+            {
+                return Json(new { success = false, message = "Pré-requisição não encontrada." });
+            }
+
+            var livro = await _context.Livros.FindAsync(idLivro);
+            if (livro != null)
+            {
+                livro.NumExemplares += 1;
+            }
+
+            _context.PreRequisita.Remove(preRequisicao);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Pré-requisição cancelada com sucesso!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao cancelar pré-requisição: {ex.Message}" });
+            }
+        }
     }
 }
