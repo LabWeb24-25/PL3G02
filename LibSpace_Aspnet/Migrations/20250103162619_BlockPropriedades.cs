@@ -11,6 +11,10 @@ namespace LibSpace_Aspnet.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropPrimaryKey(
+                name: "PK__Favorito__EA339903E35E92C3",
+                table: "Favorito");
+
             migrationBuilder.AlterColumn<string>(
                 name: "ID_Leitor",
                 table: "Favorito",
@@ -18,6 +22,11 @@ namespace LibSpace_Aspnet.Data.Migrations
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK__Favorito__EA339903E35E92C3",
+                table: "Favorito",
+                columns: new[] { "ID_Leitor", "ID_Livro" });
 
             migrationBuilder.AlterColumn<string>(
                 name: "ID_Admin",
@@ -127,6 +136,10 @@ namespace LibSpace_Aspnet.Data.Migrations
                 name: "ID_Admin_Desbloqueio",
                 table: "Bloquear");
 
+            migrationBuilder.DropPrimaryKey(
+                name: "PK__Favorito__EA339903E35E92C3",
+                table: "Favorito");
+
             migrationBuilder.AlterColumn<int>(
                 name: "ID_Leitor",
                 table: "Favorito",
@@ -134,6 +147,11 @@ namespace LibSpace_Aspnet.Data.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK__Favorito__EA339903E35E92C3",
+                table: "Favorito",
+                columns: new[] { "ID_Leitor", "ID_Livro" });
 
             migrationBuilder.AlterColumn<string>(
                 name: "ID_Admin",

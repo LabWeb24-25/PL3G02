@@ -11,6 +11,7 @@ namespace LibSpace_Aspnet.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Data_Entrega",
                 table: "Requisita",
@@ -19,12 +20,12 @@ namespace LibSpace_Aspnet.Data.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "datetime");
 
-            migrationBuilder.AddColumn<string>(
-                name: "AspNetUserIdAdmin",
-                table: "PendingBibliotecarios",
-                type: "nvarchar(450)",
-                maxLength: 450,
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "AspNetUserIdAdmin",
+            //    table: "PendingBibliotecarios",
+            //    type: "nvarchar(450)",
+            //    maxLength: 450,
+            //    nullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Img_Editora",
@@ -66,23 +67,23 @@ namespace LibSpace_Aspnet.Data.Migrations
                 oldUnicode: false,
                 oldMaxLength: 250);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_PendingBibliotecarios_AspNetUserId",
-                table: "PendingBibliotecarios",
-                column: "AspNetUserId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_PendingBibliotecarios_AspNetUserId",
+            //    table: "PendingBibliotecarios",
+            //    column: "AspNetUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PendingBibliotecarios_AspNetUserIdAdmin",
                 table: "PendingBibliotecarios",
                 column: "AspNetUserIdAdmin");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_PendingBibliotecarios_AspNetUsers_AspNetUserId",
-                table: "PendingBibliotecarios",
-                column: "AspNetUserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_PendingBibliotecarios_AspNetUsers_AspNetUserId",
+            //    table: "PendingBibliotecarios",
+            //    column: "AspNetUserId",
+            //    principalTable: "AspNetUsers",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PendingBibliotecarios_AspNetUsers_AspNetUserIdAdmin",
@@ -90,11 +91,13 @@ namespace LibSpace_Aspnet.Data.Migrations
                 column: "AspNetUserIdAdmin",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id");
+                
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+             
             migrationBuilder.DropForeignKey(
                 name: "FK_PendingBibliotecarios_AspNetUsers_AspNetUserId",
                 table: "PendingBibliotecarios");
@@ -168,6 +171,8 @@ namespace LibSpace_Aspnet.Data.Migrations
                 oldUnicode: false,
                 oldMaxLength: 250,
                 oldNullable: true);
+
+             
         }
     }
 }
