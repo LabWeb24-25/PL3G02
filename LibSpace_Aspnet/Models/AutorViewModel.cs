@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace LibSpace_Aspnet.ViewModel
+namespace LibSpace_Aspnet.Models
 {
     public class AutorViewModel
     {
