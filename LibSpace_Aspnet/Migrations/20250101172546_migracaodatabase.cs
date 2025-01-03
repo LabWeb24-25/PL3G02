@@ -11,14 +11,6 @@ namespace LibSpace_Aspnet.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "Data_Entrega",
-                table: "Requisita",
-                type: "datetime",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime");
-
             migrationBuilder.AlterColumn<string>(
                 name: "Img_Editora",
                 table: "Editora",
@@ -32,22 +24,6 @@ namespace LibSpace_Aspnet.Data.Migrations
                 oldMaxLength: 300);
 
             migrationBuilder.AlterColumn<string>(
-                name: "ID_Admin",
-                table: "Bloquear",
-                type: "nvarchar(max)",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "ID_User",
-                table: "Bloquear",
-                type: "nvarchar(450)",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AlterColumn<string>(
                 name: "Foto_Autor",
                 table: "Autor",
                 type: "varchar(250)",
@@ -58,19 +34,6 @@ namespace LibSpace_Aspnet.Data.Migrations
                 oldType: "varchar(250)",
                 oldUnicode: false,
                 oldMaxLength: 250);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PendingBibliotecarios_AspNetUserId",
-                table: "PendingBibliotecarios",
-                column: "AspNetUserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PendingBibliotecarios_AspNetUsers_AspNetUserId",
-                table: "PendingBibliotecarios",
-                column: "AspNetUserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
