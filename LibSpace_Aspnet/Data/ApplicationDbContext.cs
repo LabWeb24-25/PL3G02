@@ -79,6 +79,21 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, Iden
             entity.HasKey(e => e.IdUser).HasName("PK__Bloquear__ED4DE4428EAD68ED");
 
             entity.Property(e => e.IdUser).ValueGeneratedNever();
+
+            entity.HasOne(d => d.IdAdminNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.IdAdmin)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(d => d.IdUserNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(d => d.IdAdminDesbloqueioNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.IdAdminDesbloqueio)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<CodigoPostal>(entity =>

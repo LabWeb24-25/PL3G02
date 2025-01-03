@@ -57,7 +57,10 @@
                     }
                     @if (ViewBag.estreq == 1)
                     {
-                        <button class="btn_gray" disabled>A Aguardar Requisição</button>
+                        <div>
+                            <button class="btn_gray" disabled>A Aguardar Requisição</button>
+                            <button id="cancel-prereq-@Model.IdLivro" class="btn_red" data-livro-id="@Model.IdLivro">Cancelar Pré-requisição</button>
+                        </div>
                     }
                     @if (ViewBag.estreq == 2)
                     {
@@ -174,6 +177,33 @@
             $(document).on("click", ".Rfavorite-button", function () {
                 const livroId = $(this).data("livro-id");
                 removerFavorito(livroId);
+            });
+
+            function cancelarPreRequisicao(livroId) {
+                $.ajax({
+                    url: '@Url.Action("CancelarPreRequisicao", "Livroes")',
+                    type: 'POST',
+                    data: { idLivro: livroId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload(); // Reload the page to update the status
+                        } else {
+                            alert(response.message || 'Erro ao cancelar pré-requisição.');
+                        }
+                    },
+                    error: function () {
+                        alert("Ocorreu um erro ao tentar cancelar a pré-requisição.");
+                    }
+                });
+            }
+
+            // Event listener for cancel button
+            $(document).on("click", "[id^='cancel-prereq-']", function () {
+                const livroId = $(this).data("livro-id");
+                if (confirm("Tem certeza que deseja cancelar esta pré-requisição?")) {
+                    cancelarPreRequisicao(livroId);
+                }
             });
         });
     </script>

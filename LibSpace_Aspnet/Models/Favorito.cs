@@ -16,7 +16,7 @@ public partial class Favorito
 
     [Key]
     [Column("ID_Leitor")]
-    public int IdLeitor { get; set; }
+    public string IdLeitor { get; set; } = null!;
 
     [ForeignKey("IdLivro")]
     [InverseProperty("Favoritos")]

@@ -63,7 +63,10 @@
                                 </div>
                             </div>
                             <div class="book-actions">
-                                <button class="btn btn-danger action-btn" title="Cancelar">
+                                <button id="cancel-prereq-@livro.IdLivro" 
+                                        class="btn btn-danger action-btn" 
+                                        data-livro-id="@livro.IdLivro" 
+                                        title="Cancelar">
                                     <i class="fas fa-times"></i> Cancelar
                                 </button>
                             </div>
@@ -335,6 +338,8 @@
 }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
 function toggleSection(sectionId) {
     const content = document.getElementById(sectionId);
@@ -374,5 +379,31 @@ document.addEventListener('DOMContentLoaded', () => {
         section.classList.remove('collapsed');
         section.style.maxHeight = section.scrollHeight + 'px';
     });
+});
+
+function cancelarPreRequisicao(livroId) {
+    $.ajax({
+        url: '/Livroes/CancelarPreRequisicao',
+        type: 'POST',
+        data: { idLivro: livroId },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                location.reload();
+            } else {
+                alert(response.message || 'Erro ao cancelar pré-requisição.');
+            }
+        },
+        error: function () {
+            alert("Ocorreu um erro ao tentar cancelar a pré-requisição.");
+        }
+    });
+}
+
+$(document).on("click", "[id^='cancel-prereq-']", function () {
+    const livroId = $(this).data("livro-id");
+    if (confirm("Tem certeza que deseja cancelar esta pré-requisição?")) {
+        cancelarPreRequisicao(livroId);
+    }
 });
 </script>
