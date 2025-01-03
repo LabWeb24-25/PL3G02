@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http; // Adicionei para usar IFormFile
 
 namespace LibSpace_Aspnet.Models;
 
@@ -31,7 +32,10 @@ public partial class Autor
     [Column("Foto_Autor")]
     [StringLength(250)]
     [Unicode(false)]
-    public string? FotoAutor { get; set; } = null!;
+    public string? FotoAutor { get; set; }
+
+    [NotMapped]
+    public IFormFile? FotoAutorFile { get; set; }
 
     [Column(TypeName = "text")]
     public string Bibliografia { get; set; } = null!;

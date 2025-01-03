@@ -1,4 +1,4 @@
-﻿@model LibSpace_Aspnet.Models.EditoraViewModel
+﻿@model LibSpace_Aspnet.Models.Editora
 
 @{
     ViewData["Title"] = "Create";
@@ -12,14 +12,14 @@
         <!-- Campo para adicionar a imagem da editora -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="ImgEditora" class="form-label">Insira uma foto</label>
-                <input asp-for="ImgEditora"
+                <label asp-for="ImgEditoraFile" class="form-label">Insira uma foto <span class="required">*</span></label>
+                <input asp-for="ImgEditoraFile"
                        type="file"
                        class="form-control-file"
                        accept=".jpg, .jpeg, .png"
                        id="imgEditoraInput"
                        onchange="previewImage(event, 'imgEditoraPreview')" />
-                <span asp-validation-for="ImgEditora" class="text-danger"></span>
+                <span asp-validation-for="ImgEditoraFile" class="text-danger"></span>
             </div>
             <div class="form-group position-relative">
                 <img id="imgEditoraPreview"
@@ -40,7 +40,7 @@
         <!-- Campo Nome da Editora -->
         <div class="form-row">
             <div class="form-group">
-                <label asp-for="NomeEditora" class="form-label">Nome</label>
+                <label asp-for="NomeEditora" class="form-label">Nome<span class="required">*</span></label>
                 <input asp-for="NomeEditora" class="form-control" />
                 <span asp-validation-for="NomeEditora" class="text-danger"></span>
             </div>
