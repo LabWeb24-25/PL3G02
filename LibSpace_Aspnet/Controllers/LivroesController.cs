@@ -265,7 +265,7 @@ namespace LibSpace_Aspnet.Controllers
 
                     // Verifica se o livro está nos favoritos do usuário
                 var isFavorito = await _context.Favoritos
-                        .AnyAsync(f => f.IdLeitor == perfil.IdPerfil && f.IdLivro == id);
+                        .AnyAsync(f => f.IdLeitor == userId && f.IdLivro == id);
                 ViewBag.IsFavorito = isFavorito;
                 
 
@@ -318,18 +318,12 @@ namespace LibSpace_Aspnet.Controllers
             }
 
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-
             if (userIdClaim == null)
             {
                 return Json(new { success = false, message = "Não foi possível identificar o usuário." });
             }
 
-            // Converte o Guid para string para facilitar a manipulação e visualização
             var userId = userIdClaim.Value;
-
-            var perfil = await _context.Perfils
-                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
-
 
             var livro = await _context.Livros.FindAsync(idLivro);
             if (livro == null)
@@ -340,14 +334,13 @@ namespace LibSpace_Aspnet.Controllers
             var favorito = new Favorito
             {
                 IdLivro = idLivro,
-                IdLeitor = perfil.IdPerfil,
+                IdLeitor = userId, // Now using AspNetUserId directly
             };
 
             try
             {
                 _context.Favoritos.Add(favorito);
                 await _context.SaveChangesAsync();
-
                 return Json(new { success = true, message = "Livro adicionado aos favoritos com sucesso!" });
             }
             catch (Exception ex)
@@ -365,18 +358,12 @@ namespace LibSpace_Aspnet.Controllers
             }
 
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-
             if (userIdClaim == null)
             {
                 return Json(new { success = false, message = "Não foi possível identificar o usuário." });
             }
 
-            // Converte o Guid para string para facilitar a manipulação e visualização
             var userId = userIdClaim.Value;
-
-            var perfil = await _context.Perfils
-                .FirstOrDefaultAsync(p => p.AspNetUserId == userId);
-
 
             var livro = await _context.Livros.FindAsync(idLivro);
             if (livro == null)
@@ -385,7 +372,7 @@ namespace LibSpace_Aspnet.Controllers
             }
 
             var favoritoExistente = await _context.Favoritos
-                .FirstOrDefaultAsync(f => f.IdLivro == idLivro && f.IdLeitor == perfil.IdPerfil);
+                .FirstOrDefaultAsync(f => f.IdLivro == idLivro && f.IdLeitor == userId);
 
             if (favoritoExistente == null)
             {
@@ -397,7 +384,6 @@ namespace LibSpace_Aspnet.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-
                 return Json(new { success = true, message = "Livro removido dos favoritos com sucesso!" });
             }
             catch (Exception ex)

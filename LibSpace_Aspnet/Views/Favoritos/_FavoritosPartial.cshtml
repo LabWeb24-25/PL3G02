@@ -1,0 +1,49 @@
+@model IEnumerable<LibSpace_Aspnet.Models.Livro>
+
+<div class="books-list" id="favoritos-books">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="fas fa-info-circle"></i>
+            <p>Não existem livros favoritos no momento.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var livro in Model)
+        {
+            <div class="book-item">
+                <div class="book-info">
+                    <div class="book-cover">
+                        <img src="~/Cover/@livro.CapaImg" alt="Capa do livro" />
+                    </div>
+                    <div class="book-details">
+                        <div class="book-title">@livro.TituloLivros</div>
+                        <div class="book-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-book"></i>
+                                Autor: @livro.IdAutorNavigation?.NomeAutor
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                Ano: @livro.DataEdicao.Year
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-bookmark"></i>
+                                Editora: @livro.IdEditoraNavigation?.NomeEditora
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="book-actions">
+                    <form asp-action="RemoveFavorito" asp-route-id="@livro.IdLivro" method="post">
+                        <button type="submit" class="btn btn-danger action-btn" 
+                                title="Remover este livro dos seus favoritos">
+                            <i class="fas fa-heart-broken"></i> Remover
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+</div> 
