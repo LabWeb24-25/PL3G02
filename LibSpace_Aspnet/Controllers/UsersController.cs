@@ -202,7 +202,8 @@ namespace LibSpace_Aspnet.Controllers
                 await _userManager.SetLockoutEndDateAsync(user, null);
 
                 //Get the block record from the table, with the same user id and the estado bloqueio true
-                var blockRecord = await _context.Bloquears.FirstOrDefaultAsync(b => b.IdUser == userId && b.EstadoBloqueio == true);
+                var blockRecord = await _context.Bloquears
+                    .FirstOrDefaultAsync(b => b.IdUser == userId && b.EstadoBloqueio == true);
                 if (blockRecord != null)
                 {
                     blockRecord.EstadoBloqueio = false;
@@ -464,6 +465,28 @@ namespace LibSpace_Aspnet.Controllers
                     viewModel.AdminApproverName = bibliotecarioPendente.AspNetUserIdAdminNavigation?.UserName;
                     viewModel.ApplicationDate = bibliotecarioPendente.ApplicationDate;
                 }
+
+                // Add ban information
+                var banHistory = await _context.Bloquears
+                    .Where(b => b.IdUser == userId)
+                    .Include(b => b.IdAdminNavigation)
+                    .Include(b => b.IdAdminDesbloqueioNavigation)
+                    .OrderByDescending(b => b.DataBloqueio) // Order by ban date
+                    .Select(b => new BanInfo
+                    {
+                        AdminName = b.IdAdminNavigation.UserName,
+                        UnbanAdminName = b.IdAdminDesbloqueioNavigation.UserName,
+                        Reason = b.MotivoBloquear,
+                        BanDate = b.DataBloqueio,
+                        EndDate = b.DataFimBloqueio,
+                        IsActive = b.EstadoBloqueio,
+                        ManualUnbanDate = b.DataDesbloqueioManual
+                    })
+                    .ToListAsync();
+
+                viewModel.BanHistory = banHistory;
+                viewModel.IsCurrentlyBanned = banHistory.Any(b => b.IsActive);
+                viewModel.CurrentBan = banHistory.FirstOrDefault(b => b.IsActive);
 
                 return PartialView("_UserDetailsPartial", viewModel);
             }

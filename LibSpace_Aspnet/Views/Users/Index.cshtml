@@ -579,9 +579,11 @@ document.getElementById('blockForever').addEventListener('change', function() {
     if (this.checked) {
         untilDateGroup.style.display = 'none';
         blockUntil.removeAttribute('required');
+        blockUntil.value = '9999-12-31';
     } else {
         untilDateGroup.style.display = 'block';
         blockUntil.setAttribute('required', '');
+        blockUntil.value = '';
     }
 });
 

@@ -51,5 +51,76 @@
                 </div>
             </div>
         }
+
+        @if (Model.IsCurrentlyBanned && Model.CurrentBan != null)
+        {
+            <div class="alert alert-danger mt-3">
+                <h5><i class="fas fa-ban"></i> Utilizador Bloqueado</h5>
+                <div class="ban-details">
+                    <p><strong>Motivo:</strong> @Model.CurrentBan.Reason</p>
+                    <p><strong>Bloqueado por:</strong> @Model.CurrentBan.AdminName</p>
+                    <p><strong>Data do bloqueio:</strong> @Model.CurrentBan.BanDate.ToString("dd/MM/yyyy")</p>
+                    <p><strong>Bloqueado até:</strong> @Model.CurrentBan.EndDate.ToString("dd/MM/yyyy")</p>
+                </div>
+            </div>
+        }
+
+        @if (Model.BanHistory.Any())
+        {
+            <div class="ban-history mt-3">
+                <button class="btn btn-outline-secondary w-100" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#banHistory">
+                    <i class="fas fa-history"></i> Ver Histórico de Bloqueios (@Model.BanHistory.Count)
+                </button>
+                
+                <div class="collapse mt-2" id="banHistory">
+                    @foreach (var ban in Model.BanHistory)
+                    {
+                        <div class="card mb-2 @(ban.IsActive ? "border-danger" : "border-secondary")">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    @ban.BanDate.ToString("dd/MM/yyyy") - @ban.EndDate.ToString("dd/MM/yyyy")
+                                    @if (ban.IsActive)
+                                    {
+                                        <span class="badge bg-danger">Ativo</span>
+                                    }
+                                </h6>
+                                <p class="card-text">
+                                    <strong>Motivo:</strong> @ban.Reason<br>
+                                    <strong>Bloqueado por:</strong> @ban.AdminName
+                                    @if (!ban.IsActive && !string.IsNullOrEmpty(ban.UnbanAdminName))
+                                    {
+                                        <br>
+                                        <strong>Desbloqueado por:</strong> @ban.UnbanAdminName
+                                        @if (ban.ManualUnbanDate.HasValue)
+                                        {
+                                            <br>
+                                            <strong>Data de desbloqueio:</strong> @ban.ManualUnbanDate.Value.ToString("dd/MM/yyyy")
+                                        }
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
     </div>
 </div> 
+
+<style>
+.ban-history .card {
+    transition: all 0.3s ease;
+}
+
+.ban-history .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.badge {
+    font-size: 0.8em;
+    padding: 0.3em 0.6em;
+    margin-left: 0.5em;
+}
+</style> 
