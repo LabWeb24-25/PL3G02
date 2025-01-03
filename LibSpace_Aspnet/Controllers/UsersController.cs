@@ -240,12 +240,12 @@ namespace LibSpace_Aspnet.Controllers
                 var adminId = _userManager.GetUserId(User);
 
                 // If role is not Leitor, change to Leitor
-                var userRoles = await _userManager.GetRolesAsync(user);
-                if (!userRoles.Contains("Leitor"))
-                {
-                    await _userManager.RemoveFromRolesAsync(user, userRoles);
-                    await _userManager.AddToRoleAsync(user, "Leitor");
-                }
+                //var userRoles = await _userManager.GetRolesAsync(user);
+                //if (!userRoles.Contains("Leitor"))
+                //{
+                 //   await _userManager.RemoveFromRolesAsync(user, userRoles);
+                   // await _userManager.AddToRoleAsync(user, "Leitor");
+                //}
 
                 // Add block record
                 var blockRecord = new Bloquear
