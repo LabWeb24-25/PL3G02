@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http; // Adicionei para usar IFormFile
 
 namespace LibSpace_Aspnet.Models;
 
@@ -24,7 +25,10 @@ public partial class Editora
     [Column("Img_Editora")]
     [StringLength(300)]
     [Unicode(false)]
-    public string? ImgEditora { get; set; } = null!;
+    public string? ImgEditora { get; set; }
+
+    [NotMapped]
+    public IFormFile? ImgEditoraFile { get; set; }
 
     [InverseProperty("IdEditoraNavigation")]
     public virtual ICollection<Livro> Livros { get; set; } = new List<Livro>();

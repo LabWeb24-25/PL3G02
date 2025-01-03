@@ -1,4 +1,4 @@
-﻿@model LibSpace_Aspnet.Models.Autor
+﻿@model LibSpace_Aspnet.ViewModel.AutorViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -9,15 +9,15 @@
     <form asp-action="Edit" enctype="multipart/form-data" class="form-content">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="IdAutor" />
-        <input type="hidden" asp-for="FotoAutor" name="OldPhoto" /> @* Campo oculto para a foto antiga *@
+        <input type="hidden" asp-for="FotoAutorAtual" />
 
         @* Exibe a foto atual, se existir *@
-        @if (!string.IsNullOrEmpty(Model.FotoAutor))
+        @if (!string.IsNullOrEmpty(Model.FotoAutorAtual))
         {
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Foto Atual</label>
-                    <img src="~/Foto_Autor/@Model.FotoAutor" alt="Foto do Autor" style="width: 150px; height: auto; margin-bottom: 10px;" />
+                    <img src="~/Foto_Autor/@Model.FotoAutorAtual" alt="Imagem do Autor" style="width: 150px; height: auto; margin-bottom: 10px;" />
                 </div>
             </div>
         }
@@ -34,6 +34,7 @@
                 <span asp-validation-for="Pseudonimo" class="text-danger"></span>
             </div>
         </div>
+
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="DataNascimento" class="form-label">Data de Nascimento <span class="required">*</span></label>
@@ -49,7 +50,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label class="form-label">Nova Foto</label> @* Label para nova foto *@
-                <input type="file" name="NewPhoto" class="form-control" accept=".jpg, .jpeg, .png" /> @* Campo para upload de nova foto *@
+                <input type="file" asp-for="FotoAutor" class="form-control" accept=".jpg, .jpeg, .png" /> @* Campo para upload de nova foto *@
             </div>
             <div class="form-group">
                 <label asp-for="Bibliografia" class="form-label">Bibliografia <span class="required">*</span></label>
@@ -57,24 +58,49 @@
                 <span asp-validation-for="Bibliografia" class="text-danger"></span>
             </div>
         </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label asp-for="IdLingua" class="form-label">Língua <span class="required">*</span></label>
-                <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
-                <span asp-validation-for="IdLingua" class="text-danger"></span>
-            </div>
+        <!-- Seção Idioma -->
+        <div class="form-group idioma">
+            <label asp-for="IdLingua" class="form-label">País de Origem <span class="text-danger">*</span></label>
+            <select asp-for="IdLingua" class="form-control" asp-items="ViewBag.IdLingua"></select>
+            <span asp-validation-for="IdLingua" class="text-danger"></span>
+            <label class="control-label">Um novo:</label>
+            <button type="button" class="btn btn-link btn_rend" data-bs-toggle="modal" data-bs-target="#createPaisModal">
+                Criar País
+            </button>
         </div>
-
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
             <input type="submit" value="Guardar" class="btn btn-primary" />
         </div>
     </form>
 </div>
+<!--Pop Up país-->
+<div class="modal fade" id="createPaisModal" tabindex="-1" style="z-index: 1060;" aria-labelledby="createPaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPaisModalLabel">Criar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPaisForm">
+                    <div class="form-group">
+                        <label for="NomePais" class="control-label">Nome do País</label>
+                        <input type="text" id="NomePais" name="NomePais" class="form-control" />
+                        <span class="text-danger" id="nomePaisValidation"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitPaisForm()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/create_design_autor_edit.css" /> @* Referencia o novo arquivo CSS *@
+    <link rel="stylesheet" href="~/css/create_design_autor_edit.css" />
 }
 
 @section Scripts {

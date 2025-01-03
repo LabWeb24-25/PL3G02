@@ -9,63 +9,65 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeAutor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataNascimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pseudonimo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataFalecimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FotoAutor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bibliografia)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdLinguaNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeAutor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataNascimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pseudonimo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataFalecimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FotoAutor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bibliografia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdLinguaNavigation.IdPais)
-            </td>
-            <td>
-       
-                <a asp-action="Details" asp-route-id="@item.IdAutor">Details</a> 
-               
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.NomeAutor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataNascimento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pseudonimo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataFalecimento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FotoAutor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bibliografia)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdLinguaNavigation)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NomeAutor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataNascimento)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pseudonimo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataFalecimento)
+                    </td>
+                    <td>
+                    <img src="@Url.Content("~/Foto_Autor/" +item.FotoAutor)" alt="Imagem de @item..NomeAutor" width="100" height="100" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bibliografia)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdLinguaNavigation.IdPais)
+                    </td>
+                    <td>
+
+                        <a asp-action="Details" asp-route-id="@item.IdAutor">Details</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

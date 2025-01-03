@@ -2,10 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace LibSpace_Aspnet.Models
+namespace LibSpace_Aspnet.ViewModel
 {
     public class AutorViewModel
     {
+        public int IdAutor { get; set; }
+
         [Required(ErrorMessage = "O campo Nome do Autor é obrigatório.")]
         [StringLength(100, ErrorMessage = "O Nome do Autor não pode exceder {1} caracteres.")]
         [Display(Name = "Nome do Autor")]
@@ -26,6 +28,7 @@ namespace LibSpace_Aspnet.Models
 
         [Display(Name = "Foto do Autor")]
         public IFormFile? FotoAutor { get; set; }
+        public string? FotoAutorAtual { get; set; }
 
         [Required(ErrorMessage = "A Bibliografia é obrigatória.")]
         [StringLength(1000, ErrorMessage = "A Bibliografia não pode exceder {1} caracteres.")]
@@ -35,7 +38,5 @@ namespace LibSpace_Aspnet.Models
         [Required(ErrorMessage = "O campo Idioma é obrigatório.")]
         [Display(Name = "Idioma")]
         public int IdLingua { get; set; }
-
-        public int statusimg { get; set; }
     }
 }

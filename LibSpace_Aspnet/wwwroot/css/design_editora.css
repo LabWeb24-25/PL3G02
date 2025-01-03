@@ -124,3 +124,6 @@ img {
 .form-row {
     grid-template-columns: 1fr; /* Força uma coluna */
 }
+
+.required {
+    color: red;
