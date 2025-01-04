@@ -1,36 +1,166 @@
 ﻿@model LibSpace_Aspnet.Models.Biblioteca
 
 @{
-    ViewData["Title"] = "Sobre";
+    ViewData["Title"] = "Sobre a Biblioteca";
 }
 
-<div class="form-container details-container">
-    <h4 class="form-title">Detalhes da Biblioteca</h4>
-    <div class="form-content">
-        <div class="form-row form-row-details">
-            <div class="form-group form-group-info">
-                <div>
-                    <p> <span class="form-label">Nome:</span>@Html.DisplayFor(model => model.NomeBiblioteca)</p>
-                    <p> <span class="form-label">Morada:</span>@Html.DisplayFor(model => model.EndMorada)</p>
-                    <p> <span class="form-label">Codigo Postal:</span>@Html.DisplayFor(model => model.EndCodPostal)</p>
-                    <p> <span class="form-label">Localidade:</span>@Html.DisplayFor(model => model.EndLocalidade)</p>
-                    <p> <span class="form-label">Email:</span>@Html.DisplayFor(model => model.Email)</p>
-                    <p> <span class="form-label">Telefone:</span>@Html.DisplayFor(model => model.Telefone)</p>
-                    <p> <span class="form-label">Horario:</span></p>
-                    <p>@Html.Raw(Model.Horario?.Replace("\n", "<br />"))</p>
+<div class="about-container">
+    <div class="about-card">
+        <div class="about-header">
+            <i class="fas fa-library about-icon"></i>
+            <h2 class="about-title">@Model.NomeBiblioteca</h2>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-map-marker-alt"></i> Endereço
+                </div>
+                <div class="info-content">
+                    @Model.EndMorada<br>
+                    @Model.EndCodPostal @Model.EndLocalidade
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-envelope"></i> Email
+                </div>
+                <div class="info-content">@Model.Email</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-phone"></i> Telefone
+                </div>
+                <div class="info-content">@Model.Telefone</div>
+            </div>
+
+            <div class="info-item full-width">
+                <div class="info-label">
+                    <i class="fas fa-clock"></i> Horário de Funcionamento
+                </div>
+                <div class="info-content schedule">
+                    @Html.Raw(Model.Horario?.Replace("\n", "<br />"))
                 </div>
             </div>
         </div>
-        <div class="form-actions">
-            <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+
+        <div class="about-actions">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Ir para a página principal
+            </a>
             @if (User.IsInRole("Admin"))
-                {
-            <a asp-action="Edit" asp-route-id="@Model.IdBiblioteca" class="btn btn-primary btn-edit">Editar</a>
-                }
+            {
+                <a asp-action="Edit" asp-route-id="@Model.IdBiblioteca" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            }
         </div>
     </div>
 </div>
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/create_design_autor_details.css" />
-}
+<style>
+    .about-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .about-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+
+    .about-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .about-icon {
+        font-size: 3rem;
+        color: #004d40;
+        margin-bottom: 1rem;
+    }
+
+    .about-title {
+        color: #004d40;
+        margin: 0;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .info-label {
+        color: #004d40;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-content {
+        color: #333;
+        line-height: 1.5;
+    }
+
+    .schedule {
+        white-space: pre-line;
+    }
+
+    .about-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 5px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #004d40;
+        color: white;
+        border: none;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    @@media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
