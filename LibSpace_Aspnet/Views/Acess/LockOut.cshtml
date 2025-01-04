@@ -3,19 +3,147 @@
     ViewData["Title"] = "Acesso Negado - BLOQUEADO";
 }
 
-<h1>BLOQUEADO</h1>
+<div class="access-denied-container">
+    <div class="access-denied-content">
+        <div class="icon-container">
+            <i class="fas fa-user-lock"></i>
+        </div>
+        <h1>CONTA BLOQUEADA</h1>
+        <div class="message-container">
+            <p class="main-message">Não tem autorização para aceder às páginas com esta conta</p>
+            
+            <div class="details-box">
+                <h3>Detalhes do Bloqueio</h3>
+                <div class="detail-item">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Data Bloqueio:</span> @Html.DisplayFor(model => model.DataBloqueio)
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Motivo:</span> @Html.DisplayFor(model => model.MotivoBloquear)
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Data Desbloqueio:</span> @Html.DisplayFor(model => model.DataFimBloqueio)
+                </div>
+            </div>
+        </div>
 
-<p>Não tem autorização para aceder às páginas com esta conta</p>
-<h3>Detalhes</h3>
-<p>Data Bloqueio: @Html.DisplayFor(model => model.DataBloqueio)</p>
-<p>Data Bloqueio: @Html.DisplayFor(model => model.MotivoBloquear)</p>
-<p>Data Desbloqueio: @Html.DisplayFor(model => model.DataFimBloqueio)</p>
+        <div class="action-buttons">
+            <form class="logout-form" asp-area="Identity" asp-page="/Account/Logout" 
+                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Terminar Sessão
+                </button>
+            </form>
+            <a asp-controller="Home" asp-action="Sobre" class="btn btn-info">
+                <i class="fas fa-info-circle"></i> Informações sobre a Biblioteca
+            </a>
+        </div>
+    </div>
+</div>
 
-<form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm">
-    <button type="submit" class="btn btn-link" style="padding: 0">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-</form>
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        .access-denied-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
 
+        .access-denied-content {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-<a asp-controller="Home" asp-action="Sobre">Informações sobre a Biblioteca</a>
+        .icon-container {
+            font-size: 4rem;
+            color: #dc3545;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .message-container {
+            margin: 2rem 0;
+        }
+
+        .main-message {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .sub-message {
+            color: #888;
+        }
+
+        .details-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            color: #666;
+        }
+
+        .detail-item i {
+            color: #004d40;
+            width: 20px;
+        }
+
+        .detail-item span {
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @@keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @@media (max-width: 576px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .details-box {
+                padding: 1rem;
+            }
+        }
+    </style>
+}
