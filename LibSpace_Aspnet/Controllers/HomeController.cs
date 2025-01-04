@@ -29,6 +29,13 @@ namespace LibSpace_Aspnet.Controllers
         [ServiceFilter(typeof(PermitFilter))]
         public async Task<IActionResult> Index(int page = 1, string section = "featured", int? genreId = null)
         {
+            // Check if biblioteca exists and redirect if necessary
+            var bibliotecaExists = await _context.Bibliotecas.AnyAsync();
+            if (!bibliotecaExists && (User.IsInRole("Admin") || User.IsInRole("Bibliotecario")))
+            {
+                return RedirectToAction("FirstStep", "Home");
+            }
+
             // Featured books query
             var featuredQuery = _context.Livros
                 .Include(l => l.IdAutorNavigation)
@@ -179,6 +186,60 @@ namespace LibSpace_Aspnet.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (!User.IsInRole("Admin"))
+            {
+                return Redirect("/Acess/Notauthorized");
+            }
+
+            var biblioteca = await _context.Bibliotecas.FindAsync(id);
+            if (biblioteca == null)
+            {
+                return NotFound();
+            }
+
+            return View(biblioteca);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("IdBiblioteca,NomeBiblioteca,Email,Telefone,Horario,EndMorada,EndCodPostal,EndLocalidade")] Biblioteca biblioteca)
+        {
+            if (id != biblioteca.IdBiblioteca)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(biblioteca);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Sobre));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Bibliotecas.Any(e => e.IdBiblioteca == biblioteca.IdBiblioteca))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            return View(biblioteca);
         }
     }
 }

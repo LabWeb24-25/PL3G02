@@ -13,10 +13,18 @@
             </button>
         </div>
 
+        <div class="search-section mb-3">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Procurar autor..." 
+                       onkeyup="searchAuthors(this.value)">
+            </div>
+        </div>
+
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" id="authorsContainer">
             @foreach (var author in Model)
             {
-                <div class="col" data-author-name="@author.NomeAutor">
+                <div class="col" data-author-name="@author.NomeAutor" data-author-pseudonym="@author.Pseudonimo">
                     <a href="@Url.Action("Details", "Autors", new { id = author.IdAutor })" class="author-link">
                         <div class="card author-card">
                             <img src="@Url.Content("~/Foto_Autor/" + author.FotoAutor)" class="card-img-top" alt="@author.NomeAutor">
@@ -68,6 +76,24 @@
 
             // Reappend the sorted authors
             authors.forEach(author => container.appendChild(author));
+        }
+
+        function searchAuthors(searchText) {
+            const container = document.getElementById('authorsContainer');
+            const authors = container.getElementsByClassName('col');
+            
+            searchText = searchText.toLowerCase();
+            
+            Array.from(authors).forEach(author => {
+                const authorName = author.dataset.authorName.toLowerCase();
+                const authorPseudonym = (author.dataset.authorPseudonym || '').toLowerCase();
+                
+                if (authorName.includes(searchText) || authorPseudonym.includes(searchText)) {
+                    author.style.display = '';
+                } else {
+                    author.style.display = 'none';
+                }
+            });
         }
     </script>
 }
@@ -238,5 +264,34 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .search-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .search-container {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
     }
 </style>

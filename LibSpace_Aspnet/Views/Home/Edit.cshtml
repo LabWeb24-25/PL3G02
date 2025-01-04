@@ -1,24 +1,24 @@
-﻿@model LibSpace_Aspnet.Models.Biblioteca
+@model LibSpace_Aspnet.Models.Biblioteca
 
 @{
-    ViewData["Title"] = "Configuração Inicial";
+    ViewData["Title"] = "Editar Biblioteca";
 }
 
 <div class="setup-container">
     <div class="setup-card">
         <div class="setup-header">
             <i class="fas fa-library setup-icon"></i>
-            <h2 class="setup-title">Configuração Inicial da Biblioteca</h2>
-            <p class="setup-subtitle">Por favor, preencha as informações da sua biblioteca</p>
+            <h2 class="setup-title">Editar Informações da Biblioteca</h2>
         </div>
 
-        <form asp-action="FirstStep" class="setup-form">
+        <form asp-action="Edit" class="setup-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdBiblioteca" />
             
             <div class="form-group-row">
                 <div class="form-group">
                     <label asp-for="NomeBiblioteca">Nome da Biblioteca</label>
-                    <input asp-for="NomeBiblioteca" class="form-control" placeholder="Digite o nome da biblioteca" />
+                    <input asp-for="NomeBiblioteca" class="form-control" />
                     <span asp-validation-for="NomeBiblioteca" class="text-danger"></span>
                 </div>
             </div>
@@ -26,7 +26,7 @@
             <div class="form-group-row">
                 <div class="form-group">
                     <label asp-for="EndMorada">Endereço</label>
-                    <input asp-for="EndMorada" class="form-control" placeholder="Digite o endereço" />
+                    <input asp-for="EndMorada" class="form-control" />
                     <span asp-validation-for="EndMorada" class="text-danger"></span>
                 </div>
             </div>
@@ -34,13 +34,13 @@
             <div class="form-group-row two-columns">
                 <div class="form-group">
                     <label asp-for="EndCodPostal">Código Postal</label>
-                    <input asp-for="EndCodPostal" class="form-control" placeholder="0000-000" />
+                    <input asp-for="EndCodPostal" class="form-control" />
                     <span asp-validation-for="EndCodPostal" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="EndLocalidade">Localidade</label>
-                    <input asp-for="EndLocalidade" class="form-control" placeholder="Digite a localidade" />
+                    <input asp-for="EndLocalidade" class="form-control" />
                     <span asp-validation-for="EndLocalidade" class="text-danger"></span>
                 </div>
             </div>
@@ -48,13 +48,13 @@
             <div class="form-group-row two-columns">
                 <div class="form-group">
                     <label asp-for="Email">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="biblioteca@exemplo.com" />
+                    <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Telefone">Telefone</label>
-                    <input asp-for="Telefone" class="form-control" placeholder="000 000 000" />
+                    <input asp-for="Telefone" class="form-control" />
                     <span asp-validation-for="Telefone" class="text-danger"></span>
                 </div>
             </div>
@@ -62,21 +62,22 @@
             <div class="form-group-row">
                 <div class="form-group">
                     <label asp-for="Horario">Horário de Funcionamento</label>
-                    <textarea asp-for="Horario" class="form-control" rows="4" 
-                              placeholder="Segunda a Sexta: 9h-18h&#10;Sábado: 9h-13h&#10;Domingo: Fechado"></textarea>
+                    <textarea asp-for="Horario" class="form-control" rows="4"></textarea>
                     <span asp-validation-for="Horario" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-check"></i> Concluir Configuração
+                    <i class="fas fa-save"></i> Guardar Alterações
                 </button>
             </div>
         </form>
     </div>
 </div>
-
 <style>
     .setup-container {
         max-width: 800px;
@@ -105,11 +106,6 @@
     .setup-title {
         color: #004d40;
         margin-bottom: 0.5rem;
-    }
-
-    .setup-subtitle {
-        color: #666;
-        margin-bottom: 2rem;
     }
 
     .form-group-row {
@@ -146,20 +142,38 @@
     .form-actions {
         margin-top: 2rem;
         text-align: center;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 5px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .btn-primary {
         background-color: #004d40;
         border: none;
-        padding: 0.75rem 2rem;
-        border-radius: 5px;
         color: white;
-        font-weight: 500;
-        transition: background-color 0.2s;
     }
 
     .btn-primary:hover {
         background-color: #00695c;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        opacity: 0.9;
     }
 
     @@media (max-width: 768px) {
@@ -168,4 +182,6 @@
         }
     }
 </style>
-
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

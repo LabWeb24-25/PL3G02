@@ -44,6 +44,7 @@ namespace LibSpace_Aspnet.Controllers
 
             var autor = await _context.Autors
                 .Include(a => a.IdLinguaNavigation)
+                .Include(a => a.Livros)
                 .FirstOrDefaultAsync(m => m.IdAutor == id);
             if (autor == null)
             {
