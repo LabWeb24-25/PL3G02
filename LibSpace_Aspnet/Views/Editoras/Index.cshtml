@@ -13,6 +13,14 @@
             </button>
         </div>
 
+        <div class="search-section mb-3">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Procurar editora..." 
+                       onkeyup="searchPublishers(this.value)">
+            </div>
+        </div>
+
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="publishersContainer">
             @foreach (var publisher in Model)
             {
@@ -92,6 +100,35 @@
         color: inherit;
     }
 
+    .search-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .search-container {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
     #sortButton {
         display: flex;
         align-items: center;
@@ -167,6 +204,22 @@
             });
 
             publishers.forEach(publisher => container.appendChild(publisher));
+        }
+
+        function searchPublishers(searchText) {
+            const container = document.getElementById('publishersContainer');
+            const publishers = container.getElementsByClassName('col');
+            
+            searchText = searchText.toLowerCase();
+            
+            Array.from(publishers).forEach(publisher => {
+                const publisherName = publisher.dataset.publisherName.toLowerCase();
+                if (publisherName.includes(searchText)) {
+                    publisher.style.display = '';
+                } else {
+                    publisher.style.display = 'none';
+                }
+            });
         }
     </script>
 }
