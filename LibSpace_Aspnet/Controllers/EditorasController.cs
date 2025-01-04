@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
 using Microsoft.AspNetCore.Components.Forms;
-using LibSpace.Models;
+using Microsoft.AspNetCore.Http; // Adicionei para usar IFormFile
+using LibSpace.Models; // Este using pode não ser necessário, verifique
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -66,33 +67,38 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Livro_Create([Bind("NomeEditora,InfoEditora,ImgEditora")] EditoraViewModel editora)
+        public async Task<IActionResult> Livro_Create(Editora editora, IFormFile? ImgEditora)
         {
-            var Extensoes = new[] { ".jpg", ".jpeg", ".png" };
-
-            var extension = Path.GetExtension(editora.ImgEditora.FileName).ToLower();
-
-            if (!Extensoes.Contains(extension))
-            {
-                ModelState.AddModelError("ImgEditora", "Introduza uma imagem válida");
-            }
             if (ModelState.IsValid)
             {
-                var _Editora = new Editora();
-                _Editora.NomeEditora = editora.NomeEditora;
-                _Editora.InfoEditora = editora.InfoEditora;
-                _Editora.ImgEditora = Path.GetFileName(editora.ImgEditora.FileName);
-
-
-                string coverFileName = Path.GetFileName(editora.ImgEditora.FileName);
-                string coverFullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", coverFileName);
-                using (var stream = new FileStream(coverFullPath, FileMode.Create))
+                if (ImgEditora != null)
                 {
-                    await editora.ImgEditora.CopyToAsync(stream);
+                    var Extensoes = new[] { ".jpg", ".jpeg", ".png" };
+                    var extension = Path.GetExtension(ImgEditora.FileName).ToLower();
+
+                    if (!Extensoes.Contains(extension))
+                    {
+                        ModelState.AddModelError("ImgEditora", "Introduza uma imagem válida");
+                        return View(editora);
+                    }
+                    editora.ImgEditora = Path.GetFileName(ImgEditora.FileName);
+
+                    string coverFileName = Path.GetFileName(ImgEditora.FileName);
+                    string coverFullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", coverFileName);
+                    using (var stream = new FileStream(coverFullPath, FileMode.Create))
+                    {
+                        await ImgEditora.CopyToAsync(stream);
+                    }
+
                 }
-                _context.Add(_Editora);
+                else
+                {
+                    editora.ImgEditora = "editorasemfoto.png";
+                }
+
+                _context.Add(editora);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Create", "Livroes", new { idEditora = _Editora.IdEditora });
+                return RedirectToAction("Create", "Livroes", new { idEditora = editora.IdEditora });
             }
             return View(editora);
         }
@@ -118,33 +124,37 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NomeEditora,InfoEditora,ImgEditora")] EditoraViewModel editora)
+        public async Task<IActionResult> Create(Editora editora, IFormFile? ImgEditora)
         {
 
             if (ModelState.IsValid)
             {
-                var _Editora = new Editora();
-                _Editora.NomeEditora = editora.NomeEditora;
-                _Editora.InfoEditora = editora.InfoEditora;
-                if (editora.ImgEditora != null)
+
+                if (ImgEditora != null)
                 {
                     var Extensoes = new[] { ".jpg", ".jpeg", ".png" };
-                    var extension = Path.GetExtension(editora.ImgEditora.FileName).ToLower();
-                    _Editora.ImgEditora = Path.GetFileName(editora.ImgEditora.FileName);
+                    var extension = Path.GetExtension(ImgEditora.FileName).ToLower();
 
+                    if (!Extensoes.Contains(extension))
+                    {
+                        ModelState.AddModelError("ImgEditora", "Introduza uma imagem válida");
+                        return View(editora);
+                    }
+                    editora.ImgEditora = Path.GetFileName(ImgEditora.FileName);
 
-                    string coverFileName = Path.GetFileName(editora.ImgEditora.FileName);
+                    string coverFileName = Path.GetFileName(ImgEditora.FileName);
                     string coverFullPath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", coverFileName);
                     using (var stream = new FileStream(coverFullPath, FileMode.Create))
                     {
-                        await editora.ImgEditora.CopyToAsync(stream);
+                        await ImgEditora.CopyToAsync(stream);
                     }
+
                 }
                 else
                 {
-                    _Editora.ImgEditora = "editorasemfoto.png";
+                    editora.ImgEditora = "editorasemfoto.png";
                 }
-                _context.Add(_Editora);
+                _context.Add(editora);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -173,14 +183,11 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-            var editoraviewmodel = new EditoraViewModel
-            {
-                NomeEditora = editora.NomeEditora,
-                InfoEditora = editora.InfoEditora
-            };
+
             ViewBag.IdEditora = editora.IdEditora;
             ViewBag.ImgEditora = "~/Editora_IMG/" + editora.ImgEditora;
-            return View(editoraviewmodel);
+
+            return View(editora);
         }
 
 
@@ -189,7 +196,7 @@ namespace LibSpace_Aspnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEditora,NomeEditora,InfoEditora,ImgEditora")] Editora editora, IFormFile? ImgEditora)
+        public async Task<IActionResult> Edit(int id, Editora editora, IFormFile? ImgEditora)
         {
             if (id != editora.IdEditora)
             {
@@ -219,11 +226,12 @@ namespace LibSpace_Aspnet.Controllers
                         if (!allowedExtensions.Contains(extension))
                         {
                             ModelState.AddModelError(nameof(ImgEditora), "Formato inválido. Apenas JPG, JPEG ou PNG são permitidos.");
+
                             return View(editora);
                         }
 
                         // Apaga a imagem antiga SE EXISTIR
-                        if (!string.IsNullOrEmpty(editoraToUpdate.ImgEditora))
+                        if (!string.IsNullOrEmpty(editoraToUpdate.ImgEditora) && editoraToUpdate.ImgEditora != "editorasemfoto.png")
                         {
                             string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Editora_IMG", editoraToUpdate.ImgEditora);
                             if (System.IO.File.Exists(oldImagePath))
@@ -264,6 +272,7 @@ namespace LibSpace_Aspnet.Controllers
                 }
             }
 
+            ViewBag.ImgEditora = "~/Editora_IMG/" + editora.ImgEditora;
             return View(editora);
         }
 
@@ -314,8 +323,8 @@ namespace LibSpace_Aspnet.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
-    
+
+
 
         private bool EditoraExists(int id)
         {

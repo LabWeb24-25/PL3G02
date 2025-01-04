@@ -33,6 +33,13 @@
         </div>
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+            @if (User.IsInRole("Bibliotecario"))
+            {
+                <div class="edit-delete-buttons">
+                    <a asp-action="Edit" asp-route-id="@Model.IdAutor" class="btn btn-primary btn-edit">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@Model.IdAutor" class="btn btn-danger btn-delete">Eliminar</a>
+                </div>
+            }
         </div>
     </div>
 </div>

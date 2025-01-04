@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LibSpace_Aspnet.Data;
 using LibSpace_Aspnet.Models;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using System.ComponentModel.DataAnnotations;
 
 namespace LibSpace_Aspnet.Controllers
 {
@@ -195,7 +195,7 @@ namespace LibSpace_Aspnet.Controllers
                         await viewModel.FotoAutor.CopyToAsync(fileStream);
                     }
                 }
-                
+
 
                 // Create Autor object and populate fields
                 var autor = new Autor
@@ -219,23 +219,12 @@ namespace LibSpace_Aspnet.Controllers
             return View(viewModel);
         }
 
-
-
         // GET: Autors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
                 return NotFound();
-            }
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
             }
 
             var autor = await _context.Autors.FindAsync(id);
@@ -243,99 +232,86 @@ namespace LibSpace_Aspnet.Controllers
             {
                 return NotFound();
             }
-            var _autor = new AutorViewModel
+
+            var viewModel = new AutorViewModel
             {
+                IdAutor = autor.IdAutor,
                 NomeAutor = autor.NomeAutor,
-                Pseudonimo = autor.Pseudonimo,
                 DataNascimento = autor.DataNascimento,
+                Pseudonimo = autor.Pseudonimo,
                 DataFalecimento = autor.DataFalecimento,
                 Bibliografia = autor.Bibliografia,
+                IdLingua = autor.IdLingua,
+                FotoAutorAtual = autor.FotoAutor
             };
-            ViewBag.IdAutor = autor.IdAutor;
-            ViewData["IdLingua"] = new SelectList(
-                await _context.Pais.ToListAsync(),
-                "IdPais",
-                "NomePais",
-                autor.IdLingua
-            );
-            ViewBag.FotoAutor = "~/Foto_Autor/" + autor.FotoAutor;
-            return View(_autor);
+
+
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", autor.IdLingua);
+            return View(viewModel);
         }
 
         // POST: Autors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: Autors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAutor,NomeAutor,DataNascimento,Pseudonimo,DataFalecimento,Bibliografia,IdLingua")] Autor autor, IFormFile NewPhoto, string OldPhoto)
+        public async Task<IActionResult> Edit(int id, AutorViewModel viewModel)
         {
-            if (id != autor.IdAutor)
+            if (id != viewModel.IdAutor)
             {
                 return NotFound();
             }
 
-            // Validação de Data: Garantir que DataNascimento não seja a data padrão (obrigatória)
-            if (autor.DataNascimento == default)
-            {
-                ModelState.AddModelError("DataNascimento", "A data de nascimento é obrigatória.");
-            }
-
-            // (DataFalecimento é opcional)
-
             if (ModelState.IsValid)
             {
+                string? uniqueFileName = null;
+                if (viewModel.FotoAutor != null)
+                {
+                    // Validate the image format
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var fileExtension = Path.GetExtension(viewModel.FotoAutor.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("FotoAutor", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
+                        return View(viewModel);
+                    }
+
+                    // Generate a unique file name to prevent overwriting
+                    uniqueFileName = Path.GetFileName(viewModel.FotoAutor.FileName);
+                    var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
+
+                    using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
+                    {
+                        await viewModel.FotoAutor.CopyToAsync(fileStream);
+                    }
+                }
+                else
+                {
+                    uniqueFileName = viewModel.FotoAutorAtual;
+                }
+                // Find the existing Autor entity by ID
+                var autor = await _context.Autors.FindAsync(id);
+
+                if (autor == null)
+                {
+                    return NotFound();
+                }
+
+                // Update the Autor entity with the values from the ViewModel
+                autor.NomeAutor = viewModel.NomeAutor;
+                autor.DataNascimento = viewModel.DataNascimento;
+                autor.Pseudonimo = viewModel.Pseudonimo;
+                autor.DataFalecimento = viewModel.DataFalecimento;
+                autor.Bibliografia = viewModel.Bibliografia;
+                autor.IdLingua = viewModel.IdLingua;
+                autor.FotoAutor = uniqueFileName;
+
+
+
                 try
                 {
-                    // --- Prioridade para atualizar a foto ---
-                    if (NewPhoto != null)
-                    {
-                        // Validar o formato da imagem
-                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                        var fileExtension = Path.GetExtension(NewPhoto.FileName).ToLower();
-
-                        if (!allowedExtensions.Contains(fileExtension))
-                        {
-                            ModelState.AddModelError("NewPhoto", "Por favor, carregue um arquivo de imagem válido (jpg, jpeg, png, gif, bmp).");
-                            // Restaurar a foto antiga no modelo para que seja exibida novamente
-                            autor.FotoAutor = OldPhoto;
-                            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", autor.IdLingua);
-                            return View(autor);
-                        }
-
-                        // Gerar um nome único para o novo arquivo
-                        string uniqueFileName = Path.GetFileName(NewPhoto.FileName);
-                        var autorImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", uniqueFileName);
-
-                        // Salvar o novo arquivo
-                        using (var fileStream = new FileStream(autorImagePath, FileMode.Create))
-                        {
-                            await NewPhoto.CopyToAsync(fileStream);
-                        }
-
-                        // Atualizar o nome da foto no objeto autor
-                        autor.FotoAutor = uniqueFileName;
-
-                        // Excluir a foto antiga, se existir
-                        if (!string.IsNullOrEmpty(OldPhoto))
-                        {
-                            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Foto_Autor", OldPhoto);
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Se nenhuma nova foto for carregada, manter a foto antiga
-                        autor.FotoAutor = OldPhoto;
-                    }
-
-                    // --- Fim da lógica de atualização da foto ---
-
-                    // Atualizar os outros campos do autor (incluindo as datas)
-                    _context.Update(autor); // Certifique-se de que esta linha está presente
+                    _context.Update(autor);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -351,12 +327,8 @@ namespace LibSpace_Aspnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            // Se o ModelState não for válido, retornar para a view com os erros
-            // Restaurar a foto antiga se houve erro na validação da nova foto
-            autor.FotoAutor = OldPhoto;
-            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", autor.IdLingua);
-            return View(autor);
+            ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais", viewModel.IdLingua);
+            return View(viewModel);
         }
 
         // GET: Autors/Delete/5
@@ -365,16 +337,6 @@ namespace LibSpace_Aspnet.Controllers
             if (id == null)
             {
                 return NotFound();
-            }
-
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
             }
 
             var autor = await _context.Autors
