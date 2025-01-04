@@ -29,6 +29,15 @@ namespace LibSpace_Aspnet.Controllers
 
         public async Task<IActionResult> Index(string selectedRole = null, bool? isBlocked = null)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Admin"))
+            {
+                return Redirect("/Acess/Notauthorized");
+            }
             var pendingBibliotecarios = await _context.BibliotecarioPendentes
                 .Include(b => b.AspNetUser)
                 .Where(b => !b.IsApproved)

@@ -33,7 +33,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             var requisicoes = await _context.Requisita
                 .Select(req => new RequisitaViewModel

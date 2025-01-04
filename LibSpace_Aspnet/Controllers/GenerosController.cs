@@ -56,7 +56,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             return View();
         }
@@ -87,7 +87,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             return View();
         }
@@ -124,7 +124,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
 
             var genero = await _context.Generos
