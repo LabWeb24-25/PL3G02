@@ -15,19 +15,31 @@
                 }
             </div>
             <div class="form-group form-group-info">
-                <div>
-                    <p class="form-label">Pseudónimo:</p>
-                    <p>@Html.DisplayFor(model => model.Pseudonimo)</p>
-                    <p class="form-label">Nome Completo:</p>
-                    <p>@Html.DisplayFor(model => model.NomeAutor)</p>
-                    <p class="form-label">País de Origem:</p>
-                    <p>@Html.DisplayFor(model => model.IdLinguaNavigation.NomePais)</p>
-                    <p class="form-label">Data de Nascimento:</p>
-                    <p>@Html.DisplayFor(model => model.DataNascimento)</p>
-                    <p class="form-label">Data de Falecimento:</p>
-                    <p>@Html.DisplayFor(model => model.DataFalecimento)</p>
-                    <p class="form-label">Bibliografia:</p>
-                    <p>@Html.Raw(Model.Bibliografia?.Replace("\n", "<br />"))</p>
+                <div class="author-info-grid">
+                    <div class="info-item">
+                        <p class="info-label"><i class="fas fa-user-tag"></i> Pseudónimo</p>
+                        <p class="info-content">@Html.DisplayFor(model => model.Pseudonimo)</p>
+                    </div>
+                    <div class="info-item">
+                        <p class="info-label"><i class="fas fa-user"></i> Nome Completo</p>
+                        <p class="info-content">@Html.DisplayFor(model => model.NomeAutor)</p>
+                    </div>
+                    <div class="info-item">
+                        <p class="info-label"><i class="fas fa-globe"></i> País de Origem</p>
+                        <p class="info-content">@Html.DisplayFor(model => model.IdLinguaNavigation.NomePais)</p>
+                    </div>
+                    <div class="info-item">
+                        <p class="info-label"><i class="fas fa-birthday-cake"></i> Data de Nascimento</p>
+                        <p class="info-content">@Html.DisplayFor(model => model.DataNascimento)</p>
+                    </div>
+                    <div class="info-item">
+                        <p class="info-label"><i class="fas fa-cross"></i> Data de Falecimento</p>
+                        <p class="info-content">@Html.DisplayFor(model => model.DataFalecimento)</p>
+                    </div>
+                    <div class="info-item full-width">
+                        <p class="info-label"><i class="fas fa-book"></i> Bibliografia</p>
+                        <p class="info-content bibliografia">@Html.Raw(Model.Bibliografia?.Replace("\n", "<br />"))</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -270,10 +282,62 @@
                 padding: 0.4rem;
             }
         }
+
+        .author-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-label {
+            color: #004d40;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-content {
+            color: #333;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .bibliografia {
+            white-space: pre-line;
+        }
+
+        @@media (max-width: 768px) {
+            .author-info-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0.5rem;
+            }
+        }
     </style>
     <!-- Include Bootstrap CSS for modal styling -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 }
 
 @section Scripts {

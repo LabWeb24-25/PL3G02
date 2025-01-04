@@ -12,11 +12,15 @@
                 <img src="@Url.Content("~/Editora_IMG/" + Model.ImgEditora)" alt="Logo de @Model.NomeEditora" class="publisher-image" />
             </div>
             <div class="form-group form-group-info">
-                <div>
-                    <p class="form-label">Nome:</p>
-                    <p>@Html.DisplayFor(model => model.NomeEditora)</p>
-                    <p class="form-label">Sobre a Editora:</p>
-                    <p>@Html.Raw(Model.InfoEditora?.Replace("\n", "<br />"))</p>
+                <div class="publisher-info-grid">
+                    <div class="info-item">
+                        <p class="info-label"><i class="fas fa-building"></i> Nome da Editora</p>
+                        <p class="info-content">@Html.DisplayFor(model => model.NomeEditora)</p>
+                    </div>
+                    <div class="info-item full-width">
+                        <p class="info-label"><i class="fas fa-info-circle"></i> Sobre a Editora</p>
+                        <p class="info-content publisher-info">@Html.Raw(Model.InfoEditora?.Replace("\n", "<br />"))</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,8 +61,6 @@
     </div>
 </div>
 
-
-
 @section Styles {
     <link rel="stylesheet" href="~/css/create_design_editora_details.css" />
     <style>
@@ -80,6 +82,48 @@
             grid-template-columns: 1fr 2fr;
         }
 
+        .publisher-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-label {
+            color: #004d40;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-content {
+            color: #333;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .publisher-info {
+            white-space: pre-line;
+        }
+
         @@media (max-width: 992px) {
             .publisher-image {
                 height: 180px;
@@ -93,6 +137,10 @@
             .form-group-image {
                 margin-right: 1rem;
             }
+            .publisher-info-grid {
+                gap: 1rem;
+                padding: 0.5rem;
+            }
         }
 
         @@media (max-width: 576px) {
@@ -104,7 +152,9 @@
             }
         }
     </style>
-    <!-- Adicionar o CSS do Bootstrap Modal -->
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <!-- Bootstrap Modal CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 }
 
@@ -121,9 +171,4 @@
             });
         });
     </script>
-
-
-
-
-
 }
