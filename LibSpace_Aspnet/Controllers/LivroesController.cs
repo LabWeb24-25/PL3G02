@@ -13,15 +13,17 @@ using System.Security.Claims;
 
 namespace LibSpace_Aspnet.Controllers
 {
+    [ServiceFilter(typeof(PermitFilter))]
     public class LivroesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public LivroesController(ApplicationDbContext context, IWebHostEnvironment environment)
+        private readonly PermitFilter _permitFilter;
+        public LivroesController(ApplicationDbContext context, IWebHostEnvironment environment, PermitFilter permitFilter)
         {
             _context = context;
             _webHostEnvironment = environment;
+            _permitFilter = permitFilter;
         }
 
         // GET: Livroes

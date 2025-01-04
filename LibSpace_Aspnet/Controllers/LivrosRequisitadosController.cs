@@ -10,10 +10,11 @@ namespace LibSpace_Aspnet.Controllers
     public class LivrosRequisitadosController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public LivrosRequisitadosController(ApplicationDbContext context)
+        private readonly PermitFilter _permitFilter;
+        public LivrosRequisitadosController(ApplicationDbContext context, PermitFilter permitFilter)
         {
             _context = context;
+            _permitFilter = permitFilter;
         }
 
         public async Task<IActionResult> Index()

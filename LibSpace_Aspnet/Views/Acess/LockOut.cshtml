@@ -1,0 +1,21 @@
+﻿@model LibSpace_Aspnet.Models.Bloquear
+@{
+    ViewData["Title"] = "Acesso Negado - BLOQUEADO";
+}
+
+<h1>BLOQUEADO</h1>
+
+<p>Não tem autorização para aceder às páginas com esta conta</p>
+<h3>Detalhes</h3>
+<p>Data Bloqueio: @Html.DisplayFor(model => model.DataBloqueio)</p>
+<p>Data Bloqueio: @Html.DisplayFor(model => model.MotivoBloquear)</p>
+<p>Data Desbloqueio: @Html.DisplayFor(model => model.DataFimBloqueio)</p>
+
+<form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm">
+    <button type="submit" class="btn btn-link" style="padding: 0">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</form>
+
+
+<a asp-controller="Home" asp-action="Sobre">Informações sobre a Biblioteca</a>

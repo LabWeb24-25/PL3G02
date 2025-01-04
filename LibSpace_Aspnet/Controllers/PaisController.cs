@@ -10,13 +10,16 @@ using LibSpace_Aspnet.Models;
 
 namespace LibSpace_Aspnet.Controllers
 {
+    [ServiceFilter(typeof(PermitFilter))]
     public class PaisController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PermitFilter _permitFilter;
 
-        public PaisController(ApplicationDbContext context)
+        public PaisController(ApplicationDbContext context, PermitFilter permitFilter)
         {
             _context = context;
+            _permitFilter = permitFilter;
         }
 
         // GET: Pais

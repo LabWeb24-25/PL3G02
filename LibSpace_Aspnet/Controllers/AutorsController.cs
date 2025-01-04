@@ -12,17 +12,18 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace LibSpace_Aspnet.Controllers
 {
+    [ServiceFilter(typeof(PermitFilter))]
     public class AutorsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly PermitFilter _permitFilter;
 
-
-        public AutorsController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public AutorsController(ApplicationDbContext context, IWebHostEnvironment environment, PermitFilter permitFilter)
         {
             _context = context;
             _webHostEnvironment = environment;
-
+            _permitFilter = permitFilter;
         }
 
         // GET: Autors

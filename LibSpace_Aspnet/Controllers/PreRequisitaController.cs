@@ -13,10 +13,12 @@ namespace LibSpace_Aspnet.Controllers
     public class PreRequisitaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PermitFilter _permitFilter;
 
-        public PreRequisitaController(ApplicationDbContext context)
+        public PreRequisitaController(ApplicationDbContext context, PermitFilter permitFilter)
         {
             _context = context;
+            _permitFilter = permitFilter;
         }
 
         // GET: PreRequisita

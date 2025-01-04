@@ -11,13 +11,16 @@ using System.Security.Claims;
 
 namespace LibSpace_Aspnet.Controllers
 {
+    [ServiceFilter(typeof(PermitFilter))]
     public class RequisicaoController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PermitFilter _permitFilter;
 
-        public RequisicaoController(ApplicationDbContext context)
+        public RequisicaoController(ApplicationDbContext context, PermitFilter permitFilter)
         {
             _context = context;
+            _permitFilter = permitFilter;
         }
 
         // GET: Requisicao

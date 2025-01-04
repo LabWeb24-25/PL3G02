@@ -9,15 +9,18 @@ using LibSpace_Aspnet.Models;
 
 namespace LibSpace_Aspnet.Controllers
 {
+    [ServiceFilter(typeof(PermitFilter))]
     public class FavoritosController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly PermitFilter _permitFilter;
 
-        public FavoritosController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public FavoritosController(ApplicationDbContext context, UserManager<IdentityUser> userManager, PermitFilter permitFilter)
         {
             _context = context;
             _userManager = userManager;
+            _permitFilter = permitFilter;
         }
 
         public async Task<IActionResult> Index()

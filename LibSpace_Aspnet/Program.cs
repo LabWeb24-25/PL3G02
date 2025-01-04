@@ -59,6 +59,9 @@ builder.Services.AddRazorPages(options =>
 });
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
+// Registra o filtro PermitFilter
+builder.Services.AddScoped<PermitFilter>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -98,7 +101,7 @@ app.MapGet("/login", context =>
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
-    );
+);
 
 app.MapRazorPages();
 

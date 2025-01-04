@@ -13,15 +13,18 @@ using LibSpace.Models; // Este using pode não ser necessário, verifique
 
 namespace LibSpace_Aspnet.Controllers
 {
+    [ServiceFilter(typeof(PermitFilter))]
     public class EditorasController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly PermitFilter _permitFilter;
 
-        public EditorasController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public EditorasController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, PermitFilter permitFilter)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _permitFilter = permitFilter;
         }
 
         // GET: Editoras

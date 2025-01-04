@@ -11,18 +11,22 @@ using System.Security.Claims;
 
 namespace LibSpace_Aspnet.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
         private const int PageSize = 6; // livros por linha AQUIII <-----------------
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly PermitFilter _permitFilter;
 
-        public HomeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public HomeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, PermitFilter permitFilter)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _permitFilter = permitFilter;
         }
 
+        [ServiceFilter(typeof(PermitFilter))]
         public async Task<IActionResult> Index(int page = 1, string section = "featured", int? genreId = null)
         {
             // Featured books query
@@ -148,6 +152,7 @@ namespace LibSpace_Aspnet.Controllers
             return View(info);
         }
 
+        [ServiceFilter(typeof(PermitFilter))]
         public IActionResult FirstStep()
         {
             return View();
@@ -170,7 +175,7 @@ namespace LibSpace_Aspnet.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ResponseCache(Duration = 300, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
