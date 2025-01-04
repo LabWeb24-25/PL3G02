@@ -123,6 +123,7 @@
         border: none;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease-in-out;
+        padding: 0.5rem;
     }
 
     .author-card:hover {
@@ -165,12 +166,16 @@
     .author-name {
         color: #004d40;
         font-size: 1.1rem;
-        margin-bottom: 0.2rem;
-        white-space: nowrap;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 15ch;
-        margin: 0 auto;
+        text-align: center;
+        line-height: 1.2;
+        height: 2.4em;
+        margin: 0;
+        padding: 0.2em 0;
     }
 
     .author-pseudonym {
@@ -206,7 +211,7 @@
             max-height: 300px;
         }
         .card-body {
-            padding: 0.75rem;
+            padding: 0.5rem;
         }
     }
 
@@ -260,10 +265,12 @@
     }
 
     .card-body {
-        padding: 1rem;
+        padding: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-grow: 1;
+        min-height: 3em;
     }
 
     .search-section {
