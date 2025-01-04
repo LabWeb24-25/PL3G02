@@ -683,6 +683,12 @@ namespace LibSpace_Aspnet.Controllers
             var livro = await _context.Livros.FindAsync(id);
             if (livro != null)
             {
+                var favoritos = await _context.Favoritos
+                    .Where(f => f.IdLivro == id)
+                    .ToListAsync();
+                    
+                _context.Favoritos.RemoveRange(favoritos);
+                
                 _context.Livros.Remove(livro);
             }
 
