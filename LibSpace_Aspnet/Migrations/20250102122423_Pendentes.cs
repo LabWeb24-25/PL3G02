@@ -24,7 +24,7 @@ namespace LibSpace_Aspnet.Data.Migrations
                 table: "PendingBibliotecarios",
                 type: "nvarchar(450)",
                 maxLength: 450,
-                nullable: false,
+                nullable: true,
                 defaultValue: "");
 
             migrationBuilder.AlterColumn<string>(
