@@ -4,16 +4,19 @@ using LibSpace_Aspnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LibSpace_Aspnet.Migrations
+namespace LibSpace_Aspnet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250103223429_Linha")]
+    partial class Linha
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,18 +151,12 @@ namespace LibSpace_Aspnet.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AspNetUserIdAdmin")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
                     b.HasKey("ID");
 
                     b.HasIndex("AspNetUserId");
-
-                    b.HasIndex("AspNetUserIdAdmin");
 
                     b.ToTable("PendingBibliotecarios");
                 });
@@ -174,33 +171,10 @@ namespace LibSpace_Aspnet.Migrations
                         .HasColumnType("date")
                         .HasColumnName("Data_Bloqueio");
 
-                    b.Property<DateOnly?>("DataDesbloqueioManual")
-                        .HasColumnType("date")
-                        .HasColumnName("Data_Desbloqueio_Manual");
-
-                    b.Property<DateOnly>("DataFimBloqueio")
-                        .HasColumnType("date")
-                        .HasColumnName("Data_Fim_Bloqueio");
-
-                    b.Property<bool>("EstadoBloqueio")
-                        .HasColumnType("bit")
-                        .HasColumnName("Estado_Bloqueio");
-
                     b.Property<string>("IdAdmin")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("ID_Admin");
-
-                    b.Property<string>("IdAdminDesbloqueio")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("ID_Admin_Desbloqueio");
-
-                    b.Property<int>("IdBloqueio")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBloqueio"));
 
                     b.Property<string>("MotivoBloquear")
                         .IsRequired()
@@ -209,10 +183,6 @@ namespace LibSpace_Aspnet.Migrations
 
                     b.HasKey("IdUser")
                         .HasName("PK__Bloquear__ED4DE4428EAD68ED");
-
-                    b.HasIndex("IdAdmin");
-
-                    b.HasIndex("IdAdminDesbloqueio");
 
                     b.ToTable("Bloquear");
                 });
@@ -277,8 +247,8 @@ namespace LibSpace_Aspnet.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ID_Livro");
 
-                    b.Property<string>("IdLeitor")
-                        .HasColumnType("nvarchar(450)")
+                    b.Property<int>("IdLeitor")
+                        .HasColumnType("int")
                         .HasColumnName("ID_Leitor");
 
                     b.HasKey("IdLivro", "IdLeitor")
@@ -764,49 +734,6 @@ namespace LibSpace_Aspnet.Migrations
                         .IsRequired();
 
                     b.Navigation("AspNetUser");
-                });
-
-            modelBuilder.Entity("LibSpace_Aspnet.Models.BibliotecarioPendente", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "AspNetUser")
-                        .WithMany()
-                        .HasForeignKey("AspNetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "AspNetUserIdAdminNavigation")
-                        .WithMany()
-                        .HasForeignKey("AspNetUserIdAdmin");
-
-                    b.Navigation("AspNetUser");
-
-                    b.Navigation("AspNetUserIdAdminNavigation");
-                });
-
-            modelBuilder.Entity("LibSpace_Aspnet.Models.Bloquear", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdAdminNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdAdmin")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdAdminDesbloqueioNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdAdminDesbloqueio")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdUserNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("IdAdminDesbloqueioNavigation");
-
-                    b.Navigation("IdAdminNavigation");
-
-                    b.Navigation("IdUserNavigation");
                 });
 
             modelBuilder.Entity("LibSpace_Aspnet.Models.Favorito", b =>

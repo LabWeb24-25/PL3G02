@@ -26,12 +26,38 @@
             {
                 <div class="edit-delete-buttons">
                     <a asp-action="Edit" asp-route-id="@Model.IdEditora" class="btn btn-primary btn-edit">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@Model.IdEditora" class="btn btn-danger btn-delete">Eliminar</a>
+                    <button class="btn btn-danger btn-delete" data-id="@Model.IdEditora" id="delete-editora-button">Eliminar</button>
                 </div>
             }
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal" id="deleteEditoraModal" tabindex="-1" role="dialog" aria-labelledby="deleteEditoraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteEditoraModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza de que deseja excluir esta editora? Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form id="deleteEditoraForm" method="post" asp-action="Delete">
+                    <input type="hidden" id="editoraIdToDelete" name="idEditora" />
+                    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @section Styles {
     <link rel="stylesheet" href="~/css/create_design_editora_details.css" />
@@ -78,4 +104,26 @@
             }
         }
     </style>
+    <!-- Adicionar o CSS do Bootstrap Modal -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Exibir modal de confirmação de exclusão
+            $("#delete-editora-button").click(function () {
+                const editoraId = $(this).data("id");
+                $("#editoraIdToDelete").val(editoraId); // Define o ID da editora no campo oculto
+                $("#deleteEditoraModal").modal("show"); // Mostra o modal
+            });
+        });
+    </script>
+
+
+
+
+
 }

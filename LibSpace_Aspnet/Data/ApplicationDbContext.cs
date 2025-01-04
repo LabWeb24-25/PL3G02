@@ -67,11 +67,6 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, Iden
         {
             entity.HasKey(e => e.IdBiblioteca).HasName("PK__Bibliote__AC25616D9C304CDB");
 
-            entity.Property(e => e.EndCodPostal).IsFixedLength();
-
-            entity.HasOne(d => d.EndCodPostalNavigation).WithMany(p => p.Bibliotecas)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bibliotec__End_C__60A75C0F");
         });
 
         modelBuilder.Entity<Bloquear>(entity =>

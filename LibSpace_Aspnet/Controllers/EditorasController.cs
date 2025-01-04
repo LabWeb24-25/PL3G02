@@ -31,6 +31,8 @@ namespace LibSpace_Aspnet.Controllers
         }
 
         // GET: Editoras/Details/5
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)] // A cache dura 1 minuto
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -56,8 +58,8 @@ namespace LibSpace_Aspnet.Controllers
                 return Redirect("/Identity/Account/Login");
             }
             if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
+            {   
+                return Redirect("/Acess/Notauthorized");
             }
             return View();
         }
@@ -114,7 +116,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             return View();
         }
@@ -175,7 +177,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
 
             var editora = await _context.Editoras.FindAsync(id);
@@ -276,52 +278,65 @@ namespace LibSpace_Aspnet.Controllers
             return View(editora);
         }
 
-
-
-
-
-
-        // GET: Editoras/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        public IActionResult Delete(int idEditora)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            if (!User.Identity.IsAuthenticated)
-            {
-                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
-                return Redirect("/Identity/Account/Login");
-            }
-            if (!User.IsInRole("Bibliotecario"))
-            {
-                return Redirect("/Users/Notauthorized");
-            }
+            // Buscar editora pelo ID
+            var editora = _context.Editoras.FirstOrDefault(e => e.IdEditora == idEditora);
 
-            var editora = await _context.Editoras
-                .FirstOrDefaultAsync(m => m.IdEditora == id);
             if (editora == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Editora não encontrada.";
+                return RedirectToAction("Index");
             }
 
-            return View(editora);
-        }
-
-        // POST: Editoras/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var editora = await _context.Editoras.FindAsync(id);
-            if (editora != null)
+            // Procurar todos os livros onde tenham a editora como referência
+            var livrosDaEditora = _context.Livros.Where(l => l.IdEditora == idEditora).ToList();
+            if (livrosDaEditora.Any())
             {
-                _context.Editoras.Remove(editora);
+                // Verificar se algum livro da editora tem requisições pendentes
+                var requisicoesPendentes = _context.Requisita
+                    .Where(r => livrosDaEditora.Select(l => l.IdLivro).Contains(r.IdLivro) && r.DataEntrega == null)
+                    .ToList();
+
+                if (requisicoesPendentes.Any())
+                {
+                    TempData["ErrorMessage"] = "Existem requisições não finalizadas para livros desta editora!";
+                    return RedirectToAction("Details", new { id = idEditora });
+                }
+
+                // Verificar se existem pré-requisições pendentes para os livros da editora
+                var prerequisicoes = _context.PreRequisita
+                    .Where(r => livrosDaEditora.Select(l => l.IdLivro).Contains(r.Idlivro))
+                    .ToList();
+
+                if (prerequisicoes.Any())
+                {
+                    _context.PreRequisita.RemoveRange(prerequisicoes);
+                }
+
+                // Remover todos os livros da editora
+                _context.Livros.RemoveRange(livrosDaEditora);
+                _context.SaveChanges();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                // Remover a editora
+                _context.Editoras.Remove(editora);
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Editora e livros associados excluídos com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Erro ao excluir a editora e livros associados: {ex.Message}";
+            }
+
+            // Redirecionar para a página anterior (o usuário estava nela quando iniciou a exclusão)
+            return Redirect(Request.Headers["Referer"].ToString());
         }
+
 
 
 

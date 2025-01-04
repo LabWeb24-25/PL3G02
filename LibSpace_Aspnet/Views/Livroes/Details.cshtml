@@ -47,7 +47,7 @@
                 {
                     <a asp-action="" asp-route-id="@Model?.IdAutor" class="btn_submit">Ver Requisitados</a>
                     <a asp-action="Edit" asp-route-id="@Model?.IdLivro" class="btn_submit">Editar Livro</a>
-                    <a asp-action="Delete" asp-route-id="@Model?.IdLivro" class="btn_red">Eliminar Livro</a>
+                    <button id="delete-button-@Model.IdLivro" class="btn_red" data-url="@Url.Action("Delete", new { id = Model.IdLivro })">Eliminar Livro</button>
                 }
                 @if (!User.IsInRole("Bibliotecario") && !User.IsInRole("Admin"))
                 {
@@ -89,6 +89,27 @@
 <br />
 <div class="action-links">
     <button type="button" class="btn_submit" onclick="history.back()">Voltar</button>
+</div>
+
+<!-- Modal Confirmação delete -->
+<div id="confirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <p id="modalMessage"></p>
+        <div class="modal-buttons">
+            <button id="confirmBtn" class="btn btn-success">Confirmar</button>
+            <button id="cancelBtn" class="btn btn-danger">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Informativo -->
+<div id="infoModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <p id="infoMessage"></p>
+        <div class="modal-buttons">
+            <button class="btn btn-primary" id="okBtn">OK</button>
+        </div>
+    </div>
 </div>
 
 @section Styles {
@@ -207,6 +228,86 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            let currentUrl = '';
+
+            function showModal(message, callback) {
+                $("#modalMessage").text(message);
+                $("#confirmModal").fadeIn();
+
+                $("#confirmBtn").off().click(function () {
+                    $("#confirmModal").fadeOut();
+                    callback(true);
+                });
+
+                $("#cancelBtn").off().click(function () {
+                    $("#confirmModal").fadeOut();
+                    callback(false);
+                });
+            }
+
+            function showInfoModal(message) {
+                $("#infoMessage").text(message);
+                $("#infoModal").fadeIn();
+
+                $("#okBtn").off().click(function () {
+                    $("#infoModal").fadeOut();
+                    location.reload();
+                });
+            }
+
+            function handleDelete(url) {
+                showModal("Tem certeza que deseja eliminar este livro?", function (confirmed) {
+                    if (confirmed) {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            // Event listener for delete button
+            $(document).on("click", "#delete-button-@Model.IdLivro", function () {
+                const deleteUrl = $(this).data("url");
+                handleDelete(deleteUrl);
+            });
+        });
+    </script>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 0 20px;
+        }
+
+        .modal-buttons .btn {
+            min-width: 100px;
+            padding: 8px 16px;
+        }
+
+        #modalMessage {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+    </style>
 
     <!-- Validation Scripts -->
     <partial name="_ValidationScriptsPartial" />

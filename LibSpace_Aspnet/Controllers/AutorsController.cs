@@ -32,7 +32,8 @@ namespace LibSpace_Aspnet.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Autors/Details/5
+        //// GET: Autors/Details/5
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)] // A cache dura 1 minuto
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -75,7 +76,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
@@ -152,7 +153,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Redirect("/Users/Notauthorized");
+                return Redirect("/Acess/Notauthorized");
             }
             ViewData["IdLingua"] = new SelectList(_context.Pais, "IdPais", "NomePais");
             return View();
@@ -225,6 +226,15 @@ namespace LibSpace_Aspnet.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
+                return Redirect("/Identity/Account/Login");
+            }
+            if (!User.IsInRole("Bibliotecario"))
+            {
+                return Redirect("/Acess/Notauthorized");
             }
 
             var autor = await _context.Autors.FindAsync(id);
@@ -331,39 +341,64 @@ namespace LibSpace_Aspnet.Controllers
             return View(viewModel);
         }
 
-        // GET: Autors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var autor = await _context.Autors
-                .Include(a => a.IdLinguaNavigation)
-                .FirstOrDefaultAsync(m => m.IdAutor == id);
+
+        [HttpPost]
+        public IActionResult Delete(int idAutor)
+        {
+            // Buscar autor pelo ID
+            var autor = _context.Autors.FirstOrDefault(a => a.IdAutor == idAutor);
+
             if (autor == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Autor não encontrado.";
+                return RedirectToAction("Index");
             }
 
-            return View(autor);
-        }
-
-        // POST: Autors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var autor = await _context.Autors.FindAsync(id);
-            if (autor != null)
+            // Procurar todos os livros onde tenham o autor como referência
+            var livrosDoAutor = _context.Livros.Where(l => l.IdAutor == idAutor).ToList();
+            if (livrosDoAutor.Any())
             {
-                _context.Autors.Remove(autor);
+                // Verificar se algum livro do autor tem requisições pendentes
+                var requisicoesPendentes = _context.Requisita
+                    .Where(r => livrosDoAutor.Select(l => l.IdLivro).Contains(r.IdLivro) && r.DataEntrega == null)
+                    .ToList();
+
+                if (requisicoesPendentes.Any())
+                {
+                    TempData["ErrorMessage"] = "Existem requisições não finalizadas para livros deste autor!";
+                    return RedirectToAction("Details", new { id = idAutor });
+                }
+                var prerequisicoes = _context.PreRequisita
+                .Where(r => livrosDoAutor.Select(l => l.IdLivro).Contains(r.Idlivro))
+                    .ToList();
+
+                if (prerequisicoes != null)
+                {
+                    _context.PreRequisita.RemoveRange(prerequisicoes);
+                }
+                // Remover todos os livros do autor
+                _context.Livros.RemoveRange(livrosDoAutor);
+                _context.SaveChanges();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                // Remover o autor
+                _context.Autors.Remove(autor);
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Autor e livros associados excluídos com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Erro ao excluir o autor e livros associados: {ex.Message}";
+            }
+
+            // Redirecionar para a página anterior (o usuário estava nela quando iniciou a exclusão)
+            return Redirect(Request.Headers["Referer"].ToString());
         }
+
 
         private bool AutorExists(int id)
         {
