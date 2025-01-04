@@ -24,36 +24,38 @@
             {
                 <div class="edit-delete-buttons">
                     <a asp-action="Edit" asp-route-id="@Model.IdEditora" class="btn btn-primary btn-edit">Editar</a>
-                    <button type="button" class="btn btn-danger btn-delete" data-toggle="modal" data-target="#confirmDeleteModal" data-id="@Model.IdEditora">Eliminar</button>
+                    <button class="btn btn-danger btn-delete" data-id="@Model.IdEditora" id="delete-editora-button">Eliminar</button>
                 </div>
             }
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal" id="deleteEditoraModal" tabindex="-1" role="dialog" aria-labelledby="deleteEditoraModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <h5 class="modal-title" id="deleteEditoraModalLabel">Confirmar Exclusão</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Tem certeza que deseja excluir esta editora?</p>
-                <p>Esta ação vai remover os livros associados e não pode ser desfeita.</p>
+                <p>Tem certeza de que deseja excluir esta editora? Esta ação não pode ser desfeita.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <form id="deleteForm" method="post" action="@Url.Action("Delete", "Editoras")">
-                    <input type="hidden" id="editoraId" name="idEditora" />
-                    <button type="submit" class="btn btn-danger">Excluir</button>
+                <form id="deleteEditoraForm" method="post" asp-action="Delete">
+                    <input type="hidden" id="editoraIdToDelete" name="idEditora" />
+                    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+
 
 @section Styles {
     <link rel="stylesheet" href="~/css/create_design_editora_details.css" />
@@ -65,12 +67,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Quando o botão de "Eliminar" for clicado, configurar o ID da editora no formulário de exclusão
-        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Botão que abriu o modal
-            var editoraId = button.data('id'); // Extrair o ID da editora
-            var modal = $(this);
-            modal.find('#editoraId').val(editoraId); // Colocar o ID da editora no campo oculto do formulário
+        $(document).ready(function () {
+            // Exibir modal de confirmação de exclusão
+            $("#delete-editora-button").click(function () {
+                const editoraId = $(this).data("id");
+                $("#editoraIdToDelete").val(editoraId); // Define o ID da editora no campo oculto
+                $("#deleteEditoraModal").modal("show"); // Mostra o modal
+            });
         });
     </script>
+
+
+
+
+
 }

@@ -360,7 +360,7 @@ namespace LibSpace_Aspnet.Controllers
             return View(autor);
         }
 
-       
+
 
         [HttpPost]
         public IActionResult Delete(int idAutor)

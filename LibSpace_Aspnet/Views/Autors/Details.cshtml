@@ -59,7 +59,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <form id="deleteAuthorForm" method="post">
+                <form id="deleteAuthorForm" method="post" asp-action="Delete">
                     <input type="hidden" id="authorIdToDelete" name="idAutor" />
                     <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
                 </form>
@@ -67,6 +67,7 @@
         </div>
     </div>
 </div>
+
 
 @section Styles {
     <link rel="stylesheet" href="~/css/create_design_autor_details.css" />
@@ -87,17 +88,7 @@
                 $("#authorIdToDelete").val(authorId);
                 $("#deleteAuthorModal").modal("show");
             });
-
-            // Quando o formulário de exclusão for enviado, vai para a ação de excluir
-            $("#deleteAuthorForm").submit(function (event) {
-                event.preventDefault();
-
-                const authorId = $("#authorIdToDelete").val();
-                if (authorId) {
-                    // Redirecionar para a ação de exclusão
-                    window.location.href = '/Autors/Delete/' + authorId;
-                }
-            });
         });
     </script>
+
 }
