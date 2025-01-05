@@ -62,6 +62,9 @@ builder.Services.AddSingleton<IEmailSender, EmailSender>();
 // Registra o filtro PermitFilter
 builder.Services.AddScoped<PermitFilter>();
 
+// APara pedidos http à api
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

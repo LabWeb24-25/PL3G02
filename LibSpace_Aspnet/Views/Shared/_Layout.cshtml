@@ -11,7 +11,6 @@
     <script src="~/js/site.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     @RenderSection("Styles", required: false)
-    @await RenderSectionAsync("Scripts", required: false)
     <link rel="stylesheet" href="~/css/SearchResult.css" />
 </head>
 <body>
@@ -117,9 +116,13 @@
                                 <img src="~/img/icons/ico_wishlist.png" alt="ico_wishlist.png" class="icon-img" />
                             </a>
                         }
+                        <a href="~/AI" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Recomendações IA">
+                            <i class="fas fa-robot icon-img"></i>
+                        </a>
                         <a href="~/Home/Sobre" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sobre">
                             <img src="~/img/icons/ico_ajuda.png" alt="ico_ajuda.png" class="icon-img" />
                         </a>
+
                     </div>
                 </div>
             </div>
@@ -242,5 +245,6 @@
             margin-bottom: 0;
         }
     </style>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

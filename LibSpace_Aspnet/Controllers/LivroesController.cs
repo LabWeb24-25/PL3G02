@@ -768,5 +768,28 @@ namespace LibSpace_Aspnet.Controllers
                 return Json(new { success = false, message = $"Erro ao cancelar pré-requisição: {ex.Message}" });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBookDetails(int id)
+        {
+            var book = await _context.Livros
+                .Include(l => l.IdAutorNavigation)
+                .Include(l => l.IdGenerosNavigation)
+                .Where(l => l.IdLivro == id)
+                .Select(l => new {
+                    l.IdLivro,
+                    l.TituloLivros,
+                    l.Sinopse,
+                    l.CapaImg,
+                    Autor = l.IdAutorNavigation.NomeAutor,
+                    Genero = l.IdGenerosNavigation.NomeGeneros
+                })
+                .FirstOrDefaultAsync();
+
+            if (book == null)
+                return NotFound();
+
+            return Json(book);
+        }
     }
 }

@@ -1,0 +1,201 @@
+@{
+    ViewData["Title"] = "AI Assistant";
+}
+
+<div id="ai-chat-container">
+    <div id="ai-header">
+        <h2 id="ai-title">Amália dos Livros</h2>
+        <p id="ai-subtitle">Escreva o que quer ler hoje e deixe-se surpreender</p>
+    </div>
+
+    <div id="ai-chat-interface">
+        <div id="results-container">
+            <!-- Results will be loaded here -->
+        </div>
+
+        <div id="ai-search-section">
+            <div id="ai-search-box">
+                <input type="text" id="userInput" class="search-input" 
+                       placeholder="Ex: Livros de fantasia com dragões...">
+                <button id="ai-send-button" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+#ai-chat-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#ai-chat-interface {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#ai-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+#ai-title {
+    font-size: 2.5rem;
+    color: #004d40;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+#ai-subtitle {
+    color: #666;
+    font-size: 1.2rem;
+}
+
+#ai-search-section {
+    padding: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+#ai-search-box {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 50px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 3.5rem 1rem 1.5rem;
+    border: 1px solid #004d40;
+    border-radius: 50px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    border-color: #004d40;
+    box-shadow: 0 2px 8px rgba(0,77,64,0.1);
+}
+
+#ai-send-button {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #004d40;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ai-send-button:hover {
+    background-color: #00695c;
+}
+
+#results-container {
+    opacity: 0;
+    transform: translateY(20px);
+    height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+#results-container.active {
+    opacity: 1;
+    transform: translateY(0);
+    height: auto;
+    margin: 2rem 0;
+}
+</style>
+
+<script>
+async function sendMessage() {
+    const userInput = document.getElementById('userInput');
+    const message = userInput.value.trim();
+    const resultsContainer = document.getElementById('results-container');
+    const chatContainer = document.querySelector('#ai-chat-interface');
+    
+    if (message) {
+        try {
+            resultsContainer.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> A procurar recomendações...</div>';
+            resultsContainer.classList.add('active');
+            chatContainer.style.justifyContent = 'flex-start';
+            
+            const response = await fetch('/AI/ProcessMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Erro ao processar a mensagem');
+            }
+
+            const html = await response.text();
+            resultsContainer.innerHTML = html;
+            resultsContainer.classList.add('active');
+            userInput.value = '';
+            
+            // Save response and query to session storage
+            sessionStorage.setItem('aiResponse', html);
+            sessionStorage.setItem('aiQuery', message);
+            
+        } catch (error) {
+            resultsContainer.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+        }
+    }
+}
+
+// Add this function to restore the previous response
+function restorePreviousResponse() {
+    const resultsContainer = document.getElementById('results-container');
+    const chatContainer = document.querySelector('#ai-chat-interface');
+    const userInput = document.getElementById('userInput');
+    
+    const savedResponse = sessionStorage.getItem('aiResponse');
+    const savedQuery = sessionStorage.getItem('aiQuery');
+    
+    if (savedResponse) {
+        resultsContainer.innerHTML = savedResponse;
+        resultsContainer.classList.add('active');
+        chatContainer.style.justifyContent = 'flex-start';
+        userInput.value = savedQuery || '';
+    }
+}
+
+// Call restore function when page loads
+document.addEventListener('DOMContentLoaded', restorePreviousResponse);
+
+// Allow Enter key to send message
+document.getElementById('userInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+</script>
