@@ -246,20 +246,20 @@ namespace LibSpace_Aspnet.Controllers
             ViewBag.BibliotecarioId = null;
             ViewBag.IsFavorito = false;
             
-            // Verifica se o usuário está autenticado e é um administrador
-            if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-            {
-                // Busca a associação do livro com o bibliotecário
-                var livroAssociacao = await _context.InserirLivros
-                    .Where(f => f.IdLivro == id)
-                    .Select(f => new { f.IdLivro, f.IdBibliotecario })
-                    .FirstOrDefaultAsync();
+            //// Verifica se o usuário está autenticado e é um administrador
+            //if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            //{
+            //    // Busca a associação do livro com o bibliotecário
+            //    var livroAssociacao = await _context.InserirLivros
+            //        .Where(f => f.IdLivro == id)
+            //        .Select(f => new { f.IdLivro, f.IdBibliotecario })
+            //        .FirstOrDefaultAsync();
 
-                var perfilB = await _context.Perfils
-                .FirstOrDefaultAsync(p => p.IdPerfil == livroAssociacao.IdBibliotecario);
+            //    var perfilB = await _context.Perfils
+            //    .FirstOrDefaultAsync(p => p.IdPerfil == livroAssociacao.IdBibliotecario);
 
-                ViewBag.BibliotecarioId = perfilB.NomePerfil;
-            }
+            //    ViewBag.BibliotecarioId = perfilB.NomePerfil;
+            //}
 
             // Verifica se o usuário está autenticado e é um leitor
             if (User.Identity.IsAuthenticated && User.IsInRole("Leitor"))

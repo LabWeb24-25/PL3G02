@@ -31,7 +31,7 @@ namespace LibSpace_Aspnet.Controllers
                 TempData["Mensagem"] = "Por favor, faça login para aceder a esta página.";
                 return Redirect("/Identity/Account/Login");
             }
-            if (!User.IsInRole("Bibliotecario"))
+            if (User.IsInRole("Leitor"))
             {
                 return Redirect("/Acess/Notauthorized");
             }
@@ -109,7 +109,7 @@ namespace LibSpace_Aspnet.Controllers
             }
             if (!User.IsInRole("Bibliotecario"))
             {
-                return Json(new { success = false, message = "Fuunção exclusiva a Bibliotecários" });
+                return Json(new { success = false, message = "Função exclusiva a Bibliotecários" });
             }
 
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
